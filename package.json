@@ -1,0 +1,29 @@
+{
+  "name": "create-yss-harness",
+  "version": "0.1.0",
+  "description": "Initialize a YSS development-landing Harness project-instance repository",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iloveZzz/create-yss-harness.git"
+  },
+  "homepage": "https://github.com/iloveZzz/create-yss-harness#readme",
+  "bugs": {
+    "url": "https://github.com/iloveZzz/create-yss-harness/issues"
+  },
+  "files": [
+    "bin",
+    "src",
+    "template",
+    "template.manifest.json",
+    "template.snapshot.json"
+  ],
+  "bin": {
+    "create-yss-harness": "bin/create-yss-harness.js"
+  },
+  "scripts": {
+    "sync-template": "node scripts/sync-template.js",
+    "pretest": "npm run sync-template",
+    "test": "node --test tests/*.test.js",
+    "prepack": "npm run sync-template"
+  }
+}

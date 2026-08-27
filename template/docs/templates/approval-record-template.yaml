@@ -1,0 +1,14 @@
+schema_version: 1
+gate_id: gate.tactical-design-approved
+decision: approved
+actor_kind: digital-human
+role_id: role.test-agent
+runtime_id: runtime.generic
+runtime_instance_ref: "runtime.generic:role.test-agent"
+principal_ref: "instance:role.test-agent"
+drafter_role_id: role.architecture-agent
+countersigner_role_ids:
+  - role.test-agent
+evidence_refs: []
+biological_veto: false
+notes: 会签必须可读取；起草者不得出现在 countersigner_role_ids。运行时表情/reaction 无效。合并门禁必须由生物人关闭。

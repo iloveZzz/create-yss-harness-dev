@@ -1,0 +1,53 @@
+#!/usr/bin/env node
+import assert from "node:assert/strict";
+import { lifecycleTransitionContract, validateImplementationEntry, validateNextRoute, validateSliceContractReadiness } from "./lib/lifecycle-transition.mjs";
+
+const flags = [
+  "upstream_inputs_current_and_approved",
+  "tactical_design_current_or_not_applicable_recorded",
+  "api_freeze_or_no_api_impact_recorded",
+  "data_architecture_or_no_data_impact_recorded",
+  "ui_inputs_or_no_ui_impact_recorded",
+  "implementation_repositories_and_commands_registered",
+  "allowed_write_paths_registered",
+  "test_seams_and_acceptance_executable",
+  "task_packages_share_contract_version"
+];
+const validContract = {
+  status: "approved",
+  current_version: true,
+  readiness: Object.fromEntries(flags.map((flag) => [flag, true])),
+  architecture: {},
+  frontend: {},
+  backend: {},
+  testing: {},
+  evidence_refs: ["docs/process/lifecycle-registry.yaml"]
+};
+
+assert.equal(validateNextRoute("work-unit.harness-entry", "work-unit.tactical-design").result, "allowed");
+assert.equal(validateNextRoute("work-unit.tactical-design", "work-unit.slice-contract").result, "allowed");
+assert.equal(validateNextRoute("work-unit.slice-contract", "work-unit.slice-implementation").result, "allowed");
+assert.equal(validateNextRoute("work-unit.slice-implementation", "work-unit.verification").result, "allowed");
+assert.equal(validateNextRoute("work-unit.slice-implementation", "work-unit.verification").blocking_signals.length, 0);
+assert.equal(validateNextRoute("work-unit.tactical-design", "work-unit.slice-implementation").result, "blocked");
+assert.equal(validateSliceContractReadiness(validContract).result, "allowed");
+assert.equal(validateImplementationEntry({ slice_contract: validContract, predecessor_work_unit: "work-unit.slice-contract", ready_for_agent: true }).result, "allowed");
+
+for (const mutate of [
+  (value) => { value.status = "draft"; },
+  (value) => { value.current_version = false; },
+  (value) => { value.readiness.test_seams_and_acceptance_executable = false; },
+  (value) => { value.architecture = undefined; },
+  (value) => { value.readiness.blockers = ["contract-version-mismatch"]; },
+  (value) => { value.predecessor_work_unit = "work-unit.tactical-design"; }
+]) {
+  const candidate = structuredClone(validContract);
+  mutate(candidate);
+  const result = candidate.predecessor_work_unit
+    ? validateImplementationEntry({ slice_contract: candidate, predecessor_work_unit: candidate.predecessor_work_unit, ready_for_agent: true })
+    : validateSliceContractReadiness(candidate);
+  assert.equal(result.result, "blocked");
+}
+
+assert.deepEqual(lifecycleTransitionContract.next_routes["work-unit.slice-contract"], ["work-unit.slice-implementation"]);
+process.stdout.write("harness-agent 生命周期转换压力场景验证通过\n");

@@ -1,0 +1,172 @@
+schema_version: 1
+registry_id: yss.digital-human-roles
+status: active
+description: >-
+  harness-agent 的角色与运行时绑定事实源。研发角色严格限制为架构、前端、后端和测试；
+  Harness Orchestrator 是系统编排组件，不计入四类研发角色。
+canonical_path: docs/agents/digital-human-roles.yaml
+
+runtime_policy:
+  lifecycle_control: harness-orchestrator
+  default_invocation: orchestrator
+  dispatch: orchestrator-one-to-one
+  per_feature_instances: forbidden
+  implementer_must_differ: true
+  biological_veto: true
+  write_isolation: task-package-policy
+  task_package_schema: docs/process/schemas/digital-human-task-package.schema.json
+  contract_schema: slice-implementation-contract-v1
+  execution_states: [Explorer, Drafter, Worker, Reviewer, Verifier]
+
+runtimes:
+  - id: runtime.generic
+    kind: generic
+    instance_kind: agent-session
+    skill_root: null
+    covers_skill_registry_roots: false
+    collaboration: task-package-and-handoff
+    max_collaboration_group_size: null
+    overflow: not-applicable
+    shared_workspace_is_not_security_boundary: false
+    side_effect_approval: biological-human
+    notes: 任何能加载角色技能并接受任务包的 Agent 会话。
+  - id: runtime.skill-projection
+    kind: projected-agent-root
+    instance_kind: agent-session-or-subagent
+    skill_root: from-skill-registry
+    covers_skill_registry_roots: true
+    collaboration: subagent-task-package
+    max_collaboration_group_size: null
+    overflow: not-applicable
+    shared_workspace_is_not_security_boundary: false
+    side_effect_approval: biological-human
+    notes: 从 .agents/skills 投影到各 Agent runtime root。
+  - id: runtime.grok
+    kind: grok-bot
+    instance_kind: durable-bot
+    skill_root: null
+    covers_skill_registry_roots: false
+    collaboration: group-chat-or-async-dm
+    max_collaboration_group_size: 4
+    min_collaboration_group_size: 2
+    overflow: one-to-one-handoff
+    shared_workspace_is_not_security_boundary: true
+    side_effect_approval: biological-human
+    notes: 仅作为运行时适配器，不改变四角色职责或生命周期语义。
+
+orchestrator:
+  id: role.harness-orchestrator
+  name: Harness Orchestrator
+  kind: orchestrator
+  title: Harness Agent 生命周期编排器
+  stages: [stage.harness-entry, stage.tactical-design, stage.slice-contract, stage.slice-implementation, stage.verification]
+  default_dual_hat: []
+  draft_artifact_ids: [artifact.impact-assessment, artifact.slice-implementation-contract]
+  owned_evidence_ids: [evidence.fresh-verification, evidence.checkpoint-and-rollback]
+  core_skills: [harness-orchestrator, implementation-repo-onboarding, cross-repo-implementation-routing, handoff, dispatching-parallel-agents]
+  forbidden_skills: [architecture-agent, frontend-agent, backend-agent, test-agent, yss-domain, yss-ui, implement]
+  description: >-
+    负责四角色 Harness Agent 的入口、影响面、合同版本、任务包、状态转移、证据汇合和重路由。
+    不写业务代码，不替专业角色做领域或产品决策，不自行关闭独立验证门禁。
+
+roles:
+  - id: role.architecture-agent
+    name: 架构 Agent
+    kind: digital-human
+    title: DDD 战术架构 Agent
+    stages: [stage.harness-entry, stage.tactical-design, stage.slice-contract, stage.verification]
+    draft_artifact_ids: [artifact.tactical-design, artifact.api-boundary, artifact.data-architecture, artifact.slice-implementation-contract]
+    owned_evidence_ids: [evidence.tactical-design-review, evidence.architecture-decision]
+    core_skills: [architecture-agent, yss-tactical-design, domain-modeling, codebase-design, research, tdd]
+    forbidden_skills: [harness-orchestrator, frontend-agent, backend-agent, test-agent, yss-ui, yss-domain, yss-repository, yss-web-controller]
+    description: >-
+      负责把已确认的 Spec / 战略设计细化为 Tactical Design Contract，并定义聚合、行为、不变量、状态、
+      一致性、Gateway、API、数据和测试边界；不写生产实现，不自行批准。
+
+  - id: role.frontend-agent
+    name: 前端 Agent
+    kind: digital-human
+    title: Vue 前端垂直切片 Agent
+    stages: [stage.slice-contract, stage.slice-implementation, stage.verification]
+    draft_artifact_ids: [artifact.frontend-implementation-plan]
+    owned_evidence_ids: [evidence.frontend-verification]
+    core_skills: [frontend-agent, yss-ui, yss-components, yss-formily, yss-api-integration, yss-hook, page-skeleton, page-list-module, page-form-module, vue3-best-practices, theme-token-usage, tdd]
+    forbidden_skills: [harness-orchestrator, architecture-agent, backend-agent, test-agent, yss-domain, yss-application, yss-repository, yss-mybatis, yss-web-controller]
+    description: >-
+      消费冻结的交互、状态和 Slice Contract，负责前端页面、组件、API 消费和前端测试；不创造产品规则、
+      不修改后端领域和 API 契约，不为自己实现的切片独立验收。
+
+  - id: role.backend-agent
+    name: 后端 Agent
+    kind: digital-human
+    title: DDD 后端垂直切片 Agent
+    stages: [stage.slice-contract, stage.slice-implementation, stage.verification]
+    draft_artifact_ids: [artifact.openapi-draft, artifact.data-architecture]
+    owned_evidence_ids: [evidence.backend-verification]
+    core_skills: [backend-agent, yss-domain, yss-application, yss-repository, yss-mybatis, yss-web-controller, yss-dto, yss-exception, yss-validation, yss-router, tdd]
+    forbidden_skills: [harness-orchestrator, architecture-agent, frontend-agent, test-agent, yss-ui, yss-formily, yss-frontend-scaffold-generator]
+    description: >-
+      消费批准的 Tactical Design Contract 和 API / 数据边界，负责 Domain、Application、Infrastructure、
+      Web、DTO、数据访问和后端测试；不重新定义架构合同，不为自己实现的切片独立验收。
+
+  - id: role.test-agent
+    name: 测试 Agent
+    kind: digital-human
+    title: 独立测试与验证 Agent
+    stages: [stage.tactical-design, stage.slice-contract, stage.slice-implementation, stage.verification]
+    draft_artifact_ids: [artifact.test-strategy, artifact.test-seams]
+    owned_evidence_ids: [evidence.fresh-verification, evidence.frontend-verification, evidence.backend-verification]
+    core_skills: [test-agent, tdd, diagnosing-bugs, code-review, research]
+    forbidden_skills: [harness-orchestrator, architecture-agent, frontend-agent, backend-agent, yss-ddd-scaffold-generator, implement]
+    description: >-
+      从战术设计和 Slice Contract 建立测试 seam、fixture 和失败基线，独立执行契约、集成、E2E 和 Fresh
+      Verification；不修改产品范围、领域规则或生产实现来掩盖失败。
+
+stage_groups:
+  - id: group.harness-entry
+    name: Harness 入口
+    stage: stage.harness-entry
+    members: [role.harness-orchestrator, role.architecture-agent, role.test-agent]
+  - id: group.tactical-design
+    name: DDD 战术设计
+    stage: stage.tactical-design
+    members: [role.harness-orchestrator, role.architecture-agent, role.test-agent]
+  - id: group.slice-contract
+    name: Slice Contract
+    stage: stage.slice-contract
+    members: [role.harness-orchestrator, role.architecture-agent, role.frontend-agent, role.backend-agent, role.test-agent]
+  - id: group.slice-implementation
+    name: 垂直切片实现
+    stage: stage.slice-implementation
+    members: [role.harness-orchestrator, role.frontend-agent, role.backend-agent, role.test-agent]
+  - id: group.verification
+    name: 独立验证
+    stage: stage.verification
+    members: [role.harness-orchestrator, role.architecture-agent, role.test-agent]
+
+gate_policy:
+  default_if_unlisted: biological-human
+  runtime_side_effect_approval: biological-human
+  commercial_contract: biological-human
+  unlisted_kept_biological: [gate.high-risk-architecture-confirmed, gate.openapi-freeze-confirmed, gate.merge-approved]
+  orchestrator: [gate.slice-contract-approved, gate.slice-ready-for-agent]
+  evidence_only: [gate.repository-identity-valid]
+  biological_human: [gate.high-risk-architecture-confirmed, gate.openapi-freeze-confirmed, gate.merge-approved]
+  digital_human_review:
+    - gate: gate.tactical-design-approved
+      drafter: role.architecture-agent
+      countersigners: [role.test-agent]
+    - gate: gate.fresh-verification-passed
+      drafter: role.test-agent
+      countersigners: [role.architecture-agent]
+  digital_human_review_work_units:
+    - work_unit: work-unit.tactical-design
+      countersigners: [role.test-agent]
+      implementer_must_differ: true
+    - work_unit: work-unit.slice-implementation
+      countersigners: [role.test-agent]
+      implementer_must_differ: true
+  dual_digital_human:
+    - gate: gate.slice-contract-approved
+      drafter: role.architecture-agent
+      countersigners: [role.frontend-agent, role.backend-agent, role.test-agent]

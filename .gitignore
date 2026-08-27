@@ -1,0 +1,4 @@
+node_modules/
+.template-staging-*
+.template-backup-*
+.DS_Store

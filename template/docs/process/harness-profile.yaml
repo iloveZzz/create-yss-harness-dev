@@ -1,0 +1,59 @@
+schema_version: 1
+profile_id: harness.dev-agent-slice
+status: active
+name: 四角色开发落地 Harness
+purpose: >-
+  面向架构、前端、后端和测试四类 Agent，把已批准的上游 Spec 或战略设计交接包
+  细化为 DDD 战术设计、统一 Slice Implementation Contract、垂直切片实现和独立验证。
+
+audience:
+  target_user_roles:
+    - role.architecture-agent
+    - role.frontend-agent
+    - role.backend-agent
+    - role.test-agent
+  control_plane_roles:
+    - role.harness-orchestrator
+  non_target_role_policy: >-
+    本 profile 只注册四类研发角色；产品、需求、商务和项目管理不在当前 Harness 中派发。
+    上游战略设计由独立战略 Harness 或已批准 Spec 提供，不在本仓默认重做 Discovery。
+  boundary: >-
+    当前 Harness 从 Harness Entry 进入战术设计与切片落地，不把 Discovery、产品原型或
+    全生命周期规格作为默认第一阶段。grill-with-docs、to-spec、to-tickets 只作为显式兼容入口。
+
+lifecycle:
+  repository_modes: [project-instance]
+  entry_work_unit: work-unit.harness-entry
+  allowed_work_units:
+    - work-unit.harness-entry
+    - work-unit.tactical-design
+    - work-unit.slice-contract
+    - work-unit.slice-implementation
+    - work-unit.verification
+  terminal_work_unit: work-unit.verification
+  terminal_stage: stage.verification
+  forbidden_work_units:
+    - work-unit.ssot-update
+    - work-unit.skill-projection-sync
+    - work-unit.intensity-aware-verification
+    - work-unit.intensity-aware-review
+    - work-unit.release-and-rollback
+
+upstream:
+  kind: approved-spec-or-strategic-design
+  default_entry: work-unit.harness-entry
+  discovery_is_default: false
+  compatibility_skills:
+    - grill-with-docs
+    - to-spec
+    - to-tickets
+
+instantiation:
+  cli_package: create-yss-harness
+  npm_create: yss-harness
+  metadata_file: .yss-harness.json
+  foreign_metadata_files:
+    - .yss-template.json
+  template_source: github:iloveZzz/yss-harness-dev-agent
+  distribution_manifest: .template-source/distribution/template.manifest.json
+  pin_env: YSS_HARNESS_TEMPLATE_REF

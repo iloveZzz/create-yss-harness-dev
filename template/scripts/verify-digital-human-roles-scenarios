@@ -1,0 +1,118 @@
+#!/usr/bin/env node
+import { validateDefaultDigitalHumanRoles, validateDigitalHumanRoles, loadDigitalHumanRoles, skillIdsFromRegistry } from "./lib/digital-human-roles.mjs";
+import { loadRegistry } from "./lib/lifecycle-registry.mjs";
+import { loadSkillRegistry } from "./lib/skill-registry.mjs";
+import { validateApprovalRecord, validateApprovalRecordFile } from "./lib/approval-record.mjs";
+
+function clone() {
+  return structuredClone(loadDigitalHumanRoles());
+}
+
+function deps() {
+  const lifecycle = loadRegistry();
+  const skills = loadSkillRegistry();
+  const ids = (records) => new Set(records.map((record) => record.id));
+  return {
+    skillIds: skillIdsFromRegistry(skills),
+    stageIds: ids(lifecycle.stages),
+    gateIds: ids(lifecycle.gates),
+    artifactIds: ids(lifecycle.artifacts),
+    evidenceIds: ids(lifecycle.evidence),
+    workUnitIds: ids(lifecycle.work_units),
+    skillRegistry: skills
+  };
+}
+
+function mustFail(doc, pattern, label) {
+  let failed = false;
+  let message = "";
+  try {
+    validateDigitalHumanRoles(doc, deps());
+  } catch (error) {
+    failed = true;
+    message = error.message;
+  }
+  if (!failed) throw new TypeError(`错误配置未被拒绝: ${label}`);
+  if (!pattern.test(message)) throw new TypeError(`${label} 失败原因不符合预期: ${message}`);
+}
+
+validateDefaultDigitalHumanRoles();
+
+const legacyRole = clone();
+legacyRole.roles[0].id = "role.product-manager";
+mustFail(legacyRole, /v1 必须恰好包含/, "旧角色注入默认集合");
+
+const grokOverflow = clone();
+grokOverflow.runtimes.find((runtime) => runtime.id === "runtime.grok").overflow = "forbid";
+mustFail(grokOverflow, /禁止超过 4 人/, "Grok 适配器在 overflow=forbid 时拒绝超限协作组");
+
+const coupled = clone();
+coupled.roles[0].grok_title = "legacy";
+mustFail(coupled, /平台耦合字段/, "角色上残留 grok_title");
+
+const unknownSkill = clone();
+unknownSkill.roles[0].core_skills = ["not-a-registered-skill"];
+mustFail(unknownSkill, /未登记技能/, "未知技能");
+
+const overlap = clone();
+overlap.roles.find((role) => role.id === "role.frontend-agent").forbidden_skills.push("yss-ui");
+mustFail(overlap, /重叠/, "启用且禁止同一技能");
+
+const selfSign = clone();
+selfSign.gate_policy.digital_human_review[0].countersigners = ["role.architecture-agent"];
+mustFail(selfSign, /起草者不得会签自己/, "起草者自签");
+
+const mergeByBot = clone();
+mergeByBot.gate_policy.biological_human = mergeByBot.gate_policy.biological_human.filter((gate) => gate !== "gate.merge-approved");
+mergeByBot.gate_policy.digital_human_review.push({
+  gate: "gate.merge-approved",
+  countersigners: ["role.test-agent"]
+});
+mustFail(mergeByBot, /gate\.merge-approved 必须属于 biological_human|门禁被多个会签桶重复占用/, "数字人关闭合并门禁");
+
+const missingSigners = clone();
+missingSigners.gate_policy.digital_human_review[0].countersigners = [];
+mustFail(missingSigners, /countersigners/, "单审门禁缺 countersigners");
+
+const stringReview = clone();
+stringReview.gate_policy.digital_human_review = ["gate.tactical-design-approved"];
+mustFail(stringReview, /必须是含 gate/, "单审门禁仍用字符串名单");
+
+const missingGeneric = clone();
+missingGeneric.runtimes = missingGeneric.runtimes.filter((runtime) => runtime.id !== "runtime.generic");
+mustFail(missingGeneric, /缺少运行时绑定: runtime.generic/, "缺少通用运行时");
+
+validateApprovalRecordFile("docs/templates/approval-record-template.yaml");
+
+const rolesDoc = loadDigitalHumanRoles();
+try {
+  validateApprovalRecord({
+    schema_version: 1,
+    gate_id: "gate.tactical-design-approved",
+    decision: "approved",
+    actor_kind: "digital-human",
+    role_id: "role.frontend-agent",
+    runtime_id: "runtime.generic",
+    principal_ref: "instance:wrong"
+  }, { rolesDoc });
+  throw new TypeError("错误配置未被拒绝: 错误角色会签");
+} catch (error) {
+  if (!/会签角色必须是/.test(error.message)) throw new TypeError(`错误角色会签 失败原因不符合预期: ${error.message}`);
+}
+
+try {
+  validateApprovalRecord({
+    schema_version: 1,
+    gate_id: "gate.merge-approved",
+    decision: "approved",
+    actor_kind: "digital-human",
+    role_id: "role.test-agent",
+    runtime_id: "runtime.generic",
+    principal_ref: "instance:test"
+  }, { rolesDoc });
+  throw new TypeError("错误配置未被拒绝: 数字人关闭合并门禁记录");
+} catch (error) {
+  if (!/必须由生物人会签/.test(error.message)) throw new TypeError(`数字人关闭合并门禁记录 失败原因不符合预期: ${error.message}`);
+}
+
+process.stdout.write("四角色 Harness Agent 压力场景验证通过\n");

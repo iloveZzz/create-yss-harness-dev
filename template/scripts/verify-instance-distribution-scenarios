@@ -1,0 +1,30 @@
+#!/usr/bin/env node
+import assert from "node:assert/strict";
+import {
+  loadDistributionManifest,
+  validateDistributionManifest,
+  validateInstanceDistribution,
+} from "./lib/instance-distribution.mjs";
+
+const live = validateInstanceDistribution();
+assert.equal(live.cli_package, "create-yss-harness");
+assert.equal(live.metadata_file, ".yss-harness.json");
+assert.ok(live.manifest.excludeRootEntries.includes(".template-source"));
+
+const source = loadDistributionManifest();
+const mutations = [
+  ["allow governance zone", (candidate) => candidate.allowRootEntries.push(".template-source"), /\.template-source/],
+  ["drop wiki exclude", (candidate) => {
+    candidate.excludeRootEntries = candidate.excludeRootEntries.filter((item) => item !== "wiki");
+  }, /wiki/],
+  ["allow package.json", (candidate) => candidate.allowRootFiles.push("package.json"), /package\.json/],
+  ["drop yss-project render", (candidate) => {
+    candidate.renderPaths = candidate.renderPaths.filter((item) => item !== "yss-project.yaml");
+  }, /yss-project\.yaml/],
+];
+for (const [name, mutate, pattern] of mutations) {
+  const candidate = structuredClone(source);
+  mutate(candidate);
+  assert.throws(() => validateDistributionManifest(candidate), pattern, name);
+}
+process.stdout.write("实例分发面压力场景验证通过\n");
