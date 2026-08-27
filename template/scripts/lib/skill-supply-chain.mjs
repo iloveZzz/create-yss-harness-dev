@@ -28,7 +28,7 @@ function treeFiles(directory, prefix = "") {
 }
 export function treeHash(directory) {
   const digest = createHash("sha256");
-  for (const [name, file] of treeFiles(directory).sort(([left], [right]) => left.localeCompare(right))) {
+  for (const [name, file] of treeFiles(directory).sort(([left], [right]) => (left < right ? -1 : left > right ? 1 : 0))) {
     digest.update(name).update("\0").update(readFileSync(file)).update("\0");
   }
   return digest.digest("hex");

@@ -1,17 +1,20 @@
 #!/usr/bin/env node
 import assert from "node:assert/strict";
-import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { ROOT } from "./lib/lifecycle-registry.mjs";
 import { generateTaskPackageDefaults, validateTaskPackage, validateTaskPackageSet } from "./lib/task-package.mjs";
 
-const contractRef = ".template-source/evidence/.task-package-slice-contract.json";
-const evidenceRef = ".template-source/evidence/.task-package-evidence.json";
-const maintenanceRef = ".template-source/evidence/.task-package-maintenance.json";
+const scratchDir = "docs/.scratch";
+const fixtureDir = `${scratchDir}/_verify-task-package`;
+const contractRef = `${fixtureDir}/slice-contract.json`;
+const evidenceRef = `${fixtureDir}/evidence.json`;
+const maintenanceRef = `${fixtureDir}/maintenance.json`;
 const contractFile = path.join(ROOT, contractRef);
 const evidenceFile = path.join(ROOT, evidenceRef);
 const maintenanceFile = path.join(ROOT, maintenanceRef);
+const createdScratch = !existsSync(path.join(ROOT, scratchDir));
 
 const contract = {
   schema_version: 1,
@@ -175,7 +178,8 @@ try {
   completed.result = completedResult(completed);
   validateTaskPackage(completed);
 
-  const validFile = path.join(ROOT, ".template-source/evidence/.task-package-valid.json");
+  const validFile = path.join(ROOT, fixtureDir, "valid.json");
+  mkdirSync(path.dirname(validFile), { recursive: true });
   writeFileSync(validFile, JSON.stringify(tactical));
   for (const cli of ["scripts/verify-digital-human-task-package", "scripts/verify-subagent-task-package"]) {
     const result = spawnSync(process.execPath, [path.join(ROOT, cli), validFile], { encoding: "utf8" });
@@ -199,7 +203,9 @@ try {
 
   process.stdout.write("四角色 Harness Agent 任务包压力场景验证通过\n");
 } finally {
-  rmSync(contractFile, { force: true });
-  rmSync(evidenceFile, { force: true });
-  rmSync(maintenanceFile, { force: true });
+  rmSync(path.join(ROOT, fixtureDir), { recursive: true, force: true });
+  const scratchRoot = path.join(ROOT, scratchDir);
+  if (createdScratch && existsSync(scratchRoot) && readdirSync(scratchRoot).length === 0) {
+    rmSync(scratchRoot, { recursive: true, force: true });
+  }
 }
