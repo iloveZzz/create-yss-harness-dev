@@ -2,7 +2,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { spawnSync } = require("node:child_process");
 
-const PACKAGE_NAME = "create-yss-harness";
+const PACKAGE_NAME = "create-yss-harness-dev";
 const UPDATE_COMMANDS = new Set(["update", "upgrade"]);
 
 function parseUpdateArgs(argv = []) {
@@ -186,19 +186,19 @@ function printInstallAdvice(stdout, install) {
   if (install.kind === "source") {
     writeln(
       stdout,
-      "检测到源码目录；请通过发布流程或 npm install -g create-yss-harness@latest 升级",
+      "检测到源码目录；请通过发布流程或 npm install -g create-yss-harness-dev@latest 升级",
     );
   } else if (install.kind === "npx") {
     writeln(
       stdout,
-      "当前通过 npx 运行；下次使用 npx create-yss-harness@latest 即可拿到最新版",
+      "当前通过 npx 运行；下次使用 npx create-yss-harness-dev@latest 即可拿到最新版",
     );
   } else {
     writeln(stdout, "未能判断安装位置");
   }
   writeln(stdout, "建议：");
-  writeln(stdout, "  npm install -g create-yss-harness@latest");
-  writeln(stdout, "  npx create-yss-harness@latest");
+  writeln(stdout, "  npm install -g create-yss-harness-dev@latest");
+  writeln(stdout, "  npx create-yss-harness-dev@latest");
 }
 
 function runUpdate(argv = [], deps = {}) {

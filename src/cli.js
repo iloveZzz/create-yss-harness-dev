@@ -31,7 +31,7 @@ const INIT_EXCLUDED_RELATIVE_PATHS = new Set(
 );
 const RENDERED_RELATIVE_PATHS = new Set(TEMPLATE_MANIFEST.renderPaths);
 const EXAMPLE_DOC_PATHS = new Set(TEMPLATE_MANIFEST.exampleDocPaths);
-const TEMPLATE_METADATA_FILENAME = ".yss-harness.json";
+const TEMPLATE_METADATA_FILENAME = ".yss-harness-dev.json";
 const FOREIGN_METADATA_FILENAME = ".yss-template.json";
 const PROFILE_ID = "harness.dev-agent-slice";
 const TEMPLATE_MANIFEST_VERSION = sha256(TEMPLATE_MANIFEST_TEXT);
@@ -1482,7 +1482,7 @@ function verifyGeneratedInstance(targetDir, { checkForbiddenPaths = true } = {})
 function assertNotForeignFamily(targetDir) {
   if (pathKind(targetPath(targetDir, FOREIGN_METADATA_FILENAME)) !== "missing") {
     throw new Error(
-      "目标属于 create-yss-spec 全生命周期实例（存在 .yss-template.json）。请使用 create-yss-spec，不要用 create-yss-harness。",
+      "目标属于 create-yss-spec 全生命周期实例（存在 .yss-template.json）。请使用 create-yss-spec，不要用 create-yss-harness-dev。",
     );
   }
 }
@@ -1600,7 +1600,7 @@ function copyPath(sourcePath, destinationPath) {
 class Transaction {
   constructor(targetDir) {
     this.targetDir = targetDir;
-    this.backupRoot = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-backup-"));
+    this.backupRoot = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-dev-backup-"));
     this.backups = [];
     this.mutated = [];
     this.createdDirectories = [];
@@ -2125,14 +2125,14 @@ function argvIncludesFlag(argv, flags) {
 }
 
 function printVersion() {
-  console.log(`create-yss-harness ${PACKAGE_MANIFEST.version}`);
+  console.log(`create-yss-harness-dev ${PACKAGE_MANIFEST.version}`);
 }
 
 function printHelp() {
-  console.log(`create-yss-harness ${PACKAGE_MANIFEST.version}
+  console.log(`create-yss-harness-dev ${PACKAGE_MANIFEST.version}
 
 USAGE
-  $ create-yss-harness [COMMAND] [OPTIONS]
+  $ create-yss-harness-dev [COMMAND] [OPTIONS]
 
 COMMANDS
   (default)  初始化新的模板实例仓库
@@ -2159,41 +2159,41 @@ OPTIONS
   -v, --version                      显示 CLI 版本
 
 EXAMPLES
-  $ npm create yss-harness@latest
-  $ npx create-yss-harness@latest --help
-  $ npx create-yss-harness@latest --version
-  $ npx create-yss-harness@latest \\
+  $ npm create yss-harness-dev@latest
+  $ npx create-yss-harness-dev@latest --help
+  $ npx create-yss-harness-dev@latest --version
+  $ npx create-yss-harness-dev@latest \\
       --project-name "Acme Spec Repo" \\
       --business-domain "Investment Research" \\
       --team-size "12" \\
       --target-dir "./acme-spec-repo" \\
       --issue-tracker github \\
       --git-init
-  $ npx create-yss-harness@latest \\
+  $ npx create-yss-harness-dev@latest \\
       --project-name "Preview Repo" \\
       --business-domain "Data Platform" \\
       --target-dir "./preview-repo" \\
       --dry-run
-  $ npx create-yss-harness@latest attach \\
+  $ npx create-yss-harness-dev@latest attach \\
       --target-dir . \\
       --project-name "Acme Application" \\
       --business-domain "Data Platform" \\
       --dry-run
-  $ npx create-yss-harness@latest attach \\
+  $ npx create-yss-harness-dev@latest attach \\
       --target-dir . \\
       --project-name "Acme Application" \\
       --business-domain "Data Platform" \\
       --apply
-  $ npx create-yss-harness@latest sync
-  $ npx create-yss-harness@latest sync --dry-run
-  $ npx create-yss-harness@latest sync --target-dir . --force
-  $ npx create-yss-harness update
-  $ npx create-yss-harness update --dry-run
-  $ npx create-yss-harness upgrade
+  $ npx create-yss-harness-dev@latest sync
+  $ npx create-yss-harness-dev@latest sync --dry-run
+  $ npx create-yss-harness-dev@latest sync --target-dir . --force
+  $ npx create-yss-harness-dev update
+  $ npx create-yss-harness-dev update --dry-run
+  $ npx create-yss-harness-dev upgrade
 
 LEARN MORE
-  仓库 README：https://github.com/iloveZzz/create-yss-harness#readme
-  使用手册：https://github.com/iloveZzz/create-yss-harness/blob/main/docs/user-guide/create-yss-harness-cli-guide.md
+  仓库 README：https://github.com/iloveZzz/create-yss-harness-dev#readme
+  使用手册：https://github.com/iloveZzz/create-yss-harness-dev/blob/main/docs/user-guide/create-yss-harness-dev-cli-guide.md
   模板仓库：https://github.com/iloveZzz/yss-harness-dev-agent
 `);
 }

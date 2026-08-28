@@ -12,7 +12,7 @@ const {
 } = require("../src/self-update");
 
 const repoRoot = path.resolve(__dirname, "..");
-const cliBin = path.join(repoRoot, "bin/create-yss-harness.js");
+const cliBin = path.join(repoRoot, "bin/create-yss-harness-dev.js");
 const packageVersion = JSON.parse(
   fs.readFileSync(path.join(repoRoot, "package.json"), "utf8"),
 ).version;
@@ -101,24 +101,24 @@ test("detectInstallKind identifies npx, source, global, and local installs", () 
 
   assert.equal(
     detectInstallKind(
-      "/home/me/.npm/_npx/abc123/node_modules/create-yss-harness",
+      "/home/me/.npm/_npx/abc123/node_modules/create-yss-harness-dev",
       spawn,
     ).kind,
     "npx",
   );
   assert.equal(detectInstallKind(repoRoot, spawn).kind, "source");
   assert.equal(
-    detectInstallKind(path.join(prefix, "lib/node_modules/create-yss-harness"), spawn)
+    detectInstallKind(path.join(prefix, "lib/node_modules/create-yss-harness-dev"), spawn)
       .kind,
     "global",
   );
   assert.equal(
-    detectInstallKind(path.join(prefix, "node_modules/create-yss-harness"), spawn)
+    detectInstallKind(path.join(prefix, "node_modules/create-yss-harness-dev"), spawn)
       .kind,
     "global",
   );
   assert.deepEqual(
-    detectInstallKind("/tmp/app/node_modules/create-yss-harness", spawn),
+    detectInstallKind("/tmp/app/node_modules/create-yss-harness-dev", spawn),
     { kind: "local", cwd: "/tmp/app" },
   );
 });
@@ -128,7 +128,7 @@ test("already latest version does not install", () => {
   const stdout = createStdout();
   const result = runUpdate([], {
     spawn,
-    packageRoot: "/tmp/npm-prefix/lib/node_modules/create-yss-harness",
+    packageRoot: "/tmp/npm-prefix/lib/node_modules/create-yss-harness-dev",
     currentVersion: "2.2.3",
     stdout: stdout.stream,
   });
@@ -143,7 +143,7 @@ test("newer version on a global install runs npm install -g", () => {
   const stdout = createStdout();
   const result = runUpdate([], {
     spawn,
-    packageRoot: "/tmp/npm-prefix/lib/node_modules/create-yss-harness",
+    packageRoot: "/tmp/npm-prefix/lib/node_modules/create-yss-harness-dev",
     currentVersion: "2.2.3",
     stdout: stdout.stream,
   });
@@ -152,7 +152,7 @@ test("newer version on a global install runs npm install -g", () => {
   assert.deepEqual(installCalls(calls), [
     {
       command: "npm",
-      args: ["install", "-g", "create-yss-harness@latest"],
+      args: ["install", "-g", "create-yss-harness-dev@latest"],
       cwd: undefined,
     },
   ]);
@@ -164,7 +164,7 @@ test("newer version on a local install runs npm install in the project root", ()
   const stdout = createStdout();
   const result = runUpdate([], {
     spawn,
-    packageRoot: "/tmp/app/node_modules/create-yss-harness",
+    packageRoot: "/tmp/app/node_modules/create-yss-harness-dev",
     currentVersion: "2.2.3",
     stdout: stdout.stream,
   });
@@ -173,7 +173,7 @@ test("newer version on a local install runs npm install in the project root", ()
   assert.deepEqual(installCalls(calls), [
     {
       command: "npm",
-      args: ["install", "create-yss-harness@latest"],
+      args: ["install", "create-yss-harness-dev@latest"],
       cwd: "/tmp/app",
     },
   ]);
@@ -184,7 +184,7 @@ test("dry-run previews the install command without installing", () => {
   const stdout = createStdout();
   const result = runUpdate(["--dry-run"], {
     spawn,
-    packageRoot: "/tmp/npm-prefix/lib/node_modules/create-yss-harness",
+    packageRoot: "/tmp/npm-prefix/lib/node_modules/create-yss-harness-dev",
     currentVersion: "2.2.3",
     stdout: stdout.stream,
   });
@@ -192,7 +192,7 @@ test("dry-run previews the install command without installing", () => {
   assert.equal(result.status, "dry-run");
   assert.equal(installCalls(calls).length, 0);
   assert.match(stdout.output(), /dry-run 预览/);
-  assert.match(stdout.output(), /npm install -g create-yss-harness@latest/);
+  assert.match(stdout.output(), /npm install -g create-yss-harness-dev@latest/);
 });
 
 test("force reinstalls when the version is already latest", () => {
@@ -200,7 +200,7 @@ test("force reinstalls when the version is already latest", () => {
   const stdout = createStdout();
   const result = runUpdate(["--force"], {
     spawn,
-    packageRoot: "/tmp/npm-prefix/lib/node_modules/create-yss-harness",
+    packageRoot: "/tmp/npm-prefix/lib/node_modules/create-yss-harness-dev",
     currentVersion: "2.2.3",
     stdout: stdout.stream,
   });
@@ -214,7 +214,7 @@ test("does not downgrade when current version is newer than latest", () => {
   const stdout = createStdout();
   const result = runUpdate(["--force"], {
     spawn,
-    packageRoot: "/tmp/npm-prefix/lib/node_modules/create-yss-harness",
+    packageRoot: "/tmp/npm-prefix/lib/node_modules/create-yss-harness-dev",
     currentVersion: "2.3.0",
     stdout: stdout.stream,
   });
@@ -227,7 +227,7 @@ test("does not downgrade when current version is newer than latest", () => {
 test("source checkout and npx report advice without installing", () => {
   for (const packageRoot of [
     repoRoot,
-    "/home/me/.npm/_npx/abc123/node_modules/create-yss-harness",
+    "/home/me/.npm/_npx/abc123/node_modules/create-yss-harness-dev",
   ]) {
     const { spawn, calls } = createSpawn({ latest: "9.9.9" });
     const stdout = createStdout();
@@ -241,7 +241,7 @@ test("source checkout and npx report advice without installing", () => {
     assert.equal(result.status, "advice");
     assert.equal(installCalls(calls).length, 0);
     assert.match(stdout.output(), /当前安装方式不会自动覆盖本地文件/);
-    assert.match(stdout.output(), /npm install -g create-yss-harness@latest/);
+    assert.match(stdout.output(), /npm install -g create-yss-harness-dev@latest/);
   }
 });
 
@@ -256,7 +256,7 @@ test("npm view failure is fail closed and does not install", () => {
     () =>
       runUpdate([], {
         spawn,
-        packageRoot: "/tmp/npm-prefix/lib/node_modules/create-yss-harness",
+        packageRoot: "/tmp/npm-prefix/lib/node_modules/create-yss-harness-dev",
         currentVersion: "2.2.3",
         stdout: stdout.stream,
       }),
@@ -277,7 +277,7 @@ test("npm install failure is fail closed", () => {
     () =>
       runUpdate([], {
         spawn,
-        packageRoot: "/tmp/npm-prefix/lib/node_modules/create-yss-harness",
+        packageRoot: "/tmp/npm-prefix/lib/node_modules/create-yss-harness-dev",
         currentVersion: "2.2.3",
         stdout: stdout.stream,
       }),
@@ -291,7 +291,7 @@ function writeFakeNpm(binDir, latest = "9.9.9") {
     npmPath,
     `#!/usr/bin/env node
 const args = process.argv.slice(2);
-if (args[0] === "view" && args[1] === "create-yss-harness" && args[2] === "version") {
+if (args[0] === "view" && args[1] === "create-yss-harness-dev" && args[2] === "version") {
   process.stdout.write(${JSON.stringify(`${latest}\n`)});
   process.exit(0);
 }
@@ -316,7 +316,7 @@ function runCli(args, env = process.env) {
 }
 
 test("update and upgrade aliases check npm and do not overwrite the source tree", () => {
-  const binDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-npm-"));
+  const binDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-dev-npm-"));
   writeFakeNpm(binDir, "9.9.9");
   const env = {
     ...process.env,

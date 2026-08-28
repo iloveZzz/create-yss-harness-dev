@@ -167,7 +167,7 @@ function createCliRunner() {
     "package.json",
     "src/cli.js",
     "src/self-update.js",
-    "bin/create-yss-harness.js",
+    "bin/create-yss-harness-dev.js",
   ]) {
     fs.mkdirSync(path.dirname(path.join(runnerRoot, relativePath)), {
       recursive: true,
@@ -265,7 +265,7 @@ test("sync snapshot remains valid when packaging and running use different local
   const cliResult = spawnSync(
     process.execPath,
     [
-      path.join(runnerRoot, "bin/create-yss-harness.js"),
+      path.join(runnerRoot, "bin/create-yss-harness-dev.js"),
       "--project-name",
       "Locale Test",
       "--business-domain",

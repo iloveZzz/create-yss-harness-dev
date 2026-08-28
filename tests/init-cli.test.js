@@ -7,11 +7,11 @@ const crypto = require("node:crypto");
 const { spawnSync } = require("node:child_process");
 
 const repoRoot = path.resolve(__dirname, "..");
-const cliBin = path.join(repoRoot, "bin/create-yss-harness.js");
+const cliBin = path.join(repoRoot, "bin/create-yss-harness-dev.js");
 const packageVersion = JSON.parse(
   fs.readFileSync(path.join(repoRoot, "package.json"), "utf8"),
 ).version;
-const metadataFileName = ".yss-harness.json";
+const metadataFileName = ".yss-harness-dev.json";
 
 function sha256(content) {
   return crypto.createHash("sha256").update(content).digest("hex");
@@ -55,7 +55,7 @@ function snapshotTreeHash(rootPath) {
 }
 
 test("interactive init generates a template instance in an empty directory", () => {
-  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-"));
+  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-dev-"));
   const targetDir = path.join(sandboxDir, "demo-project");
   const input = ["Demo Project", "Data Platform", "12", targetDir].join("\n") + "\n";
 
@@ -235,7 +235,7 @@ test("interactive init generates a template instance in an empty directory", () 
       .sort(),
     ["repository_mode", "schema_version"],
   );
-  assert.equal(metadata.templateName, "create-yss-harness");
+  assert.equal(metadata.templateName, "create-yss-harness-dev");
   assert.equal(metadata.profileId, "harness.dev-agent-slice");
   assert.equal(metadata.metadataSchemaVersion, 1);
   assert.equal(metadata.templateVersion, packageVersion);
@@ -245,7 +245,7 @@ test("interactive init generates a template instance in an empty directory", () 
 });
 
 test("sync preserves the init distribution boundary", () => {
-  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-"));
+  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-dev-"));
   const targetDir = path.join(sandboxDir, "sync-boundary-project");
   const initResult = spawnSync(
     process.execPath,
@@ -288,7 +288,7 @@ test("sync preserves the init distribution boundary", () => {
 });
 
 test("attach verifies the generated template under an ASCII locale", () => {
-  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-"));
+  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-dev-"));
   const targetDir = path.join(sandboxDir, "ascii-locale-project");
   fs.mkdirSync(targetDir);
 
@@ -339,7 +339,7 @@ test("init fails closed for unsupported template identity", () => {
 
   try {
     for (const [index, invalidIdentity] of invalidIdentities.entries()) {
-      const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-"));
+      const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-dev-"));
       const targetDir = path.join(sandboxDir, `invalid-identity-${index}`);
       fs.writeFileSync(identityPath, invalidIdentity.content, "utf8");
       const snapshot = JSON.parse(originalSnapshot);
@@ -373,7 +373,7 @@ test("init fails closed for unsupported template identity", () => {
 });
 
 test("dry-run previews the plan without writing or deleting files", () => {
-  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-"));
+  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-dev-"));
   const targetDir = path.join(sandboxDir, "preview-project");
 
   const result = spawnSync(
@@ -428,7 +428,7 @@ test("dry-run previews the plan without writing or deleting files", () => {
 });
 
 test("non-empty target requires --force, and --git-init initializes a repository", () => {
-  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-"));
+  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-dev-"));
   const targetDir = path.join(sandboxDir, "existing-project");
 
   fs.mkdirSync(targetDir, { recursive: true });
@@ -479,7 +479,7 @@ test("non-empty target requires --force, and --git-init initializes a repository
 });
 
 test("manifest-driven optional flags affect rendered output and example docs", () => {
-  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-"));
+  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-dev-"));
   const targetDir = path.join(sandboxDir, "customized-project");
 
   const result = spawnSync(
@@ -515,9 +515,9 @@ test("manifest-driven optional flags affect rendered output and example docs", (
 });
 
 test("bundled template snapshot excludes untracked source files", () => {
-  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-"));
+  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-dev-"));
   const targetDir = path.join(sandboxDir, "tracked-only-project");
-  const sentinelName = ".tmp-create-yss-harness-untracked.txt";
+  const sentinelName = ".tmp-create-yss-harness-dev-untracked.txt";
   const sentinelPath = path.join(repoRoot, sentinelName);
 
   fs.writeFileSync(sentinelPath, "untracked", "utf8");
@@ -548,7 +548,7 @@ test("bundled template snapshot excludes untracked source files", () => {
 });
 
 test("sync rejects projects without template metadata", () => {
-  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-"));
+  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-dev-"));
 
   const result = spawnSync(process.execPath, [cliBin, "sync"], {
     cwd: sandboxDir,
@@ -560,7 +560,7 @@ test("sync rejects projects without template metadata", () => {
 });
 
 test("sync updates unchanged managed files and restores missing managed files", () => {
-  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-"));
+  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-dev-"));
   const targetDir = path.join(sandboxDir, "sync-project");
 
   const initResult = spawnSync(
@@ -623,7 +623,7 @@ test("sync updates unchanged managed files and restores missing managed files", 
 });
 
 test("sync dry-run previews changes without mutating files or metadata", () => {
-  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-"));
+  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-dev-"));
   const targetDir = path.join(sandboxDir, "sync-preview-project");
 
   const initResult = spawnSync(
@@ -678,7 +678,7 @@ test("sync dry-run previews changes without mutating files or metadata", () => {
 });
 
 test("legacy attach dry-run excludes sync rollout docs from template additions", () => {
-  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-"));
+  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-dev-"));
   const targetDir = path.join(sandboxDir, "legacy-sync-preview-project");
   const metadataPath = path.join(targetDir, metadataFileName);
 
@@ -687,7 +687,7 @@ test("legacy attach dry-run excludes sync rollout docs from template additions",
     metadataPath,
     `${JSON.stringify(
       {
-        templateName: "create-yss-harness",
+        templateName: "create-yss-harness-dev",
         templateVersion: "legacy-untracked",
         templateSource: "legacy-attach",
         initializedAt: "2026-07-05T13:30:52Z",
@@ -742,7 +742,7 @@ test("legacy attach dry-run excludes sync rollout docs from template additions",
 });
 
 test("sync skips locally modified managed files and reports removed managed files", () => {
-  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-"));
+  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-dev-"));
   const targetDir = path.join(sandboxDir, "sync-protected-project");
 
   const initResult = spawnSync(
@@ -835,7 +835,7 @@ test("sync skips locally modified managed files and reports removed managed file
 });
 
 test("attach dry-run previews an arbitrary existing project without writing or deleting .git", () => {
-  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-"));
+  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-dev-"));
   const targetDir = path.join(sandboxDir, "existing-application");
   const runtimeFile = path.join(targetDir, "src/app.js");
 
@@ -869,7 +869,7 @@ test("attach dry-run previews an arbitrary existing project without writing or d
 });
 
 test("attach applies management assets while preserving runtime files and .git", () => {
-  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-"));
+  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-dev-"));
   const targetDir = path.join(sandboxDir, "attached-application");
   const runtimeFile = path.join(targetDir, "packages/api/index.js");
 
@@ -932,7 +932,7 @@ test("attach applies management assets while preserving runtime files and .git",
 });
 
 test("attach requires --force for root conflicts and keeps an external backup", () => {
-  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-"));
+  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-dev-"));
   const targetDir = path.join(sandboxDir, "conflicting-application");
   const readmePath = path.join(targetDir, "README.md");
 
@@ -987,7 +987,7 @@ test("attach requires --force for root conflicts and keeps an external backup", 
 });
 
 test("attach rejects an existing metadata file and directs the user to sync", () => {
-  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-"));
+  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-dev-"));
   const targetDir = path.join(sandboxDir, "already-managed-project");
   const metadataPath = path.join(targetDir, metadataFileName);
 
@@ -1016,7 +1016,7 @@ test("attach rejects an existing metadata file and directs the user to sync", ()
 });
 
 test("attach blocks flat legacy tickets as unsafe even with force", () => {
-  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-"));
+  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-dev-"));
   const targetDir = path.join(sandboxDir, "unsafe-legacy-project");
   const legacyTicket = path.join(targetDir, "docs/requirements/tickets/legacy.md");
 
@@ -1047,7 +1047,7 @@ test("attach blocks flat legacy tickets as unsafe even with force", () => {
 });
 
 test("attach migrates a known legacy template path before writing metadata", () => {
-  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-"));
+  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-dev-"));
   const targetDir = path.join(sandboxDir, "legacy-template-project");
   const oldTemplate = path.join(targetDir, "docs/templates/prd-template.md");
 
@@ -1077,7 +1077,7 @@ test("attach migrates a known legacy template path before writing metadata", () 
 });
 
 test("attach migrates the legacy issues directory into tickets", () => {
-  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-"));
+  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-dev-"));
   const targetDir = path.join(sandboxDir, "legacy-issues-project");
   const oldTicket = path.join(targetDir, "docs/requirements/issues/legacy.md");
   const newTicket = path.join(targetDir, "docs/requirements/tickets/legacy.md");
@@ -1109,7 +1109,7 @@ test("attach migrates the legacy issues directory into tickets", () => {
 });
 
 test("attach blocks a conflicting legacy issues migration before writing", () => {
-  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-"));
+  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-dev-"));
   const targetDir = path.join(sandboxDir, "conflicting-legacy-issues-project");
   const oldTicket = path.join(targetDir, "docs/requirements/issues/legacy.md");
   const newTicket = path.join(targetDir, "docs/requirements/tickets/legacy.md");
@@ -1144,7 +1144,7 @@ test("attach blocks a conflicting legacy issues migration before writing", () =>
 });
 
 test("sync force overwrites a managed conflict and retains an external backup", () => {
-  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-"));
+  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-dev-"));
   const targetDir = path.join(sandboxDir, "force-sync-project");
   const initResult = spawnSync(
     process.execPath,
@@ -1179,7 +1179,7 @@ test("sync force overwrites a managed conflict and retains an external backup", 
 });
 
 test("sync force does not overwrite a file outside the managed baseline", () => {
-  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-"));
+  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-dev-"));
   const targetDir = path.join(sandboxDir, "unmanaged-sync-project");
   const initResult = spawnSync(
     process.execPath,
@@ -1218,7 +1218,7 @@ test("sync force does not overwrite a file outside the managed baseline", () => 
 });
 
 test("sync converts a valid template-source identity to project-instance", () => {
-  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-"));
+  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-dev-"));
   const targetDir = path.join(sandboxDir, "template-source-project");
   const initResult = spawnSync(
     process.execPath,
@@ -1262,7 +1262,7 @@ test("sync converts a valid template-source identity to project-instance", () =>
 });
 
 test("attach blocks intermediate symlinks before writing outside the project", () => {
-  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-"));
+  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-dev-"));
   const targetDir = path.join(sandboxDir, "symlinked-project");
   const externalDir = path.join(sandboxDir, "external-management");
   fs.mkdirSync(targetDir, { recursive: true });
@@ -1305,7 +1305,7 @@ function runGit(cwd, args, extraEnv = {}) {
 }
 
 function createGitlinkFixture() {
-  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-gitlink-"));
+  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-dev-gitlink-"));
   const superRoot = path.join(sandboxDir, "harness");
   const subRoot = path.join(sandboxDir, "backend");
   const mountRelative = "apps/backend/demo";
@@ -1488,7 +1488,7 @@ function runCli(args) {
 
 function assertHelpOutput(result) {
   assert.equal(result.status, 0, result.stderr);
-  assert.match(result.stdout, new RegExp(`create-yss-harness ${packageVersion}`));
+  assert.match(result.stdout, new RegExp(`create-yss-harness-dev ${packageVersion}`));
   assert.match(result.stdout, /^USAGE$/m);
   assert.match(result.stdout, /^COMMANDS$/m);
   assert.match(result.stdout, /^OPTIONS$/m);
@@ -1503,7 +1503,7 @@ function assertHelpOutput(result) {
   assert.match(result.stdout, /sync/);
   assert.match(result.stdout, /^ {2}update /m);
   assert.match(result.stdout, /^ {2}upgrade /m);
-  assert.match(result.stdout, /https:\/\/github\.com\/iloveZzz\/create-yss-harness/);
+  assert.match(result.stdout, /https:\/\/github\.com\/iloveZzz\/create-yss-harness-dev/);
 }
 
 test("help flags print usage, commands, options, examples, and learn more", () => {
@@ -1523,14 +1523,14 @@ test("version flags print the package version and exit", () => {
   for (const flag of ["--version", "-v", "-version"]) {
     const result = runCli([flag]);
     assert.equal(result.status, 0, result.stderr);
-    assert.equal(result.stdout.trim(), `create-yss-harness ${packageVersion}`);
+    assert.equal(result.stdout.trim(), `create-yss-harness-dev ${packageVersion}`);
   }
 });
 
 test("subcommand version flags print the package version without requiring a target", () => {
   const result = runCli(["attach", "--version"]);
   assert.equal(result.status, 0, result.stderr);
-  assert.equal(result.stdout.trim(), `create-yss-harness ${packageVersion}`);
+  assert.equal(result.stdout.trim(), `create-yss-harness-dev ${packageVersion}`);
 });
 
 test("unknown arguments still fail closed", () => {
@@ -1540,7 +1540,7 @@ test("unknown arguments still fail closed", () => {
 });
 
 test("attach and init reject create-yss-spec family metadata", () => {
-  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-foreign-"));
+  const sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), "create-yss-harness-dev-foreign-"));
   const targetDir = path.join(sandboxDir, "foreign-project");
   fs.mkdirSync(targetDir, { recursive: true });
   fs.writeFileSync(
@@ -1584,5 +1584,5 @@ test("attach and init reject create-yss-spec family metadata", () => {
   );
   assert.notEqual(attachResult.status, 0);
   assert.match(attachResult.stderr, /create-yss-spec/);
-  assert.equal(fs.existsSync(path.join(targetDir, ".yss-harness.json")), false);
+  assert.equal(fs.existsSync(path.join(targetDir, ".yss-harness-dev.json")), false);
 });
