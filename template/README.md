@@ -52,14 +52,14 @@ YSS skills 的公开发布投影维护在 [iloveZzz/yss-spec-dev-skills](https:/
 
 ## 模板初始化 CLI
 
-开发落地 Harness 的实例化入口是独立 GitHub 仓库 [iloveZzz/create-yss-harness](https://github.com/iloveZzz/create-yss-harness)。本仓库不包含 CLI 源码、测试或发布配置，只保留分发契约和面向实例使用者的实践指南：
+开发落地 Harness 的实例化入口是独立 GitHub 仓库 [iloveZzz/create-yss-harness-dev](https://github.com/iloveZzz/create-yss-harness-dev)。本仓库不包含 CLI 源码、测试或发布配置，只保留分发契约和面向实例使用者的实践指南：
 
-- [create-yss-harness 外部 CLI 实践指南](./docs/user-guide/外部命令行工具实践指南.md)
+- [create-yss-harness-dev 外部 CLI 实践指南](./docs/user-guide/外部命令行工具实践指南.md)
 
 推荐入口：
 
 ```bash
-npm create yss-harness@latest
+npm create yss-harness-dev@latest
 ```
 
 `create-yss-spec` 属于全产品生命周期模板，不能用来初始化或同步本仓。首次使用前请确认独立仓库和 npm 包已完成与本仓固定 commit 的跨仓库验证。

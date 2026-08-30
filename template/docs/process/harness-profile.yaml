@@ -49,9 +49,9 @@ upstream:
     - to-tickets
 
 instantiation:
-  cli_package: create-yss-harness
-  npm_create: yss-harness
-  metadata_file: .yss-harness.json
+  cli_package: create-yss-harness-dev
+  npm_create: yss-harness-dev
+  metadata_file: .yss-harness-dev.json
   foreign_metadata_files:
     - .yss-template.json
   template_source: github:iloveZzz/yss-harness-dev-agent

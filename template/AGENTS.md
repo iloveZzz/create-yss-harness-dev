@@ -42,7 +42,7 @@ README、用户指南、根目录 `CLAUDE.md` 和其他说明文档只引用或�
 
 - 创建、修改或退役 skill 时使用 `maintaining-skills`，并先按 `docs/process/harness-process-tailoring.md` 判定 L1 / L2 / L3；只有 L3 必须保留完整基线失败、压力场景、修订后验证和正式独立审查证据。
 - `.agents/skills` 是跨 Agent 共享技能的权威内容；`.claude/skills`、`.codex/skills`、`.cursor/skills`、`.hermes/skills`、`.pi/skills`、`.qoder/skills`、`.trae/skills` 中的共享技能是生成投影，禁止分别手工修改。Cursor 的契约运行时入口是 `.cursor/skills`；不得把 canonical `.agents/skills` 与某个平台投影当作同权双入口。
-- `scripts/verify-template` 是模板发布阻断门禁。模板与外部 `create-yss-harness` 的跨仓库契约未完成集成验证时，不得声称可发布。
+- `scripts/verify-template` 是模板发布阻断门禁。模板与外部 `create-yss-harness-dev` 的跨仓库契约未完成集成验证时，不得声称可发布。
 
 ## 5. `project-instance` 产品研发路由
 

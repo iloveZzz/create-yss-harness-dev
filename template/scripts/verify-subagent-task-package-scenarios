@@ -58,8 +58,7 @@ const maintenance = {
     { kind: "green", command: "scenario", result: "pass" },
     { kind: "refactor", command: "scenario", result: "pass" },
     { kind: "pressure-scenario", command: "scenario", result: "pass" },
-    { kind: "fresh-verification", command: "scenario", result: "pass" },
-    { kind: "formal-independent-review", command: "scenario", result: "pass" }
+    { kind: "fresh-verification", command: "scenario", result: "pass" }
   ],
   review_mode: "formal-independent",
   escalation: "none"
@@ -106,7 +105,7 @@ function lifecyclePackage() {
 }
 
 function templatePackage() {
-  return packageBase("role.harness-orchestrator", "task-maintenance", "work-unit.intensity-aware-verification", "template-maintenance", {
+  return packageBase("role.test-agent", "task-maintenance", "work-unit.intensity-aware-verification", "template-maintenance", {
     maintenance_ref: maintenanceRef,
     contract_id: "template-maintenance"
   });
@@ -165,6 +164,8 @@ function mustFail(mutator, pattern, label, factory = () => lifecyclePackage()) {
 try {
   const tactical = lifecyclePackage();
   const maintenance = templatePackage();
+  maintenance.execution_state = "Reviewer";
+  maintenance.review_context = { implementation_actor_id: "role.harness-orchestrator.instance-1" };
   const frontend = slicePackage("role.frontend-agent", "task-frontend", "work-unit.slice-frontend", "apps/frontend/todo/");
   const backend = slicePackage("role.backend-agent", "task-backend", "work-unit.slice-backend", "apps/backend/todo/");
   const testing = slicePackage("role.test-agent", "task-test", "work-unit.slice-test", "tests/todo/");

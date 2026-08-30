@@ -29,9 +29,9 @@ export const FORBIDDEN_WORK_UNITS = [
   "work-unit.release-and-rollback",
 ];
 export const INSTANTIATION = Object.freeze({
-  cli_package: "create-yss-harness",
-  npm_create: "yss-harness",
-  metadata_file: ".yss-harness.json",
+  cli_package: "create-yss-harness-dev",
+  npm_create: "yss-harness-dev",
+  metadata_file: ".yss-harness-dev.json",
   foreign_metadata_files: [".yss-template.json"],
   template_source: "github:iloveZzz/yss-harness-dev-agent",
   distribution_manifest: ".template-source/distribution/template.manifest.json",

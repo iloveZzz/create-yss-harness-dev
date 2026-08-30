@@ -21,7 +21,7 @@
 
 ## `project-instance` 绑定清单
 
-模板仓只 `publish-singleton-profiles`。实例仓按本表 duplicate，禁止按功能再拆实例。外部 `create-yss-harness` 第一版只做实例化，不 duplicate Grok Bot 或 runtime profile。
+模板仓只 `publish-singleton-profiles`。实例仓按本表 duplicate，禁止按功能再拆实例。外部 `create-yss-harness-dev` 第一版只做实例化，不 duplicate Grok Bot 或 runtime profile。
 
 - [ ] 从 YAML 复制 `title`、`description`、`core_skills`、`forbidden_skills`，不手写第二套职责
 - [ ] 选择一个 `runtime_id`（`runtime.generic` / `runtime.skill-projection` / `runtime.grok`）

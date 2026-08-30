@@ -4,11 +4,12 @@ import {
   loadDistributionManifest,
   validateDistributionManifest,
   validateInstanceDistribution,
+  validateInstantiationPointers,
 } from "./lib/instance-distribution.mjs";
 
 const live = validateInstanceDistribution();
-assert.equal(live.cli_package, "create-yss-harness");
-assert.equal(live.metadata_file, ".yss-harness.json");
+assert.equal(live.cli_package, "create-yss-harness-dev");
+assert.equal(live.metadata_file, ".yss-harness-dev.json");
 assert.ok(live.manifest.excludeRootEntries.includes(".template-source"));
 
 const source = loadDistributionManifest();
@@ -27,4 +28,9 @@ for (const [name, mutate, pattern] of mutations) {
   mutate(candidate);
   assert.throws(() => validateDistributionManifest(candidate), pattern, name);
 }
+assert.throws(
+  () => validateInstantiationPointers({ guide: "# `create-yss-harness-dev`\n\n```bash\nnpx create-yss-spec@latest init\n```" }),
+  /不得把 create-yss-spec 作为本 Harness 的可执行入口/,
+  "legacy create-yss-spec executable command"
+);
 process.stdout.write("实例分发面压力场景验证通过\n");

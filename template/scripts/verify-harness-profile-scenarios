@@ -16,7 +16,7 @@ assert.deepEqual(valid.target_user_roles, [
   "role.test-agent",
 ]);
 assert.equal(valid.terminal_work_unit, "work-unit.verification");
-assert.equal(valid.cli_package, "create-yss-harness");
+assert.equal(valid.cli_package, "create-yss-harness-dev");
 
 const mutations = [
   ["wrong profile", (candidate) => { candidate.profile_id = "harness.business-ddd-strategy-handoff"; }, /harness\.dev-agent-slice/],
