@@ -4,4 +4,4 @@
 
 创建 ADR 时使用 [`docs/templates/adr-template.md`](../templates/adr-template.md)，并为每条决策补充状态、背景、取舍、后果和相关资产。
 
-模板源仓库的 ADR 保存在 `.template-source/adr/`，不会随 `create-yss-harness-dev` 进入 `project-instance`。
+该目录仅供 `project-instance` 记录产品自身的架构决策。`template-source` 不维护实时治理 ADR；模板规则直接写入对应单一事实来源，历史决策通过 Git 历史和维护 evidence 审计。
