@@ -95,7 +95,7 @@
         "source": "project",
         "sourceType": "local",
         "skillPath": ".agents/skills/backend-agent/SKILL.md",
-        "effectiveHash": "642827175f89a9758a406037b0d888bbe331010b48c8bc179c85e3d993305ee8",
+        "effectiveHash": "da5cce9ea8abe05a31070100026d9f1ac3583646669b42b0968281d32979a5f3",
         "targets": [
           ".agents/skills",
           ".claude/skills",

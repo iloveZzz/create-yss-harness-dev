@@ -1,10 +1,10 @@
 schema_version: 1
 profile_id: harness.dev-agent-slice
 status: active
-name: 四角色开发落地 Harness
+name: 四角色开发落地 Harness（含后端交付专线）
 purpose: >-
   面向架构、前端、后端和测试四类 Agent，把已批准的上游 Spec 或战略设计交接包
-  细化为 DDD 战术设计、统一 Slice Implementation Contract、垂直切片实现和独立验证。
+  细化为 DDD 战术设计、统一 Slice Implementation Contract、垂直切片实现、后端交付验证和独立验证。
 
 audience:
   target_user_roles:
@@ -19,7 +19,11 @@ audience:
     上游战略设计由独立战略 Harness 或已批准 Spec 提供，不在本仓默认重做 Discovery。
   boundary: >-
     当前 Harness 从 Harness Entry 进入战术设计与切片落地，不把 Discovery、产品原型或
-    全生命周期规格作为默认第一阶段。grill-with-docs、to-spec、to-tickets 只作为显式兼容入口。
+    全生命周期规格作为默认第一阶段。后端交付专线复用 `role.backend-agent` 与既有
+    Slice Contract；部署/发布仅产生可审查计划、验证和回滚证据，不绕过运行时副作用审批。
+    grill-with-docs、to-spec、to-tickets 只作为显式兼容入口。Docker 是默认部署平台，
+    Kubernetes 需在合同中显式选择；凭据、沙箱和回滚约束见
+    `docs/process/backend-delivery-defaults.md`。
 
 lifecycle:
   repository_modes: [project-instance]
