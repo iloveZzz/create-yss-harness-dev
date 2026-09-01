@@ -1,5 +1,7 @@
 # create-yss-harness-dev
 
+当前版本：`0.1.1`。
+
 把 [`yss-harness-dev-agent`](https://github.com/iloveZzz/yss-harness-dev-agent) 五阶段开发落地 Harness 初始化、接管并同步为 `project-instance` 的 npm CLI。
 
 不是 [`create-yss-spec`](https://github.com/iloveZzz/create-yss-spec)。那是全产品生命周期模板的 CLI；两套产品用不同 metadata，互不接管。
