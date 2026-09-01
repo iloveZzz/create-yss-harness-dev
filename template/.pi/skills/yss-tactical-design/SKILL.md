@@ -24,6 +24,8 @@ description: 在 DDD 战术设计阶段将批准的战略领域输入细化为�
 
 输出结构化 tactical-design contract、验证结果、评审引用和影响标记。状态使用 `draft`、`ready-for-human`、`approved`、`blocked`、`stale`、`drift`、`new_impacts`、`not-applicable`。
 
+当用户或当前 Tactical Design / 架构评审合同明确要求聚合关系、状态转换、调用链、数据流或 Before/After 图示时，追加使用 `archify`。图必须从当前 Spec、ADR、OpenAPI、Tactical Design Contract 和代码证据派生，保存成 `*.archify.json`、`*.html` 与 `*.receipt.json` 配对资产；它是审查证据，不是新的事实源或批准门禁。没有明确图示要求时，不把 `archify` 加入 `required_skills`。
+
 本 skill 不能自行批准资产、设置 `ready-for-agent`、创建 Ticket 或修改生命周期状态。批准由 `harness-orchestrator` 维护；独立测试评审使用 `evidence.tactical-design-review`。
 
 ## 与实现交接

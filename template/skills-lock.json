@@ -14,6 +14,9 @@
   "sources": {
     "mattpocock/skills": {
       "revision": "0ab1b63a410a03d3627979a109c8695de27af954"
+    },
+    "tt-a1i/archify": {
+      "revision": "199360cc6687a7857b54dd188d4922b09e466a4b"
     }
   },
   "skills": {
@@ -34,11 +37,30 @@
           ".trae/skills"
         ]
       },
+      "archify": {
+        "source": "tt-a1i/archify",
+        "sourceType": "github",
+        "skillPath": "archify/SKILL.md",
+        "effectiveHash": "89c2e592758ff4fa4372b2fa050e469aa7d87870015882d3f0128ec1328941ab",
+        "sourceRevision": "199360cc6687a7857b54dd188d4922b09e466a4b",
+        "upstreamHash": "202082693c0b6cfe5c9c428f46f323f4159bc96c9c98220fed57167dab4c222b",
+        "adaptationRef": "docs/agents/archify-integration.md",
+        "targets": [
+          ".agents/skills",
+          ".claude/skills",
+          ".codex/skills",
+          ".cursor/skills",
+          ".hermes/skills",
+          ".pi/skills",
+          ".qoder/skills",
+          ".trae/skills"
+        ]
+      },
       "architecture-agent": {
         "source": "project",
         "sourceType": "local",
         "skillPath": ".agents/skills/architecture-agent/SKILL.md",
-        "effectiveHash": "96fa0f276242f6c4d8775b86862a4a73ca2dbb607e45cadda3c3e6c37b00677d",
+        "effectiveHash": "620eb5eeadf5b2fa0640cff46acaa3d984c7141068928b0629786f02ebce3402",
         "targets": [
           ".agents/skills",
           ".claude/skills",
@@ -108,7 +130,7 @@
         "source": "mattpocock/skills",
         "sourceType": "github",
         "skillPath": "skills/engineering/codebase-design/SKILL.md",
-        "effectiveHash": "d2c52f5938ce4f570f16bd8b1c194b07524b57da046a86be1617b390f14f6409",
+        "effectiveHash": "dea14553fbcb4d43c65759cf4198c8cd61c017e39e53fe1d2abc9540f246c645",
         "sourceRevision": "0ab1b63a410a03d3627979a109c8695de27af954",
         "upstreamHash": "9f457cc65ef2d70eb5b8a44a4dae2b139840078b6596a67ee8c4e95f5a0e6f5c",
         "adaptationRef": "docs/process/MATT-POCOCK-ENGINEERING-SKILLS.md",
@@ -1576,7 +1598,7 @@
         "source": "project",
         "sourceType": "local",
         "skillPath": ".agents/skills/yss-tactical-design/SKILL.md",
-        "effectiveHash": "1f2632cc168d798ff0f2835048441b70c85115bfbb3d8f107075f69a08586506",
+        "effectiveHash": "62de6104af48dc40f771def23f8181ba5dac9aedd53beadeaa8e79785c18df38",
         "targets": [
           ".agents/skills",
           ".claude/skills",
