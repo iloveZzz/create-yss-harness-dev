@@ -45,6 +45,14 @@
 4. RED 用于证明行为差异。L1 不人为构造失败；L2 可使用已有失败、最小 fixture 或现有测试修改前失败；只有行为无法确定性表达时才运行聚焦压力场景。L3 使用 `maintaining-skills` 并执行本节定义的完整 RED、GREEN、REFACTOR 和压力场景要求。
 5. 模板发布候选固定按 L3 聚合验证，但不追溯补造每个既有 L1/L2 修改的独立 RED。
 
+模板维护默认停在 `implementation-ready`，不自动冻结候选或派发审查。三个核验入口由 `docs/process/template-verification-profiles.yaml` 统一定义：
+
+- `scripts/verify-template-fast`：按 Git 影响面运行快速检查；未映射路径或核心核验资产变化时 fail-safe 升级为完整门禁。
+- `scripts/verify-template-candidate`：运行命中影响面和候选完整性检查；PR 默认使用该入口。
+- `scripts/verify-template`：执行不可裁剪的完整发布门禁；首次正式冻结前和最终发布前运行，修复内循环不重复运行。
+
+检查组内部保持串行以便快速定位失败，不同检查组最多四路并发。任何 profile 都必须在执行前后比较工作树状态；验证命令产生工作树变化时直接失败。
+
 每个模板维护 checkpoint 使用以下轻量合同；L1/L2 可直接写入主 Ticket 或集中 checkpoint，不要求新增独立文档：
 
 ```yaml

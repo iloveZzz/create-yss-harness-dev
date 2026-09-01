@@ -12,7 +12,7 @@ const targetSnapshotPath = path.join(packageRoot, "template.snapshot.json");
 const templateRepo =
   process.env.YSS_HARNESS_TEMPLATE_REPO ||
   "https://github.com/iloveZzz/yss-harness-dev-agent.git";
-const DEFAULT_TEMPLATE_REF = "f381adeb0147472fd5829c097153c1a15450c30e";
+const DEFAULT_TEMPLATE_REF = "b01665d25169d1704f1ff6f701e16419df1622a3";
 const templateRef = process.env.YSS_HARNESS_TEMPLATE_REF || DEFAULT_TEMPLATE_REF;
 const NPM_IGNORED_BASENAMES = new Set([".gitignore", ".npmignore", ".npmrc"]);
 
@@ -431,7 +431,8 @@ function defaultTemplateRepo() {
 
 const resolvedTemplateRepo = defaultTemplateRepo();
 const localSource = isLocalTemplateRepo(resolvedTemplateRepo);
-const checkoutRoot = localSource
+const useLocalWorkingTree = localSource && !process.env.YSS_HARNESS_TEMPLATE_REF;
+const checkoutRoot = useLocalWorkingTree
   ? null
   : fs.mkdtempSync(path.join(os.tmpdir(), "yss-harness-template-"));
 const stagingRoot = fs.mkdtempSync(
@@ -439,10 +440,10 @@ const stagingRoot = fs.mkdtempSync(
 );
 
 try {
-  const sourceRoot = localSource
+  const sourceRoot = useLocalWorkingTree
     ? path.resolve(resolvedTemplateRepo)
     : checkoutRoot;
-  if (!localSource) {
+  if (!useLocalWorkingTree) {
     run("git", ["clone", "--no-checkout", "--depth", "1", resolvedTemplateRepo, checkoutRoot]);
     run("git", ["fetch", "--depth", "1", "origin", templateRef], checkoutRoot);
     run("git", ["checkout", "--detach", "FETCH_HEAD"], checkoutRoot);
@@ -457,7 +458,7 @@ try {
   }
   fs.copyFileSync(sourceManifestPath, targetManifestPath);
   const manifest = JSON.parse(fs.readFileSync(targetManifestPath, "utf8"));
-  const sourceFiles = localSource
+  const sourceFiles = useLocalWorkingTree
     ? listWorkingTreeFiles(sourceRoot)
     : run("git", ["ls-files", "-z"], sourceRoot).split("\0").filter(Boolean);
   copyTrackedFiles(sourceRoot, manifest, stagingRoot, sourceFiles);
@@ -472,7 +473,7 @@ try {
     profileId: "harness.dev-agent-slice",
     templateSource: "github:iloveZzz/yss-harness-dev-agent",
     templateRepository: resolvedTemplateRepo,
-    requestedRef: localSource ? "working-tree" : templateRef,
+    requestedRef: useLocalWorkingTree ? "working-tree" : templateRef,
     templateCommit,
     manifestHash: sha256(fs.readFileSync(targetManifestPath)),
     encodedPaths,
@@ -482,7 +483,7 @@ try {
   replaceTemplateRoot(stagingRoot, snapshotMetadata);
 
   console.log(
-    localSource
+    useLocalWorkingTree
       ? `已从本地工作树 ${sourceRoot} 同步模板快照（HEAD ${templateCommit}）`
       : `已从 ${resolvedTemplateRepo}#${templateRef} 同步模板快照（commit ${templateCommit}）`,
   );

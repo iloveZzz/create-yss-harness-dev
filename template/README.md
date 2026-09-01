@@ -44,7 +44,7 @@ README 只解释上述入口，不另定义阶段、门禁或技能分层。
 
 1. 先读取当前仓库根 `yss-project.yaml`，按 `repository_mode` 选择模板维护或产品研发生命周期。
 2. 必读入口为 `AGENTS.md` 与 `CONTEXT.md`；流程事实以 `docs/process/lifecycle-registry.yaml` 和 `docs/process/harness-process-tailoring.md` 为准。
-3. `template-source` 修改流程、技能或模板后，执行 `scripts/sync-skills`、`scripts/update-skill-lock` 和 `scripts/verify-template`。
+3. `template-source` 修改后默认执行 `scripts/verify-template-fast`；共享 skill 变化时再执行必要的投影与 lock 更新。PR 使用 candidate 核验，发布使用完整门禁。
 4. `project-instance` 先做影响面分诊，再走 `harness-orchestrator`：`harness-entry` → `tactical-design` → `slice-contract` → `slice-implementation` → `verification`。领域影响由 `architecture-agent` 使用 `yss-tactical-design`。`grill-with-docs`、`to-spec`、`to-tickets` 只作为用户显式兼容入口。
 5. 实现仓库接入、YSS 路由、独立审查、fresh verification 和 Git checkpoint 以 `AGENTS.md` 的硬门禁为准。
 
@@ -82,13 +82,15 @@ main@6acc160e4e0cd062dbbbd7a1b26ae92855edf07e
 
 主研发流程使用 `skills/engineering`；`skills-lock.json` 同时记录本次安装的关联 `productivity`、`in-progress`、`deprecated`、`misc` 和 `personal` skill 路径。
 
-## 轻量校验
+## 分级校验
 
 ```bash
+scripts/verify-template-fast
+scripts/verify-template-candidate
 scripts/verify-template
 ```
 
-该脚本检查：
+`fast` 按 Git 影响面选择检查组并并行执行；`candidate` 追加候选完整性检查；`verify-template` 保留不可裁剪的完整发布门禁。未映射路径和核心核验资产变化会自动升级到完整门禁。检查内容包括：
 
 - `yss-project.yaml`、权威流程资产和模板是否完整。
 - 共享技能投影及 `skills-lock.json` 的完整树哈希是否一致。
