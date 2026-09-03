@@ -113,15 +113,32 @@ dependency_closure:
   yss-domain:
     always: [alibaba-java-code-style]
     when_modeling: [domain-modeling, yss-tactical-design]
+    when_pojo: [lombok]
+  yss-application:
+    always: [alibaba-java-code-style]
+    when_conversion: [mapstruct, lombok]
   yss-repository:
-    always: [mapstruct, lombok, alibaba-java-code-style]
+    always: [yss-mybatis, mapstruct, lombok, alibaba-java-code-style]
   yss-web-controller:
-    always: [yss-dto, mapstruct, lombok, alibaba-java-code-style]
+    always: [yss-dto, yss-validation, mapstruct, lombok, alibaba-java-code-style]
+    when_error_mapping: [yss-exception]
   yss-validation:
     always: [yss-exception]
   yss-exception:
     always: [yss-dto]
 component_impact_values: [current-user-context, user-cache-lookup, audit-event, request-validation, error-mapping, encryption-or-signing]
+end_to_end_backend_required:
+  - yss-domain
+  - yss-application
+  - yss-repository
+  - yss-mybatis
+  - yss-web-controller
+  - yss-dto
+  - yss-exception
+  - yss-validation
+  - mapstruct
+  - lombok
+  - alibaba-java-code-style
 full_reroute_triggers: [api-schema-impact, database-schema-impact, state-machine-impact, aggregate-impact, invariant-impact, new-write-path, new-repository, contract-violation, test-seam-changed, verification-command-changed, architecture-drift]
 tdd_modes:
   behavior-tdd:

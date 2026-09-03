@@ -1,6 +1,6 @@
 # create-yss-harness-dev
 
-当前版本：`0.1.3`。
+当前版本：`0.2.0`，模板固定到 `8ed48fbbc5babc8979bc497befb76bc87f65748f`。该版本将 Web 生成升级为批准的 schema v2 合同，显式绑定 YSS 依赖闭包，并要求完整首切片验证通过后才能声明完成。
 
 把 [`yss-harness-dev-agent`](https://github.com/iloveZzz/yss-harness-dev-agent) 五阶段开发落地 Harness 初始化、接管并同步为 `project-instance` 的 npm CLI。
 
