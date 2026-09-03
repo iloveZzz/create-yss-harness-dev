@@ -40,7 +40,7 @@ owner: ai
 | Harness 内项目根路径符合 `apps/<backend|frontend>/<project>/` | 是 / 否 / 不适用 | `apps/backend/`、`apps/frontend/` 仅为容器 |
 | 未使用 `app/backend/`、`app/frontend/` 及其子路径 | 是 / 否 / 不适用 | 命中即阻断生成和实现 |
 | 原型确认后先完成后端脚手架，再进入业务代码路由 | 是 / 否 / 不适用 | `backend_scaffold_policy_satisfied` |
-| 后端脚手架合同字段完整且版本当前 | 是 / 否 / 不适用 | `contract_id`、`contract_version`、Router draft、生命周期批准、持久化引用、允许写路径、预期证据、验证命令 |
+| 后端脚手架合同字段完整且版本当前 | 是 / 否 / 不适用 | schema v2：`scaffold_request_id`、项目/输出目录、Router draft、生命周期批准、base package、Maven 坐标、target DDD/Profile、initialize-only、允许写路径、预期证据、验证命令 |
 | 后端构建 / 测试 / OpenAPI / CI 命令均使用项目根目录 `./mvnw ...`，或已记录受控例外 | 是 / 否 / 不适用 | 裸 `mvn ...` 默认为规范偏离 |
 | 持久化文档正文和章节标题已转换为中文，仅保留必要英文技术标识 / metadata | 是 / 否 | 英文 skill / 模板不得原样落地为交付文档 |
 | YSS skill 路由已完成 | 是 / 否 |  |
@@ -95,10 +95,33 @@ owner: ai
 | verification_commands |  |
 | human_review_points |  |
 | full_reroute_triggers | 新 API/schema、状态机、数据模型、写目录、仓库、skill、风险、seam、交付顺序或其他未冻结行为等变化 |
+| quality_baseline_ref | 工程基线的 `baseline_id` / `baseline_version`；切片不得重新定义质量标准 |
+| context_plan | 必需上下文、按需上下文、停止规则和缺失动作 |
+| doubt_driven_review | 高风险影响的主张、反证、证据、残余风险和审查引用；未命中时 `not-applicable` |
 
 | 不适用 skill | 原因 |
 |---|---|
 |  |  |
+
+### Context Plan（上下文工程）
+
+| 字段 | 内容 |
+|---|---|
+| required_context_refs | `CONTEXT.md`、已批准 Spec、当前 Slice Contract、适用 ADR / 工程基线 |
+| on_demand_context_refs | 命中影响面后再加载的专项 references、实现仓库文件和历史证据 |
+| context_stop_rule | `minimal-sufficient-evidence` |
+| missing_context_action | `blocked` / `reroute`；不得猜测补齐 |
+
+### Doubt-Driven 高风险反证
+
+| 字段 | 内容 |
+|---|---|
+| status | `not-applicable` / `required` / `completed` / `blocked` |
+| trigger_impacts | API、数据迁移、跨仓契约、发布回滚、实际安全行为、生命周期 / 生成语义 |
+| claim / counterclaim |  |  |
+| evidence_refs |  |
+| residual_risks |  |
+| reviewer_ref |  |
 
 ## 3. YSS skill 最小集合
 
@@ -222,10 +245,12 @@ owner: ai
 | 前置 | `prototype_confirmation`、工程基线、实现仓库和脚手架目标已确认；Router 脚手架合同 draft 已经生命周期批准并持久化为结构化 JSON，生成器通过 `--contract-file` 消费 |
 | 生成器 | `yss-ddd-scaffold-generator` |
 | 模式 | `controlled-generation` |
+| Java / Maven 身份 | `base_package` 与 Maven `group_id` 分开登记；项目版本、父 POM GAV、`yss-components.version` 进入批准合同并原样传给 CLI |
 | 允许生成 | Domain / Application / Infrastructure / Adapter / Bootstrap 目录骨架、POM、配置、Wrapper 和非业务机械模板 |
 | 禁止生成 | 业务规则、状态机、权限、事务、复杂查询、错误映射、业务字段和用户可见行为 |
-| 生成选项 | 关闭 `--with-example`；非空目录 `--force` 默认阻断，覆盖范围、备份、回滚点和批准引用齐全后才能单独审查 |
-| 验证 | 受控验证器实际执行项目根目录 `./mvnw validate`、`./mvnw test`、`./mvnw package`，逐条记录 `exit_code`、`duration_ms`、stdout/stderr 引用和执行时间；打印命令不算证据 |
+| 生成选项 | 关闭 `--with-example`；生成器严格 initialize-only，非空目录、`--force`、旧项目迁移和当前模板升级均为 `unsupported` |
+| Profile | `target-domain-model` / `mybatis-plus` / `mysql` / `spring-boot-2.7-jdk8` / `javax` / `web` / `yss-internal`；其他组合须先通过独立 fixture |
+| 验证 | 使用一键生成验证入口，实际执行项目根目录 `./mvnw validate`、`./mvnw test`、`./mvnw package`；通过后仅为 `empty-scaffold-verified`，golden first slice 通过后才是 `first-slice-verified` |
 | 后置 | `yss-backend-scaffold-parent`、`yss-router` 业务合同重编译、YSS Skill Execution Result |
 
 所有后续生成代码必须绑定当前批准且版本一致的 Slice Implementation Contract、主 YSS skill、依赖闭包、允许写路径、预期证据和 Execution Result。业务行为必须使用 `behavior-tdd`；缺任一条件即阻断，不得以脚手架成功或时间压力豁免。
@@ -277,7 +302,7 @@ owner: ai
 
 | task_id | 数字人角色 | runtime_id | core_skills（从角色表复制） | subagent 角色 | 责任范围 | 允许修改文件 / 模块 | 禁止事项 | 输出回填位置 |
 |---|---|---|---|---|---|---|---|---|
-|  | `role.frontend-agent` / `role.backend-agent` / `role.test-agent` | runtime.skill-projection | 从 YAML `core_skills` 复制 | Explorer / Drafter / Worker / Reviewer / Verifier | frontend / backend / test / review / docs |  | 不得 Freeze / 不得覆盖他人改动 / 不得会签自己的草稿 |  |
+|  | role.frontend-engineer | runtime.skill-projection | 从 YAML `core_skills` 复制 | Explorer / Drafter / Worker / Reviewer / Verifier | frontend / backend / test / review / docs |  | 不得 Freeze / 不得覆盖他人改动 / 不得会签自己的草稿 |  |
 
 | 并行风险 | 缓解措施 | 合并负责人 | 状态 |
 |---|---|---|---|
