@@ -1,6 +1,6 @@
 # create-yss-harness-dev
 
-当前版本：`0.1.2`。
+当前版本：`0.1.3`。
 
 把 [`yss-harness-dev-agent`](https://github.com/iloveZzz/yss-harness-dev-agent) 五阶段开发落地 Harness 初始化、接管并同步为 `project-instance` 的 npm CLI。
 
