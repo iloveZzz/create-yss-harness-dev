@@ -55,13 +55,13 @@ const profiles = {
   },
   prototype: {
     message: "DDD 战术设计到实现路由场景验证通过",
-    files: [".agents/skills/yss-ddd-scaffold-generator/scripts/generate_scaffold.mjs", ".agents/skills/yss-router/references/router-contract.yaml"],
-    markers: [[".agents/skills/yss-router/references/router-contract.yaml", "slice_contract_required"], [".agents/skills/yss-router/references/router-contract.yaml", "architecture"]]
+    files: [".agents/skills/yss-ddd-scaffold-generator/scripts/generate_scaffold.mjs", ".agents/skills/yss-implementation-contract-compiler/references/compiler-contract.yaml"],
+    markers: [[".agents/skills/yss-implementation-contract-compiler/references/compiler-contract.yaml", "slice_contract_required"], [".agents/skills/yss-implementation-contract-compiler/references/compiler-contract.yaml", "architecture"]]
   },
-  router: {
-    message: "YSS Router harness-agent 场景验证通过",
-    files: [".agents/skills/yss-router/references/router-contract.yaml", ".agents/skills/yss-router/SKILL.md"],
-    markers: [[".agents/skills/yss-router/references/router-contract.yaml", "readiness_formula"], [".agents/skills/yss-router/SKILL.md", "harness-orchestrator"]]
+  implementationContractCompiler: {
+    message: "YSS implementation contract compiler harness-agent 场景验证通过",
+    files: [".agents/skills/yss-implementation-contract-compiler/references/compiler-contract.yaml", ".agents/skills/yss-implementation-contract-compiler/SKILL.md"],
+    markers: [[".agents/skills/yss-implementation-contract-compiler/references/compiler-contract.yaml", "impact_to_capabilities"], [".agents/skills/yss-implementation-contract-compiler/SKILL.md", "required_capabilities"]]
   },
   openapiYaml: {
     message: "OpenAPI YAML-first 场景验证通过",
@@ -102,8 +102,8 @@ export function runScenario(name) {
     ensure(validateSliceContractReadiness(blocked).result === "blocked", "合同版本不一致未阻断");
   }
   if (name === "matt") verifyReplacementBoundary();
-  if (name === "router") verifyHarnessContract();
-  if (name === "prototype") ensure(read(".agents/skills/yss-router/references/router-contract.yaml").includes("behavior-tdd"), "行为切片未使用 behavior-tdd");
+  if (name === "implementationContractCompiler") verifyHarnessContract();
+  if (name === "prototype") ensure(read(".agents/skills/yss-implementation-contract-compiler/references/compiler-contract.yaml").includes("behavior-tdd"), "行为切片未使用 behavior-tdd");
   if (name === "yssDtoWire") {
     const result = spawnSync("scripts/verify-yss-dto-openapi-profile", [], { cwd: root, encoding: "utf8" });
     ensure(result.status === 0, result.stderr || result.stdout);

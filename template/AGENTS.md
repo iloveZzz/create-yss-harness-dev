@@ -23,7 +23,7 @@
 | 影响面触发与 `not-applicable` | `docs/process/harness-process-tailoring.md` |
 | 模板维护强度触发与最低等级 | `docs/process/maintenance-intensity.yaml` |
 | 技能清单、来源、版本、哈希和投影目标      | `skills-lock.json`                          |
-| 技能分层、别名、默认可发现性和运行时入口 | `docs/agents/yss-skill-registry.yaml`（当前 `status: active`；Router / 生命周期必须消费） |
+| 技能分层、别名、默认可发现性和运行时入口 | `docs/agents/yss-skill-registry.yaml`（当前 `status: active`；实现合同编译器 / 生命周期必须消费） |
 | 四角色 Agent、阶段协作组、运行时绑定与生命周期会签 | `docs/agents/digital-human-roles.yaml`；`docs/agents/digital-human-roles.md` 为操作说明 |
 
 README、用户指南、根目录 `CLAUDE.md` 和其他说明文档只引用或解释上述事实，不重复定义同一规则。`CLAUDE.md` 是 Claude Code 入口指针，不是第二套 Agent 规则。
@@ -65,11 +65,11 @@ README、用户指南、根目录 `CLAUDE.md` 和其他说明文档只引用或�
 
 ## 7. 实现与 YSS 路由硬门禁
 
-进入实现时先读 `docs/process/implementation-repo-integration.md`，登记实现仓库、项目根、分支、CI、验证命令和回滚点；再使用 `yss-router` 编译最小 skill 集合与当前实现合同。
+进入实现时先读 `docs/process/implementation-repo-integration.md`，登记实现仓库、项目根、分支、CI、验证命令和回滚点；再使用 `yss-implementation-contract-compiler` 编译最小 skill 集合与当前实现合同。
 
 - 无可复用工程时，先确认外部目标仓库或输出目录，再使用 `yss-ddd-scaffold-generator` / `yss-frontend-scaffold-generator`；当前仓库缺少 frontend / backend 目录不改变此路由。
-- 脚手架只在 `scaffold_status=required` 且受控生成合同已持久化、获得生命周期批准后运行；它只产生机械骨架，业务行为回到 Router 并使用 `behavior-tdd`。
-- 正式垂直切片必须消费已批准、已持久化且版本当前的 Slice Implementation Contract。Router 只生成草案，不批准合同、不设置 `ready-for-agent`、不宣布完成。合同 schema、Backend 子合同和证据字段以 `yss-router` references 为准。
+- 脚手架只在 `scaffold_status=required` 且受控生成合同已持久化、获得生命周期批准后运行；它只产生机械骨架，业务行为回到 实现合同编译器 并使用 `behavior-tdd`。
+- 正式垂直切片必须消费已批准、已持久化且版本当前的 Slice Implementation Contract。实现合同编译器 只生成草案，不批准合同、不设置 `ready-for-agent`、不宣布完成。合同 schema、Backend 子合同和证据字段以 `yss-implementation-contract-compiler` references 为准。
 - 前端测试、type-check 与构建优先使用 `pnpm`；后端校验、测试与编译优先使用项目根 `./mvnw`。不要默认 `npm` / `yarn` 或裸 `mvn`。既有仓库确实没有 pnpm 或 Maven Wrapper 时，必须记录受控例外和实际命令。登记字段见 `docs/process/implementation-repo-integration.md`。
 - 路径越界、证据缺失、未执行验证、`drift`、`violation` 或 `new_impacts` 时停止实现并重新路由。
 

@@ -103,7 +103,7 @@ roles:
     stages: [stage.slice-contract, stage.slice-implementation, stage.verification]
     draft_artifact_ids: [artifact.openapi-draft, artifact.data-architecture]
     owned_evidence_ids: [evidence.backend-verification]
-    core_skills: [backend-agent, yss-domain, yss-application, yss-repository, yss-mybatis, yss-web-controller, yss-dto, yss-exception, yss-validation, yss-router, tdd]
+    core_skills: [backend-agent, yss-domain, yss-application, yss-repository, yss-mybatis, yss-web-controller, yss-dto, yss-exception, yss-validation, yss-implementation-contract-compiler, tdd]
     forbidden_skills: [harness-orchestrator, architecture-agent, frontend-agent, test-agent, yss-ui, yss-formily, yss-frontend-scaffold-generator]
     description: >-
       消费批准的 Tactical Design Contract 和 API / 数据边界，负责 Domain、Application、Infrastructure、

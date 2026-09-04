@@ -5,7 +5,7 @@ description: Use when working with YTable that needs responsive height, paginati
 
 # useTableHeight 表格高度计算 Hook
 
-本目录是表格高度的 canonical 技能；历史名称 `use-table-height` 仅通过注册表和 Router alias 解析。
+本目录是表格高度的 canonical 技能；历史名称 `use-table-height` 仅通过注册表和 实现合同编译器 alias 解析。
 
 ## YSS canonical execution rules
 

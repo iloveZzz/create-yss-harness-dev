@@ -41,7 +41,7 @@ Run this independent gate only when UI changes affect a primary user flow, navig
 - If a page shows a user action but the OpenAPI implication list lacks endpoint/non-goal mapping, block high-fidelity HTML prototype work, Spec calibration, or OpenAPI Draft.
 - If Spec P0 scope says a user can manage or configure an object but the design only shows read-only data, block until the write path or scope downgrade is explicit.
 - If a state is intentionally out of scope, record why and who owns the decision.
-- If implementation dependencies are unclear, route to `yss-router` only after the prototype passes this review.
+- If implementation dependencies are unclear, route to `yss-implementation-contract-compiler` only after the prototype passes this review.
 
 ## Output Contract
 

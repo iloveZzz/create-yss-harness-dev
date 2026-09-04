@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { cpSync, existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, realpathSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, realpathSync, rmSync, symlinkSync, unlinkSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -8,7 +8,7 @@ export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "
 const SOURCE_ROOT = path.join(ROOT, ".agents/skills");
 const LOCK_PATH = path.join(ROOT, "skills-lock.json");
 export const PROJECTION_ROOTS = [".claude/skills", ".codex/skills", ".cursor/skills", ".pi/skills", ".qoder/skills", ".trae/skills"];
-export const OBSOLETE = new Set(["to-" + "prd", "to-" + "issues", "design-an-interface", "qa", "request-refactor-plan", "ubiquitous-language", "edit-article", "obsidian-vault", "writing-great-skills", "code-review-process", "yss-domain-modeling", "yss-dir", "yss-duckdb", "yss-file", "yss-filerunner", "yss-db2mybatis", "yss-mail", "yss-mapper-dynamic", "yss-quality", "yss-sql-condition", "yss-sql-tpl", "yss-valuation", "yss-variable", "yss-openapi", "web-design-engineer", "web-video-presentation", "wireframe-prototype", "wizard", "git-guardrails-claude-code", "claude-handoff", "batch-grill-me", "product-design-prototype", "yss-dictionary", "yss-jdbc", "yss-log", "yss-taskflow", "yss-backend-scaffold-application", "yss-backend-scaffold-domain", "yss-backend-scaffold-infrastructure", "yss-backend-scaffold-web", "yss-product-lifecycle", "yss-stage-decision"]);
+export const OBSOLETE = new Set(["to-" + "prd", "to-" + "issues", "design-an-interface", "qa", "request-refactor-plan", "ubiquitous-language", "edit-article", "obsidian-vault", "writing-great-skills", "code-review-process", "yss-domain-modeling", "yss-dir", "yss-duckdb", "yss-file", "yss-filerunner", "yss-db2mybatis", "yss-mail", "yss-mapper-dynamic", "yss-quality", "yss-sql-condition", "yss-sql-tpl", "yss-valuation", "yss-variable", "yss-openapi", "web-design-engineer", "web-video-presentation", "wireframe-prototype", "wizard", "git-guardrails-claude-code", "claude-handoff", "batch-grill-me", "product-design-prototype", "yss-dictionary", "yss-jdbc", "yss-log", "yss-taskflow", "yss-backend-scaffold-application", "yss-backend-scaffold-domain", "yss-backend-scaffold-infrastructure", "yss-backend-scaffold-web", "yss-product-lifecycle", "yss-stage-decision", "yss-router", "yss-source-index"]);
 export function obsoleteCanonicalResidues(names, obsolete = OBSOLETE) {
   return names.filter((name) => obsolete.has(name)).sort();
 }
@@ -91,6 +91,7 @@ export function syncSkills({ check = false } = {}) {
     for (const name of OBSOLETE) {
       const target = path.join(projection, name);
       if (check) { if (existsSync(target) || lstatSafe(target)?.isSymbolicLink()) drift.push(`obsolete projection: ${relative(target)}`); }
+      else if (lstatSafe(target)?.isSymbolicLink()) unlinkSync(target);
       else rmSync(target, { recursive: true, force: true });
     }
   }

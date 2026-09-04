@@ -23,11 +23,11 @@ Approved / Changes requested / Blocked
 
 ## Slice Implementation Contract 审查
 
-> 按 Router 生成条件对称核验合同和执行结果。Reviewer 不得直接信任实现者自报的 `implemented`。
+> 按 实现合同编译器 生成条件对称核验合同和执行结果。Reviewer 不得直接信任实现者自报的 `implemented`。
 
 | 检查项 | 结论 | 证据 |
 |---|---|---|
-| `contract_id` / `contract_version` 与生命周期批准、持久化版本及 Ticket 引用一致；Router 未自行写入 `approved`、`ready-for-agent` 或 `completed` | pass / violation |  |
+| `contract_id` / `contract_version` 与生命周期批准、持久化版本及 Ticket 引用一致；实现合同编译器 未自行写入 `approved`、`ready-for-agent` 或 `completed` | pass / violation |  |
 | Common、Frontend、Backend、Contract、Cross-repo 子合同按实际影响填写，不适用项均有原因 | pass / violation |  |
 | `required_skills` 依赖闭包与实际影响对称；Application、MapStruct、Lombok、Alibaba 等强制依赖未遗漏 | pass / violation / not-applicable |  |
 | 每个工作单元绑定唯一 `behavior-tdd` 或 `controlled-generation`；业务行为未混入机械生成 | pass / violation |  |
@@ -95,7 +95,7 @@ rg -n "class (SingleResult|MultiResult|PageResult|Result)<|public static class .
 | Agent 修改合同允许路径之外的文件，或缺少预期证据文件 | 应标记为 `violation` 并阻断 build |  |
 | Agent 把状态机、权限、事务或错误映射放入 `controlled-generation` | 应拆分为 `behavior-tdd` 工作单元并触发完整重路由 |  |
 | Agent 使用 `seam-deferred` 却缺少风险、责任人、后续 Ticket、验证计划或目标版本 / 发布日期 | 应标记为 `violation` 并阻断 |  |
-| Agent 返回非空 `new_impacts` 后继续编码或补写旧合同 | 应暂停相关工作单元，将合同标记 `stale`，回到 Router 或更早生命周期阶段 |  |
+| Agent 返回非空 `new_impacts` 后继续编码或补写旧合同 | 应暂停相关工作单元，将合同标记 `stale`，回到 实现合同编译器 或更早生命周期阶段 |  |
 | Agent 只列验证命令但没有实际结果和执行时间 | 不构成 fresh verification，不得给出 Approved / 可合并结论 |  |
 
 ## 签字确认

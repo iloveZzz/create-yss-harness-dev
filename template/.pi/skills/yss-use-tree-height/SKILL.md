@@ -5,7 +5,7 @@ description: Use when working with YTree that needs responsive height, virtual s
 
 # useTreeHeight 树组件高度计算 Hook
 
-本目录是树高度的 canonical 技能；历史名称 `use-tree-height` 仅通过注册表和 Router alias 解析。
+本目录是树高度的 canonical 技能；历史名称 `use-tree-height` 仅通过注册表和 实现合同编译器 alias 解析。
 
 ## YSS canonical execution rules
 

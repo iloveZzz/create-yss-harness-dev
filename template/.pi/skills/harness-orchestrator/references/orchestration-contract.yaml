@@ -20,9 +20,10 @@ tactical_design:
   owner: role.architecture-agent
   review_by: role.test-agent
 slice_contract:
-  id: slice-implementation-contract-v1
+  id: slice-implementation-contract-v2
   one_contract_per_slice: true
   shared_version_required: true
+  resolution_digest_required: true
   required_sections: [architecture, frontend, backend, testing]
 work_unit_routes:
   work-unit.harness-entry:
@@ -39,14 +40,14 @@ work_unit_routes:
     not_applicable_reason: no_domain_behavior_or_tactical_design_impact
   work-unit.slice-contract:
     primary_skill: harness-orchestrator
-    supporting_skills: [architecture-agent, yss-router, implementation-repo-onboarding]
-    skills: [harness-orchestrator, architecture-agent, yss-router, implementation-repo-onboarding]
+    supporting_skills: [architecture-agent, yss-implementation-contract-compiler, implementation-repo-onboarding]
+    skills: [harness-orchestrator, architecture-agent, yss-implementation-contract-compiler, implementation-repo-onboarding]
     applies_when: approved_tactical_design_and_frozen_contracts
     not_applicable_reason: required_upstream_contract_not_current
   work-unit.slice-implementation:
     primary_skill: backend-agent
-    supporting_skills: [frontend-agent, test-agent, yss-router, tdd]
-    skills: [backend-agent, frontend-agent, test-agent, yss-router, tdd]
+    supporting_skills: [frontend-agent, test-agent, yss-implementation-contract-compiler, tdd]
+    skills: [backend-agent, frontend-agent, test-agent, yss-implementation-contract-compiler, tdd]
     applies_when: slice_contract_ready_for_agent
     not_applicable_reason: slice_contract_not_approved
   work-unit.verification:
@@ -114,9 +115,9 @@ backend_scaffold:
   contract_schema:
     schema_version: 2
     identity: service-engineering-baseline
-    required: [contract_id, contract_version, scaffold_request_id, status, router_draft_ref, lifecycle_approval_ref, persisted_ref, current_version, implementation_repository, backend_repository, scaffold_status, project_name, target_output_dir, base_package, maven_coordinates, profiles, allowed_write_paths, expected_evidence_files, verification_commands, approval, work_unit, generation_policy]
+    required: [contract_id, contract_version, scaffold_request_id, status, compiler_draft_ref, lifecycle_approval_ref, persisted_ref, current_version, implementation_repository, backend_repository, scaffold_status, project_name, target_output_dir, base_package, maven_coordinates, profiles, allowed_write_paths, expected_evidence_files, verification_commands, approval, work_unit, generation_policy]
     status_by_owner:
-      router: [draft, ready-for-lifecycle-review, blocked]
+      compiler: [draft, ready-for-lifecycle-review, blocked]
       orchestrator: [approved, stale, blocked]
     approval:
       required: [approval_ref, approver, persisted_ref, current_version]
@@ -145,7 +146,7 @@ backend_scaffold:
       schema_v1: reject-no-auto-upgrade
       slice_id: forbidden-as-scaffold-identity
       existing_project: reject-no-scaffold-migration
-  required_inputs: [implementation_repository, backend_repository, scaffold_status, scaffold_target_confirmed, scaffold_request_id, target_output_dir, project_name, base_package, maven_group_id, project_version, parent_group_id, parent_artifact_id, parent_version, yss_components_version, architecture_profile, persistence_profile, database, platform_profile, validation_namespace, dto_placement, repository_profile, scaffold_contract_file, scaffold_contract_draft, scaffold_contract_id, scaffold_contract_version, scaffold_contract_status, scaffold_contract_approved, scaffold_contract_router_draft_ref, scaffold_contract_lifecycle_approval_ref, scaffold_contract_persisted, scaffold_contract_persisted_ref, scaffold_contract_current_version]
+  required_inputs: [implementation_repository, backend_repository, scaffold_status, scaffold_target_confirmed, scaffold_request_id, target_output_dir, project_name, base_package, maven_group_id, project_version, parent_group_id, parent_artifact_id, parent_version, yss_components_version, architecture_profile, persistence_profile, database, platform_profile, validation_namespace, dto_placement, repository_profile, scaffold_contract_file, scaffold_contract_draft, scaffold_contract_id, scaffold_contract_version, scaffold_contract_status, scaffold_contract_approved, scaffold_contract_compiler_draft_ref, scaffold_contract_lifecycle_approval_ref, scaffold_contract_persisted, scaffold_contract_persisted_ref, scaffold_contract_current_version]
   required_evidence: [generator_inputs, expected_files, scaffold_generation_manifest_v2, generated_project_structure, generation_execution_result, verification_execution_result, architecture_rules, ./mvnw_validate, ./mvnw_test, ./mvnw_package, yss_skill_execution_result]
   generation_options:
     with_example: false
@@ -154,8 +155,8 @@ backend_scaffold:
     template_upgrade: unsupported
     old_project_migration: unsupported-separate-architecture-modernization-initiative
   forbidden_generation: [business_rules, state_machine, permission, transaction, complex_query, error_mapping, user_visible_behavior, business_example_crud, unapproved_force_overwrite]
-  after_generation: [yss-backend-scaffold-parent, yss-router]
-  existing_or_initialized: [baseline_evidence, wrapper_verification, yss_router_contract_recompile]
+  after_generation: [yss-backend-scaffold-parent, yss-implementation-contract-compiler]
+  existing_or_initialized: [baseline_evidence, wrapper_verification, implementation_contract_recompile]
   verification:
     commands: ["./mvnw validate", "./mvnw test", "./mvnw package"]
     requires_execution: true

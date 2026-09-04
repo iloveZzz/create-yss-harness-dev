@@ -28,9 +28,9 @@
     "yss-prototype-stage",
     "yss-repository",
     "yss-resilience4j",
-    "yss-router",
+    "yss-implementation-contract-compiler",
     "yss-security-algorithm",
-    "yss-source-index",
+    "yss-skill-source-index-refresh",
     "yss-ui",
     "yss-up-springboot3",
     "yss-use-table-height",
@@ -45,8 +45,8 @@
       "description": "用于 YSS 产品生命周期、路由和跨仓库协作的技能。",
       "skills": [
         "yss-microapp-commit",
-        "yss-router",
-        "yss-source-index"
+        "yss-implementation-contract-compiler",
+        "yss-skill-source-index-refresh"
       ]
     },
     {

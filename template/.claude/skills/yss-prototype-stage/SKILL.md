@@ -19,7 +19,7 @@ description: Use when a YSS feature has product-design impact on a primary flow,
 2. 用 `prototype-review` 形成独立评审结论；未通过不得生成高保真或进入需求冻结。
 3. 通过 `product-design:index` 产出 `docs/.scratch/<feature>/design/prototypes/index.html`。
 4. 写入 `docs/.scratch/<feature>/verification/prototype-evidence.yaml`，完成 AntD CLI 与浏览器验证。
-5. 用户确认后，才可校准 Spec、分析 API 影响或进入 Router readiness。
+5. 用户确认后，才可校准 Spec、分析 API 影响或进入 实现合同编译器 readiness。
 
 ## 设计与 AntD 依据
 

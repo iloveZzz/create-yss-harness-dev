@@ -53,8 +53,8 @@
 | 高保真 HTML 原型 | 低保真原型评审通过后，用于在浏览器中审查真实视觉密度、交互状态和页面流的产品设计资产。 | — | 不等同于生产前端实现，也不替代 OpenAPI、Spec 校准或垂直切片。 |
 | Visual Baseline Contract | 为生产前端还原冻结页面、视口、交互状态、参考图像和允许差异的可验收合同。 | — | 不是仅有一张原型截图或绝对像素匹配；每个基线必须可定位到同一视口和同一状态复验。 |
 | 垂直切片（Vertical Slice） | 贯穿所有受影响层、可独立验证的窄功能路径。 | — | 优先使用垂直切片，避免只按层拆分的横向任务。 |
-| Slice Implementation Contract | 进入实现前，由 `yss-router` 根据冻结资产和垂直切片编译、再由 Harness Orchestrator 批准的统一实现合同，固定包含 `architecture`、`frontend`、`backend`、`testing` 四个分区及 Common、Contract、Cross-repo 信息。 | — | Router 只能生成草案，不能自行批准、设置 `ready-for-agent` 或宣布完成；四个 Agent 必须消费同一 `contract_id` / `contract_version`。 |
-| YSS Skill Execution Result | YSS 专项 skill 完成工作单元后返回的结构化执行证据，记录合同版本、变更文件、证据文件、实际验证、延期 seam、偏离和新增影响。 | — | 实现者自报 `implemented` 不构成最终通过，必须由 Router、生命周期编排器和独立 Reviewer 复核。 |
+| Slice Implementation Contract | 进入实现前，由 `yss-implementation-contract-compiler` 根据冻结资产和垂直切片编译、再由 Harness Orchestrator 批准的统一实现合同，固定包含 `architecture`、`frontend`、`backend`、`testing` 四个分区及 Common、Contract、Cross-repo 信息。 | — | 实现合同编译器 只能生成草案，不能自行批准、设置 `ready-for-agent` 或宣布完成；四个 Agent 必须消费同一 `contract_id` / `contract_version`。 |
+| YSS Skill Execution Result | YSS 专项 skill 完成工作单元后返回的结构化执行证据，记录合同版本、变更文件、证据文件、实际验证、延期 seam、偏离和新增影响。 | — | 实现者自报 `implemented` 不构成最终通过，必须由 实现合同编译器、生命周期编排器和独立 Reviewer 复核。 |
 | ADR | 架构决策记录，用于沉淀难以回滚、非显而易见且存在真实取舍的技术决策。 | — | 常规实现选择不要写 ADR。 |
 | Fresh Verification | 完成前重新执行的验证证据，包括测试命令、契约校验、关键路径检查或人工审查结论。 | — | 不等同于“之前跑过”或实现者自述。 |
 | 实现验证命令 | 前端测试 / 构建优先 `pnpm`，后端校验 / 测试 / 编译优先 `./mvnw`。 | — | 不要默认 `npm`、`yarn` 或裸 `mvn`；仓库确实缺少 pnpm 或 Maven Wrapper 时记受控例外。 |
@@ -76,11 +76,11 @@
 | 生命周期稳定 ID | 以对象类型命名空间和英文标识唯一指向一个生命周期对象的兼容身份。 | — | 中文名称、展示顺序和数量可以变化；已发布 ID 不得复用来表达另一种语义。 |
 | 派生产物 | 根据生命周期注册表确定性生成的结构表、数量、索引、依赖图或测试 fixture。 | — | 不承载需要人工解释的原理、取舍或实践建议，禁止脱离注册表分别维护。 |
 | 核心技能（Core Skill） | 默认可发现、负责生命周期控制或通用研发入口的稳定技能。 | — | 不包含只在特定技术影响下才需要的专项实现规则。 |
-| 专项技能（Specialist Skill） | 由 Router 根据影响面和实现合同按需选择的前端、后端、OpenAPI 或组件技能。 | — | 不作为所有任务的平级默认入口。 |
-| 试验技能 | 尚未达到项目默认支持成熟度的技能。 | — | 只在明确试验范围内使用，不进入 Router 默认技能闭包。 |
+| 专项技能（Specialist Skill） | 由 实现合同编译器 根据影响面和实现合同按需选择的前端、后端、OpenAPI 或组件技能。 | — | 不作为所有任务的平级默认入口。 |
+| 试验技能 | 尚未达到项目默认支持成熟度的技能。 | — | 只在明确试验范围内使用，不进入 实现合同编译器 默认技能闭包。 |
 | 显式兼容入口 | 为已有用户操作习惯保留的 user-invoked 工作流入口，写入前由生命周期编排器预检，结果回交其验收。 | — | 不是默认路径、过时别名或可以越过门禁的第二套生命周期。 |
 | 技能成熟度 | 描述技能从 `draft`、`verified`、`supported` 到 `deprecated` 的治理状态。 | — | 不等同于文件存在、已被投影或能够安装。 |
-| 技能注册表 | 记录技能身份、别名、分层、适用影响面、成熟度、默认可发现性和 Agent 运行时入口的机器可读路由资产。 | — | 不替代 `skills-lock.json` 的来源、hash 和投影完整性职责。当前 `docs/agents/yss-skill-registry.yaml` 为 `active`，Router 与生命周期必须消费通过本表校验的 canonical 技能。 |
+| 技能注册表 | 记录技能身份、别名、分层、适用影响面、成熟度、默认可发现性和 Agent 运行时入口的机器可读路由资产。 | — | 不替代 `skills-lock.json` 的来源、hash 和投影完整性职责。当前 `docs/agents/yss-skill-registry.yaml` 为 `active`，实现合同编译器 与生命周期必须消费通过本表校验的 canonical 技能。 |
 | LLM Wiki | 由 `raw/`、`wiki/` 与 `.wiki-manifest.json` 组成的本地持久知识库。 | — | 不是 `research` 一次性笔记，也不替代权威源。`ingest` 只把用户点名的外源或已落盘研究笔记编进 IR，不改 live 权威文件。 |
 | 生态发布清单 | 关联模板 schema 与 commit、CLI 版本与快照、公开技能来源与导出 hash 的跨仓发布证据。 | — | 不要求尚未生成的仓库 commit 互相循环引用。 |
 | 研发管理仓库 | 承载 Spec、OpenAPI、架构、Ticket、验证、发布和复盘等研发管理资产的仓库。 | — | 不等同于前端 / 后端代码 monorepo。 |

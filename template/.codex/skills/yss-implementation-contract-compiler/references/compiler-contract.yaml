@@ -1,0 +1,140 @@
+schema_version: 2
+contract_id: harness-implementation-contract-compiler-v2
+compiled_by: yss-implementation-contract-compiler
+approved_by: harness-orchestrator
+capability_source: docs/agents/yss-skill-registry.yaml
+recipe_source: docs/agents/yss-skill-registry.yaml
+digest_algorithm: sha256
+unsupported_inputs:
+  registry_schema_v1: reject-with-migration-guidance
+  slice_contract_schema_v1: reject-with-migration-guidance
+allowed_statuses: [draft, blocked, ready-for-lifecycle-review]
+forbidden_statuses: [approved, ready-for-agent, completed]
+implementation_path_policy: git-submodule-harness-apps
+execution_states: [Explorer, Drafter, Worker, Reviewer, Verifier]
+roles:
+  architecture: role.architecture-agent
+  frontend: role.frontend-agent
+  backend: role.backend-agent
+  testing: role.test-agent
+  orchestrator: role.harness-orchestrator
+readiness_formula:
+  all_of:
+    - upstream_inputs_current_and_approved
+    - tactical_design_current_or_not_applicable_recorded
+    - api_freeze_or_no_api_impact_recorded
+    - data_architecture_or_no_data_impact_recorded
+    - ui_inputs_or_no_ui_impact_recorded
+    - implementation_repositories_and_commands_registered
+    - allowed_write_paths_registered
+    - test_seams_and_acceptance_executable
+    - task_packages_share_contract_version
+    - no_blocking_signals
+slice_contract_required:
+  root: [schema_version, contract_id, contract_version, slice_id, status, lifecycle_refs, readiness, resolution, common, architecture, frontend, backend, testing, contract, cross_repo, work_units]
+  resolution: [required_capabilities, required_skills, recipe_ids, conditions, reason_chains, registry_digest, compiler_contract_digest, compiled_at, freshness]
+  common: [impacted_areas, implementation_path_policy, project_roots, required_capabilities, required_skills, optional_skills, unavailable_skills, allowed_write_paths, forbidden_patterns, expected_evidence_files, verification_commands, human_review_points, full_reroute_triggers]
+  architecture: [tactical_design_ref, tactical_design_version, aggregate_refs, invariant_refs, state_behavior_refs, gateway_boundary_ref, decision_refs]
+  frontend: [status, required_skills, approved_interaction_ref, state_matrix_ref, generated_api_client_ref, allowed_write_paths, component_test_seams, e2e_paths]
+  backend: [status, affected_layers, component_impacts, required_skills, application_boundary, transaction_boundary, persistence_strategy, allowed_write_paths, forbidden_patterns, expected_evidence_files, verification_commands]
+  testing: [status, required_skills, test_strategy_ref, test_seams, fixtures, coverage_targets, critical_flows, verification_commands]
+  contract: [api_impact, freeze_ref, no_api_impact_ref, generated_clients, contract_tests, regeneration_commands]
+  cross_repo: [repositories, delivery_order, integration_verification, rollback_order]
+resolution_contract:
+  required_capabilities_source: registry-capability-or-recipe-only
+  recipes_reference: capabilities-only
+  closure_recursive_types: [context-required]
+  closure_conditional_type: context-conditional
+  closure_non_expanding_types: [coordination-only, review-only, component-dependency]
+  deduplicate_skills: true
+  preserve_all_reasons: true
+  deterministic_order: [recipe-declaration, dependency-topology, skill-id]
+  digest_change_status: stale
+  stale_action: recompile-and-return-to-harness-approval
+impact_to_capabilities:
+  system-data-architecture: [architecture.system-data]
+  backend-agent-execution: [execution.backend-slice]
+  domain-impact: [layer.domain, layer.application]
+  tactical-domain-impact: [architecture.tactical-domain]
+  persistence-impact: [layer.persistence]
+  mybatis-framework-impact: [framework.mybatis]
+  web-adapter-impact: [layer.web-adapter]
+  dto-wire-impact: [contract.dto-wire]
+  request-validation: [contract.request-validation]
+  error-mapping: [contract.error-mapping, contract.dto-wire]
+  cache: [component.cache]
+  current-user-context: [component.current-user-context]
+  user-cache-lookup: [component.current-user-context, component.cache]
+  audit-event: [component.audit-log, component.current-user-context, contract.dto-wire]
+  excel-import-export: [component.excel-import-export]
+  distributed-id: [component.distributed-id]
+  encryption-or-signing: [component.security-algorithm]
+  gateway-resilience: [component.gateway-resilience]
+  ddd-scaffold: [scaffold.ddd]
+  springboot3-migration: [migration.springboot3]
+full_reroute_triggers: [api-schema-impact, database-schema-impact, state-machine-impact, aggregate-impact, invariant-impact, new-write-path, new-repository, contract-violation, test-seam-changed, verification-command-changed, architecture-drift]
+tdd_modes:
+  behavior-tdd:
+    impacts: [domain-rule, state-machine, transaction, complex-query, error-mapping, page-interaction, user-visible-state]
+  controlled-generation:
+    impacts: [project-scaffold, dto-boilerplate, frozen-openapi-client, mechanical-config]
+    required: [exception_reason, generator, generator_inputs, expected_files, verification_commands, behavior_tests_after_generation]
+
+scaffold_contract_schema:
+  schema_version: 2
+  identity: service-engineering-baseline
+  compiled_by: yss-implementation-contract-compiler
+  approved_by: harness-orchestrator
+  status_by_owner:
+    compiler: [draft, ready-for-lifecycle-review, blocked]
+    orchestrator: [approved, stale, blocked]
+  required: [contract_id, contract_version, scaffold_request_id, status, compiler_draft_ref, lifecycle_approval_ref, persisted_ref, current_version, implementation_repository, backend_repository, scaffold_status, project_name, target_output_dir, base_package, maven_coordinates, profiles, allowed_write_paths, expected_evidence_files, verification_commands, approval, work_unit, generation_policy]
+  approval:
+    required: [approval_ref, approver, persisted_ref, current_version]
+  generation_policy:
+    required: [mode, existing_target, old_project_migration, template_upgrade]
+    mode: initialize-only
+    existing_target: unsupported
+    old_project_migration: unsupported
+    template_upgrade: unsupported
+  maven_coordinates:
+    required: [group_id, project_version, parent, yss_components_version]
+    parent_required: [group_id, artifact_id, version]
+    yss_components_version: 2.0.0-SNAPSHOT
+  profiles:
+    required: [architecture, persistence, database, platform, validation_namespace, dto_placement, repository]
+    supported_initial:
+      architecture: target-domain-model
+      persistence: mybatis-plus
+      database: mysql
+      platform: spring-boot-2.7-jdk8
+      validation_namespace: javax
+      dto_placement: web
+      repository: yss-internal
+    unsupported: [old-architecture-profile, client-in-domain, mybatis, spring-boot-3, jakarta, separate-client-module]
+  unsupported_inputs:
+    schema_v1: reject-no-auto-upgrade
+    slice_id: forbidden-as-scaffold-identity
+    existing_project: reject-no-scaffold-migration
+  lifecycle_boundary:
+    compiler_emits: [draft, ready-for-lifecycle-review, blocked]
+    orchestrator_approves: [approved]
+    generator_consumes: [approved]
+    after_generation: [yss-backend-scaffold-parent, yss-implementation-contract-compiler]
+  work_unit:
+    required: [id, behavior, primary_skill, supporting_skills, tdd_mode, allowed_write_paths, expected_evidence, verification_commands, controlled_generation]
+  generation_boundary:
+    allowed_for: [project_scaffold, pom, mechanical_config, wrapper, bootstrap_entrypoint, manifest_v2, architecture_rules, test_infrastructure]
+    forbidden_when: [business_behavior, business_fields, business_state, permission, transaction, complex_query, error_mapping, business_example_crud]
+    initialization: initialize-only
+    regeneration: unsupported
+    template_upgrade: unsupported
+    old_project_migration: unsupported-separate-architecture-modernization-initiative
+  verification:
+    commands: ["./mvnw validate", "./mvnw test", "./mvnw package"]
+    requires_execution: true
+    completion_levels: [generated, empty-scaffold-verified, first-slice-verified]
+    downstream_readiness_claim_requires: first-slice-verified
+    completion_requires: [validate_passed, test_passed, package_passed]
+    evidence: [preflight, command, exit_code, failure_category, duration_ms, stdout_ref, stderr_ref, executed_at]
+    failure_action: blocked

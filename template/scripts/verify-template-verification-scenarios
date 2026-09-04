@@ -40,7 +40,10 @@ const releaseBaseline = [
   "scripts/verify-scaffold-generator-scenarios",
   "scripts/verify-prototype-backend-scaffold-scenarios",
   "scripts/verify-matt-yss-integration-scenarios",
-  "scripts/verify-yss-router-scenarios",
+  "scripts/verify-yss-implementation-contract-compiler-scenarios",
+  "scripts/generate-yss-skill-boundaries --check",
+  "scripts/audit-yss-backend-skills --check",
+  "scripts/verify-retired-skill-ids",
   "scripts/verify-yss-ui-scenarios",
   "scripts/verify-openapi-yaml-first-scenarios",
   "scripts/verify-openapi-json-handoff-scenarios"

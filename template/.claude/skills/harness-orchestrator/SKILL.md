@@ -11,7 +11,7 @@ description: 编排 DDD 战术设计到垂直切片交付的四角色 Harness Ag
 
 - 不起草领域行为、前端页面、后端业务代码或测试代码。
 - 不替专业 Agent 修改技术决策；遇到领域、交互、实现或可验证性冲突时暂停并升级。
-- 不批准自己生成的专业资产，不把 Router 草案当成 approved，也不以聊天消息代替证据。
+- 不批准自己生成的专业资产，不把 实现合同编译器 草案当成 approved，也不以聊天消息代替证据。
 - 只有当前版本 `Slice Implementation Contract` 满足就绪公式时，才能设置 `ready-for-agent`。
 
 ## 主流程
