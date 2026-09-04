@@ -19,7 +19,6 @@ const REQUIRED_ALLOW_ROOT_ENTRIES = [
   ".claude",
   ".codex",
   ".cursor",
-  ".hermes",
   ".pi",
   ".qoder",
   ".trae",

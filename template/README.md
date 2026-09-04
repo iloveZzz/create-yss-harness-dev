@@ -15,7 +15,6 @@ README 只解释上述入口，不另定义阶段、门禁或技能分层。
 ├── .claude/                 ← Claude skills 投影与平台专属 skills
 ├── .codex/                  ← Codex skills 投影与平台专属 skills
 ├── .cursor/                 ← Cursor skills 投影
-├── .hermes/                 ← Hermes skills 投影与平台专属 skills
 ├── .pi/                     ← Pi skills 投影与平台专属 skills
 ├── .qoder/                  ← Qoder skills 投影与平台专属 skills
 ├── .trae/                   ← Trae skills 投影与平台专属 skills

@@ -44,7 +44,6 @@ const AGENT_SKILL_ROOTS = [
   ".claude/skills",
   ".codex/skills",
   ".cursor/skills",
-  ".hermes/skills",
   ".pi/skills",
   ".qoder/skills",
   ".trae/skills",
