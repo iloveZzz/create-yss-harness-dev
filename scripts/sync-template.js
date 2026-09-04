@@ -12,7 +12,7 @@ const targetSnapshotPath = path.join(packageRoot, "template.snapshot.json");
 const templateRepo =
   process.env.YSS_HARNESS_TEMPLATE_REPO ||
   "https://github.com/iloveZzz/yss-harness-dev-agent.git";
-const DEFAULT_TEMPLATE_REF = "8ed48fbbc5babc8979bc497befb76bc87f65748f";
+const DEFAULT_TEMPLATE_REF = "1c02dcdd3dd6bc4e22d453b59a0347acee40b265";
 const templateRef = process.env.YSS_HARNESS_TEMPLATE_REF || DEFAULT_TEMPLATE_REF;
 const NPM_IGNORED_BASENAMES = new Set([".gitignore", ".npmignore", ".npmrc"]);
 
