@@ -14,6 +14,13 @@ export function validateSkillGovernance({ read = (relative) => readFileSync(path
   const tableSkill = read(".agents/skills/ytable-usage/SKILL.md");
   const pageSkill = read(".agents/skills/yss-page-module-development/SKILL.md");
 
+  for (const marker of ["trigger: always_on", "docs/agents/yss-skill-registry.yaml", ".agents/skills/yss-ui/SKILL.md", "原型阶段"]) {
+    if (!globalRules.includes(marker)) fail(`YSS UI 薄入口缺少路由标记: ${marker}`);
+  }
+  for (const staleHeading of ["## Available Skills", "## Mandatory Workflow"]) {
+    if (globalRules.includes(staleHeading)) fail(`YSS UI 薄入口不得回流技能清单或实现步骤: ${staleHeading}`);
+  }
+
   if (/toolbar-config\.custom.{0,30}(必须|必需)|必须.{0,30}toolbar-config\.custom/.test(globalRules)) {
     fail("全局规则不得把 toolbar-config.custom 作为无条件要求");
   }
@@ -25,6 +32,14 @@ export function validateSkillGovernance({ read = (relative) => readFileSync(path
   }
   if (!pageSkill.includes("只有确实需要列设置时才启用 `toolbar-config.custom`")) {
     fail("页面模块 canonical 技能缺少条件化 toolbar-config 规则");
+  }
+
+  const cursorRules = read(".cursorrules");
+  for (const marker of ["docs/process/harness-profile.yaml", "docs/agents/yss-skill-registry.yaml", "harness-orchestrator", ".cursor/skills"]) {
+    if (!cursorRules.includes(marker)) fail(`Cursor 薄入口缺少路由标记: ${marker}`);
+  }
+  for (const stalePath of [".agents/skills/page-module-development/", ".agents/skills/api-integration/", ".agents/skills/use-table-height/", ".agents/skills/use-tree-height/"]) {
+    if (cursorRules.includes(stalePath)) fail(`Cursor 入口不得指向 alias 物理路径: ${stalePath}`);
   }
 
   const registry = loadSkillRegistry();

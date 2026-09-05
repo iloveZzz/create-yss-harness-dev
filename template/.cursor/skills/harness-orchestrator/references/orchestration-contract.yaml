@@ -107,15 +107,41 @@ gates:
   implementation: [gate.slice-ready-for-agent]
   verification: [gate.fresh-verification-passed]
   human: [gate.high-risk-architecture-confirmed, gate.openapi-freeze-confirmed, gate.merge-approved]
-re_route_on: [api-schema-impact, database-schema-impact, state-machine-impact, aggregate-impact, invariant-impact, new-write-path, new-repository, contract-violation, test-seam-changed, verification-command-changed]
+re_route_on: [api-schema-impact, database-schema-impact, state-machine-impact, aggregate-impact, invariant-impact, scaffold-architecture-decision-changed, scaffold-profile-or-module-closure-changed, new-write-path, new-repository, contract-violation, test-seam-changed, verification-command-changed]
+
+scaffold_architecture_decision:
+  applies_when: backend_scaffold_status_required
+  owner: role.harness-orchestrator
+  evidence_file: scaffold-architecture-decisions.yaml
+  schema_ref: docs/process/schemas/scaffold-architecture-decisions.schema.json
+  recommendation:
+    domain_driven_signals: [aggregate_invariants, complex_state_transitions, domain_events, consistency_boundary, rich_domain_behavior]
+    layered_mvc_signals: [thin_crud, reporting_query, simple_data_maintenance, no_aggregate_invariants]
+    output_required: [recommended_architecture, recommendation_reasons]
+  interaction:
+    choices: [domain-driven, layered-mvc]
+    user_confirmation_required: true
+    silent_default: forbidden
+    generator_interaction: forbidden
+  project_inheritance:
+    root_project_choice: child_default_only
+    child_projects: visible_in_batch_confirmation
+    child_override: allowed-with-reason
+  lifecycle_status: lifecycle-approved
+  change_policy:
+    existing_or_initialized_project: no-regeneration
+    architecture_switch: separate-migration-work-unit
+    digest_change: stale-and-recompile
 
 backend_scaffold:
   required_status: required
-  generator_skill: yss-ddd-scaffold-generator
+  generator_by_architecture:
+    domain-driven: yss-ddd-scaffold-generator
+    layered-mvc: yss-layered-mvc-scaffold-generator
   contract_schema:
-    schema_version: 2
+    schema_version: 3
     identity: service-engineering-baseline
-    required: [contract_id, contract_version, scaffold_request_id, status, compiler_draft_ref, lifecycle_approval_ref, persisted_ref, current_version, implementation_repository, backend_repository, scaffold_status, project_name, target_output_dir, base_package, maven_coordinates, profiles, allowed_write_paths, expected_evidence_files, verification_commands, approval, work_unit, generation_policy]
+    required: [contract_id, contract_version, scaffold_request_id, status, compiler_draft_ref, lifecycle_approval_ref, persisted_ref, current_version, implementation_repository, backend_repository, scaffold_status, project_name, target_output_dir, base_package, architecture_family, generator_skill, decision_ref, decision_id, decision_digest, maven_coordinates, profiles, module_profile, allowed_write_paths, expected_evidence_files, verification_commands, approval, work_unit, generation_policy]
     status_by_owner:
       compiler: [draft, ready-for-lifecycle-review, blocked]
       orchestrator: [approved, stale, blocked]
@@ -132,22 +158,24 @@ backend_scaffold:
       parent_required: [group_id, artifact_id, version]
       yss_components_version: 2.0.0-SNAPSHOT
     profiles:
-      required: [architecture, persistence, database, platform, validation_namespace, dto_placement, repository]
+      required: [architecture, persistence, verification_database, production_database, platform, validation_namespace, dto_placement, repository]
       supported_initial:
-        architecture: target-domain-model
-        persistence: mybatis-plus
-        database: mysql
-        platform: spring-boot-2.7-jdk8
-        validation_namespace: javax
-        dto_placement: web
-        repository: yss-internal
+        domain-driven: { architecture: target-domain-model, persistence: mybatis-plus, verification_database: h2, production_database: not-bound, platform: spring-boot-2.7-jdk8, validation_namespace: javax, dto_placement: web, repository: yss-internal }
+        layered-mvc: { architecture: layered-mvc, persistence: mybatis-plus, verification_database: h2, production_database: not-bound, platform: spring-boot-2.7-jdk8, validation_namespace: javax, dto_placement: web, repository: yss-internal }
       unsupported: [old-architecture-profile, client-in-domain, mybatis, spring-boot-3, jakarta, separate-client-module]
+    module_profile:
+      resolution_version: 1
+      domain-driven: [domain, application, infrastructure, adapter, bootstrap]
+      layered-mvc:
+        core: [server, service, repository]
+        capability_modules: { external-integration: [adapter], published-client: [client], feign-client: [client, feign-client] }
     unsupported_inputs:
       schema_v1: reject-no-auto-upgrade
+      schema_v2_for_new_generation: reject-read-only-history
       slice_id: forbidden-as-scaffold-identity
       existing_project: reject-no-scaffold-migration
-  required_inputs: [implementation_repository, backend_repository, scaffold_status, scaffold_target_confirmed, scaffold_request_id, target_output_dir, project_name, base_package, maven_group_id, project_version, parent_group_id, parent_artifact_id, parent_version, yss_components_version, architecture_profile, persistence_profile, database, platform_profile, validation_namespace, dto_placement, repository_profile, scaffold_contract_file, scaffold_contract_draft, scaffold_contract_id, scaffold_contract_version, scaffold_contract_status, scaffold_contract_approved, scaffold_contract_compiler_draft_ref, scaffold_contract_lifecycle_approval_ref, scaffold_contract_persisted, scaffold_contract_persisted_ref, scaffold_contract_current_version]
-  required_evidence: [generator_inputs, expected_files, scaffold_generation_manifest_v2, generated_project_structure, generation_execution_result, verification_execution_result, architecture_rules, ./mvnw_validate, ./mvnw_test, ./mvnw_package, yss_skill_execution_result]
+  required_inputs: [implementation_repository, backend_repository, scaffold_status, scaffold_target_confirmed, scaffold_request_id, target_output_dir, project_name, base_package, scaffold_architecture_decision_ref, scaffold_architecture_decision_id, scaffold_architecture_decision_digest, architecture_family, generator_skill, module_profile, maven_group_id, project_version, parent_group_id, parent_artifact_id, parent_version, yss_components_version, architecture_profile, persistence_profile, verification_database, production_database, platform_profile, validation_namespace, dto_placement, repository_profile, scaffold_contract_file, scaffold_contract_draft, scaffold_contract_id, scaffold_contract_version, scaffold_contract_status, scaffold_contract_approved, scaffold_contract_compiler_draft_ref, scaffold_contract_lifecycle_approval_ref, scaffold_contract_persisted, scaffold_contract_persisted_ref, scaffold_contract_current_version]
+  required_evidence: [scaffold_architecture_decision, generator_inputs, expected_files, scaffold_generation_manifest_v3, generated_project_structure, generation_execution_result, verification_execution_result, architecture_rules, ./mvnw_validate, ./mvnw_test, ./mvnw_package, yss_skill_execution_result]
   generation_options:
     with_example: false
     force: forbidden-by-default
@@ -155,7 +183,9 @@ backend_scaffold:
     template_upgrade: unsupported
     old_project_migration: unsupported-separate-architecture-modernization-initiative
   forbidden_generation: [business_rules, state_machine, permission, transaction, complex_query, error_mapping, user_visible_behavior, business_example_crud, unapproved_force_overwrite]
-  after_generation: [yss-backend-scaffold-parent, yss-implementation-contract-compiler]
+  after_generation_by_architecture:
+    domain-driven: [yss-backend-scaffold-parent, yss-implementation-contract-compiler]
+    layered-mvc: [yss-implementation-contract-compiler]
   existing_or_initialized: [baseline_evidence, wrapper_verification, implementation_contract_recompile]
   verification:
     commands: ["./mvnw validate", "./mvnw test", "./mvnw package"]

@@ -31,6 +31,7 @@ required_files:
   - .agents/skills/yss-implementation-contract-compiler/references/boundaries.md
   - .agents/skills/yss-implementation-contract-compiler/references/slice-implementation-contract.md
   - .agents/skills/yss-implementation-contract-compiler/tests/compiler-scenarios.test.mjs
+  - .agents/skills/yss-prototype-stage/scripts/visual-baseline-contract.mjs
   - .agents/skills/yss-skill-source-index-refresh/SKILL.md
   - docs/agents/digital-human-roles.yaml
   - docs/process/lifecycle-registry.yaml
@@ -40,12 +41,17 @@ required_files:
   - docs/process/template-verification-profiles.yaml
   - docs/process/schemas/lifecycle-checkpoint.schema.json
   - docs/process/schemas/frontend-implementation-evidence.schema.json
+  - docs/process/schemas/scaffold-architecture-decisions.schema.json
+  - docs/process/schemas/strategic-design-handoff.schema.json
+  - docs/design/schemas/visual-baseline.schema.json
+  - docs/design/templates/visual-baseline-template.yaml
   - docs/process/schemas/digital-human-task-package.schema.json
   - docs/process/schemas/subagent-task-package.schema.json
   - docs/process/schemas/maintenance-review-record.schema.json
   - docs/process/templates/lifecycle-checkpoint-template.yaml
   - docs/process/templates/frontend-implementation-plan-template.yaml
   - docs/process/templates/frontend-implementation-verification-template.yaml
+  - docs/process/templates/scaffold-architecture-decisions-template.yaml
   - docs/templates/subagent-task-package-template.md
   - .agents/skills/yss-tactical-design/SKILL.md
   - .agents/skills/yss-tactical-design/agents/openai.yaml
@@ -55,6 +61,13 @@ required_files:
   - .agents/skills/yss-tactical-design/references/output-template.md
   - .agents/skills/yss-tactical-design/scripts/validate-tactical-design.mjs
   - .agents/skills/yss-tactical-design/tests/run-scenarios.mjs
+  - .agents/skills/yss-layered-mvc-scaffold-generator/SKILL.md
+  - .agents/skills/yss-layered-mvc-scaffold-generator/agents/openai.yaml
+  - .agents/skills/yss-layered-mvc-scaffold-generator/references/architecture.md
+  - .agents/skills/yss-layered-mvc-scaffold-generator/scripts/generate_scaffold.mjs
+  - .agents/skills/yss-layered-mvc-scaffold-generator/scripts/run_scaffold_verification.mjs
+  - .agents/skills/yss-layered-mvc-scaffold-generator/scripts/generate_and_verify_scaffold.mjs
+  - .agents/skills/yss-layered-mvc-scaffold-generator/scripts/scaffold-generator.test.mjs
   - scripts/repository-mode
   - scripts/implementation-path-policy
   - scripts/repository-scope-policy
@@ -64,8 +77,12 @@ required_files:
   - scripts/verify-lifecycle-registry
   - scripts/verify-lifecycle-checkpoint
   - scripts/verify-frontend-implementation-evidence
+  - scripts/verify-frontend-implementation-evidence-scenarios
+  - scripts/verify-scaffold-architecture-decisions
+  - scripts/verify-scaffold-architecture-decision-scenarios
   - scripts/lib/task-package.mjs
   - scripts/lib/harness-profile.mjs
+  - scripts/lib/entry-alignment.mjs
   - scripts/lib/instance-distribution.mjs
   - scripts/lib/json-schema.mjs
   - scripts/lib/maintenance-review.mjs
@@ -91,6 +108,7 @@ required_files:
   - scripts/verify-digital-human-roles-scenarios
   - scripts/verify-harness-profile
   - scripts/verify-harness-profile-scenarios
+  - scripts/verify-entry-alignment
   - scripts/verify-instance-distribution
   - scripts/verify-approval-record
   - scripts/export-yss-skills
@@ -108,6 +126,7 @@ syntax_files:
   - scripts/verify-frontend-implementation-evidence
   - scripts/lib/task-package.mjs
   - scripts/lib/harness-profile.mjs
+  - scripts/lib/entry-alignment.mjs
   - scripts/lib/instance-distribution.mjs
   - scripts/verify-digital-human-task-package
   - scripts/verify-digital-human-task-package-scenarios
@@ -123,6 +142,7 @@ syntax_files:
   - scripts/verify-digital-human-roles-scenarios
   - scripts/verify-harness-profile
   - scripts/verify-harness-profile-scenarios
+  - scripts/verify-entry-alignment
   - scripts/verify-instance-distribution
   - scripts/verify-instance-distribution-scenarios
   - scripts/verify-approval-record
@@ -158,7 +178,7 @@ routing:
     groups: [collaboration, workspace-fixtures]
   - patterns: ["docs/templates/openapi-*", ".agents/skills/yss-openapi-*/**", ".agents/skills/yss-dto/**", "scripts/*openapi*", "scripts/*dto*"]
     groups: [contracts]
-  - patterns: ["docs/process/harness-profile.yaml", "docs/process/instance-distribution-manifest.yaml", "scripts/*harness-profile*", "scripts/*instance-distribution*", "scripts/lib/harness-profile.mjs", "scripts/lib/instance-distribution.mjs"]
+  - patterns: ["docs/process/harness-profile.yaml", "docs/process/instance-distribution-manifest.yaml", "scripts/*harness-profile*", "scripts/*entry-alignment*", "scripts/*instance-distribution*", "scripts/lib/harness-profile.mjs", "scripts/lib/entry-alignment.mjs", "scripts/lib/instance-distribution.mjs"]
     groups: [profile, workspace-fixtures]
   - patterns: ["docs/process/implementation-*", "scripts/*repository*", "scripts/*implementation*", "scripts/*scaffold*"]
     groups: [implementation]
@@ -204,12 +224,16 @@ groups:
       - { run: "scripts/verify-lifecycle-checkpoint docs/process/templates/lifecycle-checkpoint-template.yaml" }
       - { run: "scripts/verify-frontend-implementation-evidence --allow-template docs/process/templates/frontend-implementation-plan-template.yaml" }
       - { run: "scripts/verify-frontend-implementation-evidence --allow-template docs/process/templates/frontend-implementation-verification-template.yaml" }
+      - { run: "scripts/verify-frontend-implementation-evidence-scenarios" }
+      - { run: "scripts/verify-scaffold-architecture-decisions --allow-template docs/process/templates/scaffold-architecture-decisions-template.yaml" }
+      - { run: "scripts/verify-scaffold-architecture-decision-scenarios" }
       - { run: "scripts/verify-lifecycle-scenarios" }
       - { run: "scripts/verify-lifecycle-transition-scenarios" }
   profile:
     commands:
       - { run: "scripts/verify-harness-profile" }
       - { run: "scripts/verify-harness-profile-scenarios" }
+      - { run: "scripts/verify-entry-alignment" }
   workspace-fixtures:
     commands:
       - { run: "scripts/verify-subagent-task-package-scenarios" }
@@ -227,6 +251,8 @@ groups:
       - { run: "scripts/verify-implementation-path-scenarios" }
       - { run: "scripts/verify-repository-scope-scenarios" }
       - { run: "scripts/verify-scaffold-generator-scenarios" }
+      - { run: "node --test .agents/skills/yss-ddd-scaffold-generator/scripts/scaffold-generator.test.mjs" }
+      - { run: "node --test .agents/skills/yss-layered-mvc-scaffold-generator/scripts/scaffold-generator.test.mjs" }
       - { run: "scripts/verify-prototype-backend-scaffold-scenarios" }
       - { run: "scripts/verify-matt-yss-integration-scenarios" }
       - { run: "scripts/verify-yss-implementation-contract-compiler-scenarios" }

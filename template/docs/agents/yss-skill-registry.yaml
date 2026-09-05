@@ -6,6 +6,40 @@ description: >-
   单一可执行注册表。实现合同编译器与 Harness 编排器只消费通过本表校验的
   canonical 技能；skills-lock.json 继续独立持有来源、hash 与投影完整性。
 canonical_content_root: .agents/skills
+architecture_profiles:
+  target-domain-model:
+    architecture_family: domain-driven
+    generator_skill: yss-ddd-scaffold-generator
+    maturity: draft
+    core_modules: [domain, application, infrastructure, adapter, bootstrap]
+    capability_modules: {}
+    application_module: application
+    persistence_module: infrastructure
+    web_module: adapter/web
+    dto_modules: [web]
+  layered-mvc-service:
+    architecture_family: layered-mvc
+    generator_skill: yss-layered-mvc-scaffold-generator
+    maturity: draft
+    core_modules: [server, service, repository]
+    capability_modules:
+      external-integration: [adapter]
+      published-client: [client]
+      feign-client: [client, feign-client]
+    application_module: service
+    persistence_module: repository
+    web_module: server
+    dto_modules: [server, client]
+  mvc-data-analysis-v1:
+    architecture_family: layered-mvc
+    generator_skill: yss-mvc-data-analysis-project-initializer
+    maturity: draft
+    core_modules: [server, core, client, repository, adapter, feign-client]
+    capability_modules: {}
+    application_module: core
+    persistence_module: repository
+    web_module: server
+    dto_modules: [client]
 runtime_policy:
   consumed_by_compiler: true
   consumed_by_lifecycle: true
@@ -23,6 +57,10 @@ capability_contract:
     preserve_all_reasons: true
   deterministic_order: [recipe-declaration, dependency-topology, skill-id]
 capabilities:
+  - { id: layer.mvc-service, primary_skill: yss-application, architecture_family: layered-mvc, task_modes: [guidance, integration, slice-implementation, troubleshooting, review-input] }
+  - { id: layer.mvc-persistence, primary_skill: yss-repository, architecture_family: layered-mvc, task_modes: [guidance, integration, slice-implementation, troubleshooting, review-input] }
+  - { id: layer.mvc-web, primary_skill: yss-web-controller, architecture_family: layered-mvc, task_modes: [guidance, integration, slice-implementation, troubleshooting, review-input] }
+  - { id: project-init.mvc-data-analysis, primary_skill: yss-mvc-data-analysis-project-initializer, task_modes: [component-maintenance] }
   - { id: governance.implementation-contract, primary_skill: yss-implementation-contract-compiler, task_modes: [contract-compilation, reroute, result-validation] }
   - { id: maintenance.skill-source-index, primary_skill: yss-skill-source-index-refresh, task_modes: [component-maintenance, source-index-refresh] }
   - { id: architecture.system-data, primary_skill: architecture-agent, task_modes: [guidance, contract-compilation, review-input] }
@@ -47,8 +85,15 @@ capabilities:
   - { id: component.security-algorithm, primary_skill: yss-security-algorithm, task_modes: [guidance, integration, slice-implementation, troubleshooting, component-maintenance, review-input] }
   - { id: component.gateway-resilience, primary_skill: yss-resilience4j, task_modes: [guidance, integration, slice-implementation, troubleshooting, component-maintenance, review-input] }
   - { id: scaffold.ddd, primary_skill: yss-ddd-scaffold-generator, task_modes: [integration, component-maintenance] }
+  - { id: scaffold.layered-mvc, primary_skill: yss-layered-mvc-scaffold-generator, task_modes: [integration, component-maintenance] }
   - { id: migration.springboot3, primary_skill: yss-up-springboot3, task_modes: [guidance, integration, troubleshooting, component-maintenance, review-input] }
 recipes:
+  - { id: backend.ddd-domain-behavior, architecture_family: domain-driven, capabilities: [layer.domain, layer.application, quality.java-code-style] }
+  - { id: backend.ddd-persistence-mybatis, architecture_family: domain-driven, capabilities: [layer.persistence, framework.mybatis, codegen.mapstruct, codegen.lombok, quality.java-code-style] }
+  - { id: backend.ddd-http-api, architecture_family: domain-driven, capabilities: [layer.web-adapter, contract.dto-wire, contract.request-validation, contract.error-mapping, codegen.mapstruct, codegen.lombok, quality.java-code-style] }
+  - { id: backend.mvc-service-behavior, architecture_family: layered-mvc, capabilities: [layer.mvc-service, quality.java-code-style] }
+  - { id: backend.mvc-persistence-mybatis, architecture_family: layered-mvc, capabilities: [layer.mvc-persistence, framework.mybatis, codegen.mapstruct, codegen.lombok, quality.java-code-style] }
+  - { id: backend.mvc-http-api, architecture_family: layered-mvc, capabilities: [layer.mvc-web, contract.dto-wire, contract.request-validation, contract.error-mapping, codegen.mapstruct, codegen.lombok, quality.java-code-style] }
   - { id: backend.system-data-architecture, capabilities: [architecture.system-data] }
   - { id: backend.agent-execution, capabilities: [execution.backend-slice] }
   - { id: backend.domain-behavior, capabilities: [layer.domain, layer.application, quality.java-code-style] }
@@ -62,10 +107,13 @@ recipes:
   - { id: backend.security-algorithm, capabilities: [component.security-algorithm, contract.error-mapping] }
   - { id: backend.distributed-id, capabilities: [component.distributed-id] }
   - { id: backend.ddd-scaffold, capabilities: [scaffold.ddd, quality.java-code-style] }
+  - { id: backend.mvc-scaffold, capabilities: [scaffold.layered-mvc, quality.java-code-style] }
   - { id: backend.springboot3-migration, capabilities: [migration.springboot3, quality.java-code-style] }
 skill_dependencies:
   yss-ddd-scaffold-generator:
     - { skill: yss-backend-scaffold-parent, type: context-required }
+    - { skill: alibaba-java-code-style, type: context-required }
+  yss-layered-mvc-scaffold-generator:
     - { skill: alibaba-java-code-style, type: context-required }
   yss-domain:
     - { skill: alibaba-java-code-style, type: context-required }
@@ -476,6 +524,18 @@ skills:
     aliases: []
     impacts: [frontend]
   - id: yss-ddd-scaffold-generator
+    layer: specialist
+    maturity: supported
+    instance_default_discoverable: false
+    aliases: []
+    impacts: [backend]
+  - id: yss-mvc-data-analysis-project-initializer
+    layer: specialist
+    maturity: draft
+    instance_default_discoverable: false
+    aliases: []
+    impacts: [backend]
+  - id: yss-layered-mvc-scaffold-generator
     layer: specialist
     maturity: supported
     instance_default_discoverable: false

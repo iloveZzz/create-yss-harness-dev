@@ -138,6 +138,13 @@ export function validateHarnessProfile(profile = loadHarnessProfile(), {
   if (profile.upstream?.default_entry !== "work-unit.harness-entry") {
     fail("upstream.default_entry 必须为 work-unit.harness-entry");
   }
+  const handoff = profile.upstream?.strategic_design_handoff;
+  if (handoff?.schema_ref !== "docs/process/schemas/strategic-design-handoff.schema.json"
+    || handoff?.required_schema_version !== 3
+    || handoff?.ui_impact_requires_visual_baseline_schema_version !== 1
+    || handoff?.stale_baseline_policy !== "block-and-reroute") {
+    fail("upstream.strategic_design_handoff 必须固定 Handoff v3、Visual Baseline v1 与 stale 阻断策略");
+  }
 
   const instantiation = profile.instantiation || {};
   for (const [field, expected] of Object.entries(INSTANTIATION)) {
@@ -168,5 +175,10 @@ export const harnessProfileContract = Object.freeze({
   control_plane_roles: CONTROL_ROLES,
   allowed_work_units: ALLOWED_WORK_UNITS,
   forbidden_work_units: FORBIDDEN_WORK_UNITS,
+  strategic_design_handoff: Object.freeze({
+    schema_version: 3,
+    visual_baseline_schema_version: 1,
+    stale_baseline_policy: "block-and-reroute",
+  }),
   instantiation: INSTANTIATION,
 });

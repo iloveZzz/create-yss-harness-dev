@@ -19,6 +19,7 @@ const releaseBaseline = [
   "scripts/verify-digital-human-roles-scenarios",
   "scripts/verify-harness-profile",
   "scripts/verify-harness-profile-scenarios",
+  "scripts/verify-entry-alignment",
   "scripts/verify-instance-distribution",
   "scripts/verify-instance-distribution-scenarios",
   "scripts/verify-approval-record docs/templates/approval-record-template.yaml",

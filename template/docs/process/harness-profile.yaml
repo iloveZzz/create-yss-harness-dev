@@ -4,7 +4,7 @@ status: active
 name: 四角色开发落地 Harness（含后端交付专线）
 purpose: >-
   面向架构、前端、后端和测试四类 Agent，把已批准的上游 Spec 或战略设计交接包
-  细化为 DDD 战术设计、统一 Slice Implementation Contract、垂直切片实现、后端交付验证和独立验证。
+  细化为 DDD 战术设计、用户确认的后端脚手架架构选择、统一 Slice Implementation Contract、垂直切片实现、后端交付验证和独立验证。
 
 audience:
   target_user_roles:
@@ -47,6 +47,11 @@ upstream:
   kind: approved-spec-or-strategic-design
   default_entry: work-unit.harness-entry
   discovery_is_default: false
+  strategic_design_handoff:
+    schema_ref: docs/process/schemas/strategic-design-handoff.schema.json
+    required_schema_version: 3
+    ui_impact_requires_visual_baseline_schema_version: 1
+    stale_baseline_policy: block-and-reroute
   compatibility_skills:
     - grill-with-docs
     - to-spec

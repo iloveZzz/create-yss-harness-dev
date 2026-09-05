@@ -56,6 +56,8 @@ slice_contract:
     required_skills: []
     approved_interaction_ref:
     state_matrix_ref:
+    visual_baseline_ref:
+    visual_baseline_case_ids: []
     generated_api_client_ref:
     allowed_write_paths: []
     component_test_seams: []
@@ -102,7 +104,7 @@ slice_contract:
 
 只有上游输入、战术设计 / not-applicable、API / 数据 / UI 影响、实现仓库、写路径、测试 seam、验证命令和证据均满足，且不存在 blocked / stale / drift / violation / new_impacts 时，Orchestrator 才能把合同和切片设置为 ready-for-agent。
 
-API schema、数据库 schema、状态机、聚合、不变量、Gateway、写路径、测试 seam、验证命令、Registry digest 或 Compiler digest 发生实质变化时，当前合同变为 stale，所有下游任务暂停并递增 contract_version；重新编译后仍须由 Orchestrator 再批准。
+API schema、数据库 schema、状态机、Visual Baseline 版本或 digest、聚合、不变量、Gateway、写路径、测试 seam、验证命令、Registry digest 或 Compiler digest 发生实质变化时，当前合同变为 stale，所有下游任务暂停并递增 contract_version；重新编译后仍须由 Orchestrator 再批准。UI 切片只消费 `visual_baseline_case_ids` 指定的图片；Agent 必须先读 manifest 与语义引用，不得按目录 glob 猜测图片含义。
 
 一个切片可以组合多个窄 Recipe，但只计算一次闭包。Recipe 只能引用 capability；合同必须同时冻结 `required_capabilities`、`required_skills`、原因链与两个 digest。
 

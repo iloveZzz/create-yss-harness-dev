@@ -99,11 +99,11 @@ roles:
   - id: role.backend-agent
     name: 后端 Agent
     kind: digital-human
-    title: DDD 后端垂直切片 Agent
+    title: 后端垂直切片 Agent
     stages: [stage.slice-contract, stage.slice-implementation, stage.verification]
     draft_artifact_ids: [artifact.openapi-draft, artifact.data-architecture]
     owned_evidence_ids: [evidence.backend-verification]
-    core_skills: [backend-agent, yss-domain, yss-application, yss-repository, yss-mybatis, yss-web-controller, yss-dto, yss-exception, yss-validation, yss-implementation-contract-compiler, tdd]
+    core_skills: [backend-agent, yss-domain, yss-application, yss-repository, yss-mybatis, yss-web-controller, yss-dto, yss-exception, yss-validation, yss-ddd-scaffold-generator, yss-layered-mvc-scaffold-generator, yss-implementation-contract-compiler, tdd]
     forbidden_skills: [harness-orchestrator, architecture-agent, frontend-agent, test-agent, yss-ui, yss-formily, yss-frontend-scaffold-generator]
     description: >-
       消费批准的 Tactical Design Contract 和 API / 数据边界，负责 Domain、Application、Infrastructure、
@@ -117,7 +117,7 @@ roles:
     draft_artifact_ids: [artifact.test-strategy, artifact.test-seams]
     owned_evidence_ids: [evidence.fresh-verification, evidence.frontend-verification, evidence.backend-verification]
     core_skills: [test-agent, tdd, diagnosing-bugs, code-review, research]
-    forbidden_skills: [harness-orchestrator, architecture-agent, frontend-agent, backend-agent, yss-ddd-scaffold-generator, implement]
+    forbidden_skills: [harness-orchestrator, architecture-agent, frontend-agent, backend-agent, yss-ddd-scaffold-generator, yss-layered-mvc-scaffold-generator, implement]
     description: >-
       从战术设计和 Slice Contract 建立测试 seam、fixture 和失败基线，独立执行契约、集成、E2E 和 Fresh
       Verification；不修改产品范围、领域规则或生产实现来掩盖失败。

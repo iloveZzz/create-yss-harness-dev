@@ -20,6 +20,7 @@
 | Harness Orchestrator | 负责 Harness Agent 入口、影响面、合同、任务包、状态转移、证据汇合和重路由的系统编排组件。 | — | 不计入四类研发角色；不写业务代码，不替专业 Agent 做领域决策。不要称为「主控数字人」。 |
 | DDD Tactical Design Contract | 由 `role.architecture-agent` 将批准的上游 Spec / 战略设计细化出的聚合、行为、不变量、状态、一致性、Gateway、API 和数据边界合同。 | — | 不等同于实现代码或 OpenAPI Freeze；必须经测试 Agent 评审。 |
 | Harness Agent Contract | `harness-agent-contract-v1`，定义四角色协作、生命周期状态、执行态、Slice Contract 分区、就绪公式和重路由规则。 | — | 当前分支直接替换旧编排合同，不设 v2 或并行旧入口。 |
+| 脚手架架构选择 | 新建后端工程在受控生成合同编译前，由 Harness Orchestrator 给出 `domain-driven` / `layered-mvc` 推荐并由用户逐项目确认的工程基线决策。 | — | 不是新增生命周期门禁；生成器不代替用户选择，本体默认不等于子项目静默继承。 |
 | 角色配置 | 某数字人角色的关注阶段、技能包、可起草产物和禁止事项。 | — | 不是独立编排器，也不含平台群聊人数。 |
 | 生命周期会签 | 指定数字人或生物人关闭 `gate.*` / 独立审查并写入 `evidence.approval-record`。 | — | 不是运行时副作用审批。会签人由 `docs/agents/digital-human-roles.yaml` 的 `gate_policy` 指定。起草者不得会签自己起草的资产。`paused-human-gate` 表示等待该会签人，不是必须生物人。 |
 | 运行时副作用审批 | 对发消息、改生产、付款、删数据等工具动作的账号级确认。 | — | 点 Allow 不等于门禁已批准或可发布。避免只称「Grok 平台审批」。 |

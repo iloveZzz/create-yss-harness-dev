@@ -20,6 +20,7 @@
     "yss-formily-schema-generator",
     "yss-frontend-scaffold-generator",
     "yss-hook",
+    "yss-layered-mvc-scaffold-generator",
     "yss-microapp-commit",
     "yss-mybatis",
     "yss-openapi-draft-review",
@@ -57,6 +58,7 @@
         "yss-ddd-scaffold-generator",
         "yss-domain",
         "yss-dto",
+        "yss-layered-mvc-scaffold-generator",
         "yss-mybatis",
         "yss-repository",
         "yss-web-controller"

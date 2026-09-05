@@ -10,7 +10,7 @@ description: 在 DDD 战术设计阶段将批准的战略领域输入细化为�
 ## 适用边界
 
 - 由 `harness-orchestrator` 在 `work-unit.tactical-design` 中按领域影响条件调度。
-- 输入必须是版本当前的 Spec、功能架构、战略 DDD、状态矩阵、OpenAPI Draft / Freeze、ADR 和工程约束。
+- 输入必须是版本当前的 Spec、功能架构、战略 DDD、状态矩阵、OpenAPI Draft / Freeze、ADR 和工程约束。若输入来自 Strategic Design Handoff，必须先验证 schema v3 的上下文增量已对账、Visual Baseline Bundle 可读取且 digest 当前；未完成时不得开始战术建模。
 - 所有包含领域行为、聚合、不变量、状态、一致性、Domain Event、Gateway 或持久化映射影响的切片都必须形成当前版本 Tactical Design Contract；纯技术切片记录 `not-applicable` 及原因。
 - 没有聚合、状态、不变量、一致性或领域边界影响时返回 `not-applicable` 及原因，不生成空设计。
 
