@@ -3,8 +3,8 @@
   "templateName": "yss-harness-dev-agent",
   "profileId": "harness.dev-agent-slice",
   "templateSource": "github:iloveZzz/yss-harness-dev-agent",
-  "templateRepository": "/Users/zhudaoming/Projects/yss-spec-project-template/submodules/yss-harness-dev-agent",
-  "requestedRef": "working-tree",
+  "templateRepository": "https://github.com/iloveZzz/yss-harness-dev-agent.git",
+  "requestedRef": "9a0778c1bd2182fe20783a9f163dd1ba401c290b",
   "templateCommit": "9a0778c1bd2182fe20783a9f163dd1ba401c290b",
   "manifestHash": "4dbbc0879bfd8f6628f6e378b55ebcbbaa4708723d3de8d54d06ea023fd197e7",
   "encodedPaths": {
@@ -14,5 +14,5 @@
     ".gitignore": "__yss_dotfile__.gitignore"
   },
   "snapshotHash": "4e6dfadd6483d89fb5a7d629badbaba5e602613ff97d65abbd9e3e6ca9a35b30",
-  "generatedAt": "2026-09-05T07:39:10.382Z"
+  "generatedAt": "2026-09-05T07:48:01.881Z"
 }
