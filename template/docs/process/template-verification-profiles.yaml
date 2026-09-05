@@ -164,6 +164,8 @@ syntax_files:
   - scripts/run-template-verification
   - scripts/verify-template-verification-scenarios
 routing:
+  - patterns: ["scripts/*strategic-handoff*", "scripts/lib/strategic-handoff*", "scripts/fixtures/strategic-handoff/**", "docs/process/strategic-handoff-package.md", "docs/process/schemas/strategic-handoff-*"]
+    groups: [strategic-handoff-package]
   - patterns: [AGENTS.md, CONTEXT.md, yss-project.yaml, package.json, .gitignore, README.md, "docs/**"]
     groups: [hygiene]
   - patterns: [skills-lock.json, ".agents/skills/**", ".claude/skills/**", ".codex/skills/**", ".cursor/skills/**", ".pi/skills/**", ".qoder/skills/**", ".trae/skills/**", "docs/agents/yss-skill-registry.yaml", "scripts/*skill*"]
@@ -189,6 +191,10 @@ routing:
   - patterns: ["scripts/**"]
     groups: [hygiene]
 groups:
+  strategic-handoff-package:
+    commands:
+      - { run: "node --check scripts/lib/strategic-handoff.mjs" }
+      - { run: "scripts/verify-strategic-handoff-package-scenarios" }
   hygiene:
     commands: []
   tooling:

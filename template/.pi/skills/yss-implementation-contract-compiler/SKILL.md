@@ -40,3 +40,7 @@ description: 将已批准的 DDD 战术设计、冻结契约和 capability 编�
 - 业务行为使用 behavior-tdd；只有机械内容允许使用受控生成合同。
 - 已存在或已初始化工程不得因架构选择而重新生成；DDD/MVC 互转必须完整重路由到独立迁移工作单元。
 - 任务包写入范围、证据和命令必须能被独立验证，不能用自然语言说明替代结构化字段。
+
+## 战略交接快照包
+
+使用 `scripts/strategic-handoff export / verify / import`；源资产冻结、规则身份与批准绑定、目标术语对账和逐条承接合同以 `docs/process/strategic-handoff-package.md` 为准。来自导入包时，战术合同绑定 `strategic_handoff`；批准/流转前执行 `scripts/verify-strategic-handoff-consumption --root <target> <tactical>`，切片消费追加 `--slice <slice-id>`。存在延期时仅允许无依赖且核验通过的切片继续；未知依赖扩大阻断。

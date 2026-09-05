@@ -414,7 +414,7 @@
         "source": "project",
         "sourceType": "local",
         "skillPath": ".agents/skills/harness-orchestrator/SKILL.md",
-        "effectiveHash": "8fdd8723595977c81dbc6f8f03ed2daced8aac5128ba3b5edd40ea6fef87d343",
+        "effectiveHash": "9dd9b2496da3e1acf8030d14b82250b4652f534a9834bba9f93e8a656f495520",
         "targets": [
           ".agents/skills",
           ".claude/skills",
@@ -1340,7 +1340,7 @@
         "source": "project",
         "sourceType": "local",
         "skillPath": ".agents/skills/yss-implementation-contract-compiler/SKILL.md",
-        "effectiveHash": "7e8a1a419e00f44dcdfce149cdc6b0cf4b951b7170fcff21a107a4a3afc530de",
+        "effectiveHash": "4de6d9d27f4e00ecffa53f20bc365673745306440de03080f3db88eef7f3adbf",
         "targets": [
           ".agents/skills",
           ".claude/skills",
@@ -1535,7 +1535,7 @@
         "source": "project",
         "sourceType": "local",
         "skillPath": ".agents/skills/yss-tactical-design/SKILL.md",
-        "effectiveHash": "073d376833bf5b8f2f07662639826c1acb2c401c8af53f1e913916525c253dd9",
+        "effectiveHash": "db05a938a86b23ced7add6e49fd11e61ea438736c273e9b00471ef9680c70911",
         "targets": [
           ".agents/skills",
           ".claude/skills",

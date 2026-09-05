@@ -33,3 +33,7 @@ description: 在 DDD 战术设计阶段将批准的战略领域输入细化为�
 批准且版本当前的战术设计合同由 `Slice Implementation Contract` 引用，再由 `yss-domain` 使用 `behavior-tdd` 实现。`yss-domain` 不得静默重新定义聚合或不变量；发现新的 API、状态、数据或架构影响时必须返回 `new_impacts` / `drift` 并重新路由。
 
 合同、Schema、校验规则和示例见 `references/`；使用 `scripts/validate-tactical-design.mjs` 做只读验证。该 skill 不生成 Java、Repository、Controller、DTO、OpenAPI Freeze、实现 Ticket 或生产代码。
+
+## 战略交接快照包
+
+使用 `scripts/strategic-handoff export / verify / import`；源资产冻结、规则身份与批准绑定、目标术语对账和逐条承接合同以 `docs/process/strategic-handoff-package.md` 为准。来自导入包时，战术合同绑定 `strategic_handoff`；批准/流转前执行 `scripts/verify-strategic-handoff-consumption --root <target> <tactical>`，切片消费追加 `--slice <slice-id>`。存在延期时仅允许无依赖且核验通过的切片继续；未知依赖扩大阻断。

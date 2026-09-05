@@ -187,3 +187,12 @@ scaffold_contract_schema:
     completion_requires: [validate_passed, test_passed, package_passed]
     evidence: [preflight, command, exit_code, failure_category, duration_ms, stdout_ref, stderr_ref, executed_at]
     failure_action: blocked
+
+strategic_handoff_consumption:
+  when: upstream-source-is-imported-strategic-handoff
+  required: [import_receipt_ref, bundle_digest, context_reconciliation_ref, rows]
+  verification: scripts/verify-strategic-handoff-consumption --root <target> --slice <slice-id> <approved-tactical-contract>
+  require_actual_exit_code: 0
+  stale_policy: latest-imported-source-digest-and-dependent-slices
+  unknown_dependency: block-all
+  compiler_must_not_approve: true

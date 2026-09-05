@@ -1,6 +1,6 @@
 {
   "name": "create-yss-harness-dev",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Initialize a YSS development-landing Harness project-instance repository",
   "repository": {
     "type": "git",
