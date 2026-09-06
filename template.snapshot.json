@@ -4,8 +4,8 @@
   "profileId": "harness.dev-agent-slice",
   "templateSource": "github:iloveZzz/yss-harness-dev-agent",
   "templateRepository": "https://github.com/iloveZzz/yss-harness-dev-agent.git",
-  "requestedRef": "07a126d76ad33c1e4162d2379ffb68007e01dad3",
-  "templateCommit": "07a126d76ad33c1e4162d2379ffb68007e01dad3",
+  "requestedRef": "baae3f6e2f474b30cf8c97292be4580bafae1f37",
+  "templateCommit": "baae3f6e2f474b30cf8c97292be4580bafae1f37",
   "manifestHash": "4dbbc0879bfd8f6628f6e378b55ebcbbaa4708723d3de8d54d06ea023fd197e7",
   "encodedPaths": {
     ".codex/skills/data-analytics/.gitignore": ".codex/skills/data-analytics/__yss_dotfile__.gitignore",
@@ -13,6 +13,6 @@
     ".codex/skills/product-design/templates/prototype/.npmrc": ".codex/skills/product-design/templates/prototype/__yss_dotfile__.npmrc",
     ".gitignore": "__yss_dotfile__.gitignore"
   },
-  "snapshotHash": "01ad39db97e96a8eafce9053d2e27c3df90ccb90d5161454d254061fb25d6492",
-  "generatedAt": "2026-09-06T13:49:36.223Z"
+  "snapshotHash": "81950de0ec6208be8b6658a1ea600111712fe45fce38602d2ec5599eb34388f8",
+  "generatedAt": "2026-09-06T15:04:30.635Z"
 }

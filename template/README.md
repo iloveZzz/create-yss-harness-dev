@@ -106,7 +106,7 @@ scripts/verify-template
 | [AGENTS.md](./AGENTS.md) | 全局 AI 指令 + 工程基线入口 + Agent 协作 |
 | [docs/user-guide/用户手册索引.md](./docs/user-guide/用户手册索引.md) | 模板使用说明 |
 | [docs/user-guide/产品生命周期工作流.md](./docs/user-guide/产品生命周期工作流.md) | Harness Agent 五阶段使用手册 |
-| [docs/user-guide/图示生成器使用指南.md](./docs/user-guide/图示生成器使用指南.md) | Excalidraw 可视化辅助 skill 使用手册 |
+| [docs/user-guide/用户手册索引.md](./docs/user-guide/用户手册索引.md) | 本仓使用路线与专项手册导航 |
 | [docs/process/PDCA-SCRUM.md](./docs/process/PDCA-SCRUM.md) | PDCA × Scrum × AI |
 | [docs/process/MATT-POCOCK-ENGINEERING-SKILLS.md](./docs/process/MATT-POCOCK-ENGINEERING-SKILLS.md) | Matt Pocock Engineering Skills 集成与使用 |
 | [docs/process/lifecycle-registry.yaml](./docs/process/lifecycle-registry.yaml) | 生命周期结构事实源：主阶段、门禁、产物、工作单元、证据与稳定 ID |
@@ -131,3 +131,7 @@ scripts/verify-template
 | [docs/templates/implementation-repo-registry-template.md](./docs/templates/implementation-repo-registry-template.md) | 外部实现仓库登记 |
 | [docs/templates/cross-repo-slice-template.md](./docs/templates/cross-repo-slice-template.md) | 跨仓库垂直切片记录 |
 | [docs/architecture/templates/architecture-deepening-template.md](./docs/architecture/templates/architecture-deepening-template.md) | 架构 deepening 候选与 seam 设计 |
+
+## 用户手册
+
+首次使用请从 [本仓手册](docs/user-guide/研发子项目用户手册.md) 开始；练习见 [设备借用贯穿案例](docs/user-guide/设备借用贯穿案例.md)，其他入口见 [索引](docs/user-guide/用户手册索引.md)。

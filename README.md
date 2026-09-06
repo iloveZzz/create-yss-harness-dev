@@ -1,53 +1,73 @@
 # create-yss-harness-dev
 
-当前版本：`0.4.1`，模板固定到 `07a126d76ad33c1e4162d2379ffb68007e01dad3`。该版本同步战略交接包核验与受控导入，将源规则和场景追溯到战术设计、测试 seam 及依赖切片，并按未解决依赖阻断实现。
+源码候选版本：`0.4.2`。模板固定到 `baae3f6e2f474b30cf8c97292be4580bafae1f37`；最终快照身份与摘要见 `template.snapshot.json`。本次更新用户手册、五家族导航和设备借用教学案例，命令行为沿用既有身份保护。
 
-把 [`yss-harness-dev-agent`](https://github.com/iloveZzz/yss-harness-dev-agent) 五阶段开发落地 Harness 初始化、接管并同步为 `project-instance` 的 npm CLI。
+## 已发布安装与候选版本
 
-不是 [`create-yss-spec`](https://github.com/iloveZzz/create-yss-spec)。那是全产品生命周期模板的 CLI；两套产品用不同 metadata，互不接管。
-
-## 用法
+截至本轮核验，npm latest 为 `0.4.0`；源码候选尚未发布 npm。后续请自行查询实际发布状态：
 
 ```bash
+npm view create-yss-harness-dev version
 npm create yss-harness-dev@latest
 ```
 
-```bash
-npx create-yss-harness-dev@latest --help
-```
+`@latest` 获取已发布包，不保证包含 GitHub 最新手册。每次初始化使用包内固定模板，不会在运行时拉取模板仓。
 
-当前支持：`init`（默认）、`attach`、`sync`、`update` / `upgrade`。
-
-实例写入 `.yss-harness-dev.json`，`profileId` 为 `harness.dev-agent-slice`。目标已有 `.yss-template.json` 时 fail closed。
-
-第一版只做研发管理资产实例化：不生成前后端运行时、不登记实现仓库、不替代 Harness Orchestrator。
-
-使用方法和跨仓库契约以模板仓为准：
-
-- [create-yss-harness-dev 外部 CLI 实践指南](https://github.com/iloveZzz/yss-harness-dev-agent/blob/main/docs/user-guide/外部命令行工具实践指南.md)
-
-## 开发验证
-
-从本机相邻的 `yss-harness-dev-agent` 工作树同步快照（含未提交文件）：
+## 首次初始化
 
 ```bash
-npm test
+npx create-yss-harness-dev@latest --project-name "设备借用" --business-domain "内部设备管理" --target-dir ./equipment-project
 ```
 
-绑定远程固定 commit：
+生成后进入实例，核对 yss-project.yaml 为 project-instance、家族 metadata 的 templateCommit，然后阅读 docs/user-guide/用户手册索引.md。先让 Agent 只读检查身份、根 CONTEXT.md、profile 和当前上游，再按本仓流程推进。CLI 不创建远程仓、CI、Tracker 或运行时代码工程。
+
+## 家族与覆盖边界
+
+五家族分别使用 .yss-template.json、.yss-harness-design.json、.yss-harness-dev.json、.yss-harness-backend.json、.yss-harness-frontend.json。已有 profile 同样参与判定。
+
+异族、多重身份、损坏 metadata、未知/矛盾 profile 在写入前拒绝。`--force` 不能绕过，`--dry-run` 使用同一检查。不要删除 metadata 或用另一家族 CLI 覆盖。后端/前端专职只提供仓内 `node scripts/instantiate-harness --target <新目录>`，没有专用 npm 包、attach/sync 或原地迁移。
+
+## 已有项目与同族升级
+
+attach 用于尚未由本 CLI 管理的项目，必须选择预览或 apply；存在本族 metadata 时改用 sync。先保存 Git 基线，按场景选择命令，不连续盲目执行：
 
 ```bash
-YSS_HARNESS_TEMPLATE_REPO=https://github.com/iloveZzz/yss-harness-dev-agent.git \
-YSS_HARNESS_TEMPLATE_REF=<pinned-commit> npm test
-YSS_HARNESS_TEMPLATE_REF=<pinned-commit> npm pack --dry-run
+npx create-yss-harness-dev@latest attach --target-dir . --project-name "设备借用" --business-domain "内部设备管理" --dry-run
+npx create-yss-harness-dev@latest attach --target-dir . --project-name "设备借用" --business-domain "内部设备管理" --apply
+npx create-yss-harness-dev@latest sync --target-dir . --dry-run
+npx create-yss-harness-dev@latest sync --target-dir .
 ```
 
-正式发布不得跟随浮动 `main`。模板仓与本仓未共同通过集成验证时，不得声称整体可发布。
+普通 sync 更新未被用户修改的 baseline，保留用户冲突并报告删除项；force 仅在身份和路径安全检查通过后处理受管冲突。校验失败事务回滚并保留旧 metadata。成功后的撤销用升级前 Git 基线或备份，不用旧 CLI 强制反向同步。运行时代码、Git 与挂载点按现有保护语义处理。
 
-## 本次身份保护升级
+## 更新 CLI 程序
 
-本版本同步前后端 Harness 拆分后的共享交接资产，保持当前模板家族。init、attach 和 sync 的适用入口在生成计划前检查五种模板身份及已有 profile；异族、多重身份、损坏或矛盾声明均拒绝，`--force` 不能绕过，`--dry-run` 同样返回非零。历史 metadata 继续兼容，`legacy-attach` 仅在旧 schema 路径接受。
+```bash
+npx create-yss-harness-dev update --dry-run
+npx create-yss-harness-dev upgrade
+```
 
-`update` / `upgrade` 只更新 CLI 程序，不同步实例资产。专职后端和前端新项目分别检出 `yss-harness-backend-agent`、`yss-harness-frontend-agent` 的固定提交，在各自模板目录运行 `node scripts/instantiate-harness --target <新目录>`；这两个入口不提供原地 sync 或跨 profile 迁移。
+update/upgrade 只处理 CLI 程序，不同步实例资产；源码目录和 npx 环境按工具给出的安全提示操作，全局/项目安装按安装位置升级。
 
-旧实例升级前先保存 Git 基线，再用新版本执行 `sync --dry-run`，审阅后执行普通 `sync`；不默认添加 --force。失败按现有事务机制回滚，成功后的撤销使用升级前基线或保留备份，不用旧 CLI 强制反向同步。
+## 使用尚未发布的候选手册
+
+从本 CLI 仓库检出需要的固定提交。先读取 scripts/sync-template.js 的 DEFAULT_TEMPLATE_REF，将下列 `<模板完整SHA>` 替换为该值；在 CLI 仓库根运行。模板源地址须保持本家族。
+
+```bash
+YSS_HARNESS_TEMPLATE_REPO=https://github.com/iloveZzz/yss-harness-dev-agent.git YSS_HARNESS_TEMPLATE_REF=<模板完整SHA> pnpm run sync-template
+npm pack --ignore-scripts
+```
+
+`--ignore-scripts` 仅在上一步已成功产生并核对固定快照后使用，以免 prepack 改写输入。检查 tgz 中 template.snapshot.json 的模板 SHA 和 package.json 版本，然后使用实际包路径初始化：
+
+```bash
+npx --yes --package /absolute/path/create-yss-harness-dev-0.4.2.tgz create-yss-harness-dev --project-name "设备借用" --business-domain "内部设备管理" --target-dir ./equipment-candidate
+```
+
+这是安装本地已构建包的示例，不是 npm 发布操作。候选验证需覆盖新建实例的本地文档链接、身份、Skill 检查与适用交接链路；不要把历史验证日志当当前发布证据。
+
+## 详细手册与维护
+
+[模板使用指南](https://github.com/iloveZzz/yss-harness-dev-agent/blob/main/docs/user-guide/用户手册索引.md)介绍职责、提示词、确认和案例。问题涉及参数/同步/包分发时在本 CLI 跟踪；涉及模板内容或生命周期时在模板源跟踪。
+
+开发验证优先 `pnpm exec node --test tests/*.test.js`；需要重建快照时显式运行上面的固定输入 sync-template。模板先验证并提交，再绑定其 SHA、测试实际 tgz，最后交付 CLI 和父仓 gitlink。npm 发布须另外获得授权。
