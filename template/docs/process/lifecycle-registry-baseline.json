@@ -26,6 +26,7 @@
     "evidence.test-verification",
     "evidence.upstream-input-check",
     "gate.fresh-verification-passed",
+    "gate.frontend-delivery-inputs-verified",
     "gate.high-risk-architecture-confirmed",
     "gate.merge-approved",
     "gate.openapi-freeze-confirmed",
@@ -49,5 +50,5 @@
     "work-unit.tactical-design",
     "work-unit.verification"
   ],
-  "semantic_sha256": "e78da9613695f8c73c2bfcdb929049859256cddbaad862d8392c9d0e394145c6"
+  "semantic_sha256": "aeaa575a45e8e830a080bd98d8fc9e9ad37912709cc63ecfad2b1c85495c0386"
 }

@@ -150,7 +150,7 @@ gate_policy:
   commercial_contract: biological-human
   unlisted_kept_biological: [gate.high-risk-architecture-confirmed, gate.openapi-freeze-confirmed, gate.merge-approved]
   orchestrator: [gate.slice-contract-approved, gate.slice-ready-for-agent]
-  evidence_only: [gate.repository-identity-valid]
+  evidence_only: [gate.frontend-delivery-inputs-verified, gate.repository-identity-valid]
   biological_human: [gate.high-risk-architecture-confirmed, gate.openapi-freeze-confirmed, gate.merge-approved]
   digital_human_review:
     - gate: gate.tactical-design-approved

@@ -1,6 +1,6 @@
 # create-yss-harness-dev
 
-当前版本：`0.4.0`，模板固定到 `75e977bd9a839c1e0d7d432b46d0307cd2244ba3`。该版本同步战略交接包核验与受控导入，将源规则和场景追溯到战术设计、测试 seam 及依赖切片，并按未解决依赖阻断实现。
+当前版本：`0.4.1`，模板固定到 `07a126d76ad33c1e4162d2379ffb68007e01dad3`。该版本同步战略交接包核验与受控导入，将源规则和场景追溯到战术设计、测试 seam 及依赖切片，并按未解决依赖阻断实现。
 
 把 [`yss-harness-dev-agent`](https://github.com/iloveZzz/yss-harness-dev-agent) 五阶段开发落地 Harness 初始化、接管并同步为 `project-instance` 的 npm CLI。
 
@@ -43,3 +43,11 @@ YSS_HARNESS_TEMPLATE_REF=<pinned-commit> npm pack --dry-run
 ```
 
 正式发布不得跟随浮动 `main`。模板仓与本仓未共同通过集成验证时，不得声称整体可发布。
+
+## 本次身份保护升级
+
+本版本同步前后端 Harness 拆分后的共享交接资产，保持当前模板家族。init、attach 和 sync 的适用入口在生成计划前检查五种模板身份及已有 profile；异族、多重身份、损坏或矛盾声明均拒绝，`--force` 不能绕过，`--dry-run` 同样返回非零。历史 metadata 继续兼容，`legacy-attach` 仅在旧 schema 路径接受。
+
+`update` / `upgrade` 只更新 CLI 程序，不同步实例资产。专职后端和前端新项目分别检出 `yss-harness-backend-agent`、`yss-harness-frontend-agent` 的固定提交，在各自模板目录运行 `node scripts/instantiate-harness --target <新目录>`；这两个入口不提供原地 sync 或跨 profile 迁移。
+
+旧实例升级前先保存 Git 基线，再用新版本执行 `sync --dry-run`，审阅后执行普通 `sync`；不默认添加 --force。失败按现有事务机制回滚，成功后的撤销使用升级前基线或保留备份，不用旧 CLI 强制反向同步。

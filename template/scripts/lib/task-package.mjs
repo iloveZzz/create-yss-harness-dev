@@ -1,3 +1,5 @@
+import { enforceHarnessTaskScope } from "./harness-execution-scope.mjs";
+import { enforceFrontendDelivery } from "./frontend-delivery-boundary.mjs";
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { parseDocument } from "../vendor/yaml.mjs";
@@ -84,7 +86,7 @@ function validateCommon(value, registry, lifecycle) {
     }
     if (value.result.result_schema !== "workflow-execution-result-v1") fail("result_schema 必须为 workflow-execution-result-v1");
     if (value.result.work_unit !== value.work_unit_id) fail("Workflow Execution Result.work_unit 必须与任务包 work_unit_id 一致");
-    const routeResult = validateNextRoute(value.result.work_unit, value.result.next_route);
+    const routeResult = validateNextRoute(value.result.work_unit, value.result.next_route, value);
     if (routeResult.result !== "allowed") fail(`Workflow Execution Result next_route 非法: ${routeResult.blocking_signals.join(", ")}`);
     value.expected_evidence_files.forEach((ref) => assertReadableEvidenceRef(ref, "expected_evidence_files"));
     if (value.verification_results.length === 0) fail("已完成任务必须包含 verification_results");
@@ -160,6 +162,11 @@ function validateContract(value, registry, lifecycle) {
 
 export function validateTaskPackage(value, { rolesDoc, lifecycleDoc } = {}) {
   validateTaskPackageSchema(value);
+  enforceHarnessTaskScope(value);
+  const intake = value.execution_state === "Explorer" && value.allowed_write_paths.length === 0 && ["work-unit.entry-triage", "work-unit.harness-entry"].includes(value.work_unit_id);
+  if (!intake) {
+    enforceFrontendDelivery(value, { phase: value.contract.kind === "slice-implementation" ? "implementation" : "inputs" });
+  }
   const registry = rolesDoc || loadDigitalHumanRoles();
   const lifecycle = lifecycleDoc || loadRegistry();
   validateCommon(value, registry, lifecycle);

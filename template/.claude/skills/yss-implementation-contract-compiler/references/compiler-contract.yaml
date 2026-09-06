@@ -196,3 +196,10 @@ strategic_handoff_consumption:
   stale_policy: latest-imported-source-digest-and-dependent-slices
   unknown_dependency: block-all
   compiler_must_not_approve: true
+
+frontend_delivery_readiness:
+  when: specialized-frontend-profile-or-explicit-frontend-delivery-binding
+  source: docs/process/frontend-backend-delivery.md
+  verifier: scripts/verify-frontend-delivery
+  output_binding: frontend.delivery
+  inputs_verified_is_implementation_approval: false

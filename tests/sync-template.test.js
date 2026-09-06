@@ -163,10 +163,9 @@ function createCliRunner() {
   const runnerRoot = createSyncRunner();
   fs.mkdirSync(path.join(runnerRoot, "src"), { recursive: true });
   fs.mkdirSync(path.join(runnerRoot, "bin"), { recursive: true });
+  fs.cpSync(path.join(repoRoot, "src"), path.join(runnerRoot, "src"), { recursive: true });
   for (const relativePath of [
     "package.json",
-    "src/cli.js",
-    "src/self-update.js",
     "bin/create-yss-harness-dev.js",
   ]) {
     fs.mkdirSync(path.dirname(path.join(runnerRoot, relativePath)), {
@@ -241,6 +240,10 @@ test("sync expands internal directory projections into the bundled template", ()
 
 test("sync snapshot remains valid when packaging and running use different locales", () => {
   const fixtureRoot = createTemplateFixture();
+  // This fixture executes the real CLI, including its bundled YAML identity parser.
+  fs.copyFileSync(path.join(repoRoot, "template/scripts/vendor/yaml.mjs"), path.join(fixtureRoot, "scripts/vendor/yaml.mjs"));
+  fs.mkdirSync(path.join(fixtureRoot, "docs/process"), { recursive: true });
+  fs.writeFileSync(path.join(fixtureRoot, "docs/process/harness-profile.yaml"), "schema_version: 1\nprofile_id: harness.dev-agent-slice\n");
   const localizedDocsRoot = path.join(fixtureRoot, "docs/user-guide");
   fs.mkdirSync(localizedDocsRoot, { recursive: true });
   for (const fileName of [

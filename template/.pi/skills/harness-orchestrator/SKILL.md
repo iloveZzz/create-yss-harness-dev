@@ -16,6 +16,10 @@ description: 编排 DDD 战术设计到垂直切片交付的四角色 Harness Ag
 - 不批准自己生成的专业资产，不把 实现合同编译器 草案当成 approved，也不以聊天消息代替证据。
 - 只有当前版本 `Slice Implementation Contract` 满足就绪公式时，才能设置 `ready-for-agent`。
 
+## 前端联合接收
+
+专职前端 profile 或显式 `frontend_delivery` 输入，先执行 `docs/process/frontend-backend-delivery.md` 的实际校验；源战略与后端交付同时有效后才准备实现计划与合同，合同批准后再派发 Worker。接收、恢复与验收均重验，缺口回交权威方。通用研发 profile 未选择该路线时维持原行为。
+
 ## 主流程
 
 1. 校验上游输入、仓库身份、实现仓库、影响面和当前合同版本。

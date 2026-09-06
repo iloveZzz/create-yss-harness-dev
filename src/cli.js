@@ -1,4 +1,6 @@
 const crypto = require("node:crypto");
+const { createFamilyGuard } = require("./family-identity");
+let checkTargetFamily;
 const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
@@ -32,7 +34,6 @@ const INIT_EXCLUDED_RELATIVE_PATHS = new Set(
 const RENDERED_RELATIVE_PATHS = new Set(TEMPLATE_MANIFEST.renderPaths);
 const EXAMPLE_DOC_PATHS = new Set(TEMPLATE_MANIFEST.exampleDocPaths);
 const TEMPLATE_METADATA_FILENAME = ".yss-harness-dev.json";
-const FOREIGN_METADATA_FILENAME = ".yss-template.json";
 const PROFILE_ID = "harness.dev-agent-slice";
 const TEMPLATE_MANIFEST_VERSION = sha256(TEMPLATE_MANIFEST_TEXT);
 const TEMPLATE_SOURCE = "github:iloveZzz/yss-harness-dev-agent";
@@ -137,6 +138,7 @@ function readTemplateSnapshot() {
     throw new Error("模板快照内容 hash 不匹配，请重新构建 CLI 包");
   }
 
+  checkTargetFamily(BUNDLED_TEMPLATE_ROOT, { snapshot });
   return snapshot;
 }
 
@@ -1434,6 +1436,7 @@ function runTemplateVerification(targetDir, scriptPath) {
 }
 
 function verifyGeneratedTemplate(targetDir, mode = "managed") {
+  checkTargetFamily(targetDir);
   if (mode === "init" || mode === "sync") {
     verifyGeneratedInstance(targetDir, { checkForbiddenPaths: mode === "init" });
     return;
@@ -1479,11 +1482,7 @@ function verifyGeneratedInstance(targetDir, { checkForbiddenPaths = true } = {})
 }
 
 function assertNotForeignFamily(targetDir) {
-  if (pathKind(targetPath(targetDir, FOREIGN_METADATA_FILENAME)) !== "missing") {
-    throw new Error(
-      "目标属于 create-yss-spec 全生命周期实例（存在 .yss-template.json）。请使用 create-yss-spec，不要用 create-yss-harness-dev。",
-    );
-  }
+  checkTargetFamily(targetDir);
 }
 
 function loadTemplateMetadata(targetDir) {
@@ -1866,7 +1865,8 @@ function runInit(argv = []) {
     printVersion();
     return;
   }
-  return promptForMissingOptions(options).then((promptedOptions) => {
+  return promptForMissingOptions(options).then(async (promptedOptions) => {
+    checkTargetFamily = await createFamilyGuard(PACKAGE_ROOT, PACKAGE_MANIFEST.name);
     assertRequiredOptions(promptedOptions, "init");
     readTemplateSnapshot();
     const targetDir = normalizeTargetDir(promptedOptions.targetDir);
@@ -2140,6 +2140,11 @@ COMMANDS
   update     检查 npm 最新版本，如有更新则安装
   upgrade    update 的别名
 
+IDENTITY
+  仅操作本 CLI 对应的模板家族；异族、混合或矛盾身份不可用 --force 绕过。
+  update / upgrade 只升级 CLI 程序；模板资产同步与程序升级分开执行。
+  前后端专职新项目使用各自模板的 scripts/instantiate-harness，仅支持新目录。
+
 OPTIONS
   --project-name <name>              项目名称；init 不传则进入交互输入
   --business-domain <domain>         业务领域；init 不传则进入交互输入
@@ -2205,6 +2210,9 @@ async function runCli(argv = []) {
   if (argvIncludesFlag(argv, VERSION_FLAGS)) {
     printVersion();
     return;
+  }
+  if (["attach", "sync"].includes(argv[0])) {
+    checkTargetFamily = await createFamilyGuard(PACKAGE_ROOT, PACKAGE_MANIFEST.name);
   }
   if (argv[0] === "sync") {
     runSync(argv.slice(1));

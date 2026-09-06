@@ -1,3 +1,4 @@
+import { enforceFrontendDelivery } from "./frontend-delivery-boundary.mjs";
 const IMPLEMENTATION_WORK_UNIT = "work-unit.slice-implementation";
 const CONTRACT_WORK_UNIT = "work-unit.slice-contract";
 const VERIFICATION_WORK_UNIT = "work-unit.verification";
@@ -43,7 +44,11 @@ const blockedResult = (signals, missing = [], evidenceRefs = []) => ({
   next_work_unit: null,
 });
 
-export function validateNextRoute(currentWorkUnit, nextRoute) {
+export function validateNextRoute(currentWorkUnit, nextRoute, state, options = {}) {
+  if (["work-unit.tactical-design", CONTRACT_WORK_UNIT, IMPLEMENTATION_WORK_UNIT, VERIFICATION_WORK_UNIT].includes(nextRoute)) {
+    try { enforceFrontendDelivery(state, { root: options.root, phase: nextRoute === IMPLEMENTATION_WORK_UNIT ? "implementation" : "inputs" }); }
+    catch (error) { return blockedResult(["frontend-delivery-blocked"], [error.message]); }
+  }
   const routes = NEXT_ROUTES[currentWorkUnit];
   if (!routes) return blockedResult([BLOCKING_SIGNALS.invalidRoute], ["known_current_work_unit"]);
   if (nextRoute === null && routes.length === 0) return allowedResult();
@@ -53,7 +58,9 @@ export function validateNextRoute(currentWorkUnit, nextRoute) {
   return allowedResult();
 }
 
-export function validateSliceContractReadiness(state) {
+export function validateSliceContractReadiness(state, options = {}) {
+  try { enforceFrontendDelivery(state, { root: options.root, phase: "implementation" }); }
+  catch (error) { return blockedResult(["frontend-delivery-blocked"], [error.message]); }
   const contract = state?.slice_contract || state;
   const required = [
     "upstream_inputs_current_and_approved",
@@ -83,8 +90,8 @@ export function validateSliceContractReadiness(state) {
     : blockedResult(signals, [...missing, ...missingSections.map((section) => "section:" + section)], contract.evidence_refs || []);
 }
 
-export function validateImplementationEntry(state) {
-  const readiness = validateSliceContractReadiness(state?.slice_contract || state);
+export function validateImplementationEntry(state, options = {}) {
+  const readiness = validateSliceContractReadiness(state, options);
   if (readiness.result === "blocked") return readiness;
   if (state?.predecessor_work_unit !== CONTRACT_WORK_UNIT) {
     return blockedResult([BLOCKING_SIGNALS.wrongPredecessor], ["predecessor_work_unit=" + CONTRACT_WORK_UNIT], readiness.evidence_refs);

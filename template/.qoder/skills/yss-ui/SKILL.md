@@ -9,6 +9,8 @@ description: Use when implementing or reviewing YSS Vue pages that combine YSS w
 
 ## 1. 权威事实顺序
 
+采用专职前端 profile 或显式 `frontend_delivery` 时，按 `docs/process/frontend-backend-delivery.md` 核验战略与后端联合交付；缺任一输入只诊断和回交，正式实现与恢复从当前批准的 Slice Contract 重验接收摘要和真实服务。
+
 发生冲突时按以下顺序决策：
 
 1. 冻结的项目工程基线和批准的 Slice Implementation Contract。

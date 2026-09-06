@@ -23,6 +23,7 @@
 
 | 稳定 ID | 门禁 | 所属阶段 | 触发条件 | 前置门禁 | 必须留下的证据 |
 |---|---|---|---|---|---|
+| `gate.frontend-delivery-inputs-verified` | 前端联合输入核验 | `stage.slice-contract` | 专职前端 profile 或显式 frontend_delivery 绑定的任务启动、恢复、合同编译、实现和验证；实际执行 scripts/verify-frontend-delivery，输入就绪不等于实现获批。 | 无 | `evidence.fresh-verification` |
 | `gate.repository-identity-valid` | 仓库身份有效 | `stage.harness-entry` | 每次进入 Harness。 | 无 | `evidence.repository-identity-check` |
 | `gate.tactical-design-approved` | Tactical Design 批准 | `stage.tactical-design` | 存在领域行为、聚合、状态、不变量、一致性、事件、Gateway 或持久化影响。 | 无 | `evidence.tactical-design-review`、`evidence.approval-record` |
 | `gate.high-risk-architecture-confirmed` | 高风险架构确认 | `stage.tactical-design` | 存在不可逆或跨边界高风险架构取舍。 | 无 | `evidence.architecture-decision`、`evidence.approval-record` |
