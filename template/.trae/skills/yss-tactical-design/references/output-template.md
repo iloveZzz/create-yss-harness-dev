@@ -1,9 +1,11 @@
 pipeline: <feature-id>
-stage: tactical-design
+stage: system-data-engineering
 status: draft
-owner: role.architecture-agent
+owner: ai
 
 # <功能名称> Tactical DDD Design
+
+仅用于已确认 domain-driven 分支的阅读视图；引用 Technical Design Contract v2 的 design，不复制共同输入与审批状态。MVC 使用 yss-mvc-design。
 
 ## 上游引用
 
@@ -11,6 +13,9 @@ owner: role.architecture-agent
 |---|---|---|---|
 | Spec |  |  |  |
 | Strategic DDD |  |  |  |
+| Strategic Design Handoff v3 |  |  |  |
+| Visual Baseline Bundle v1 |  |  |  |
+| Strategic Context Import / Context Reconciliation |  |  |  |
 | 状态矩阵 |  |  |  |
 | OpenAPI / 无 API 影响记录 |  |  |  |
 

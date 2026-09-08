@@ -4,7 +4,7 @@ status: routing
 stage: stage.harness-entry
 artifacts: {}
 gates: {}
-next_work_unit: work-unit.tactical-design
+next_work_unit: work-unit.technical-design
 phase_boundary:
   decision: continue
   reason: initial routing

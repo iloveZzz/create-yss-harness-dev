@@ -1,5 +1,5 @@
 schema_version: 1
-gate_id: gate.tactical-design-approved
+gate_id: gate.technical-design-approved
 decision: approved
 actor_kind: digital-human
 role_id: role.test-agent

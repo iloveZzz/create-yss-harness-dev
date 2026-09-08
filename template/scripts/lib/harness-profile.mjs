@@ -16,7 +16,7 @@ export const TARGET_ROLES = [
 export const CONTROL_ROLES = ["role.harness-orchestrator"];
 export const ALLOWED_WORK_UNITS = [
   "work-unit.harness-entry",
-  "work-unit.tactical-design",
+  "work-unit.technical-design",
   "work-unit.slice-contract",
   "work-unit.slice-implementation",
   "work-unit.verification",

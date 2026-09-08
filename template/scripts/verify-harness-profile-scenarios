@@ -21,7 +21,7 @@ assert.equal(valid.cli_package, "create-yss-harness-dev");
 const mutations = [
   ["wrong profile", (candidate) => { candidate.profile_id = "harness.business-ddd-strategy-handoff"; }, /harness\.dev-agent-slice/],
   ["extra target role", (candidate) => candidate.audience.target_user_roles.push("role.product-manager"), /target_user_roles/],
-  ["wrong terminal", (candidate) => { candidate.lifecycle.terminal_work_unit = "work-unit.tactical-design"; }, /terminal_work_unit/],
+  ["wrong terminal", (candidate) => { candidate.lifecycle.terminal_work_unit = "work-unit.technical-design"; }, /terminal_work_unit/],
   ["discovery default", (candidate) => { candidate.upstream.discovery_is_default = true; }, /discovery_is_default/],
   ["legacy handoff", (candidate) => { candidate.upstream.strategic_design_handoff.required_schema_version = 2; }, /Handoff v3/],
   ["missing visual baseline", (candidate) => { delete candidate.upstream.strategic_design_handoff.ui_impact_requires_visual_baseline_schema_version; }, /Visual Baseline v1/],

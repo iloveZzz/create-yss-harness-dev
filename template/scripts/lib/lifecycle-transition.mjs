@@ -4,8 +4,8 @@ const CONTRACT_WORK_UNIT = "work-unit.slice-contract";
 const VERIFICATION_WORK_UNIT = "work-unit.verification";
 
 const NEXT_ROUTES = Object.freeze({
-  "work-unit.harness-entry": ["work-unit.tactical-design", CONTRACT_WORK_UNIT],
-  "work-unit.tactical-design": [CONTRACT_WORK_UNIT],
+  "work-unit.harness-entry": ["work-unit.technical-design", CONTRACT_WORK_UNIT],
+  "work-unit.technical-design": [CONTRACT_WORK_UNIT],
   [CONTRACT_WORK_UNIT]: [IMPLEMENTATION_WORK_UNIT],
   [IMPLEMENTATION_WORK_UNIT]: [VERIFICATION_WORK_UNIT],
   [VERIFICATION_WORK_UNIT]: [],
@@ -45,7 +45,7 @@ const blockedResult = (signals, missing = [], evidenceRefs = []) => ({
 });
 
 export function validateNextRoute(currentWorkUnit, nextRoute, state, options = {}) {
-  if (["work-unit.tactical-design", CONTRACT_WORK_UNIT, IMPLEMENTATION_WORK_UNIT, VERIFICATION_WORK_UNIT].includes(nextRoute)) {
+  if (["work-unit.technical-design", CONTRACT_WORK_UNIT, IMPLEMENTATION_WORK_UNIT, VERIFICATION_WORK_UNIT].includes(nextRoute)) {
     try { enforceFrontendDelivery(state, { root: options.root, phase: nextRoute === IMPLEMENTATION_WORK_UNIT ? "implementation" : "inputs" }); }
     catch (error) { return blockedResult(["frontend-delivery-blocked"], [error.message]); }
   }

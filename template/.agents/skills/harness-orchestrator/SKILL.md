@@ -1,6 +1,6 @@
 ---
 name: harness-orchestrator
-description: 编排 DDD 战术设计到垂直切片交付的四角色 Harness Agent 工作流；当需要路由、任务包、合同版本、状态或证据汇合时使用。
+description: 编排 DDD / MVC 技术设计到垂直切片交付的四角色 Harness Agent 工作流；当需要路由、任务包、合同版本、状态或证据汇合时使用。
 ---
 
 # Harness Orchestrator
@@ -23,8 +23,8 @@ description: 编排 DDD 战术设计到垂直切片交付的四角色 Harness Ag
 ## 主流程
 
 1. 校验上游输入、仓库身份、实现仓库、影响面和当前合同版本。
-2. 调度 `architecture-agent` 完成 Tactical Design Contract。
-3. 若 backend `scaffold_status=required`，基于 Tactical Design 与工程复杂度推荐 `domain-driven` 或 `layered-mvc`，展示本体及全部子项目的批量确认表并取得用户逐项目确认，持久化并批准 `scaffold-architecture-decisions.yaml`；不得静默默认，也不得把提问推迟到生成器。
+2. 在设计前确认架构来源：既有工程沿用当前登记；新工程基于批准需求和工程约束推荐 `domain-driven` 或 `layered-mvc`，展示所有子项目并取得用户逐项目确认，持久化 `scaffold-architecture-decisions.yaml`。不得从目录或默认值推断。
+3. 调度 `architecture-agent` 使用 `yss-technical-design`，按确认架构分别调用 DDD 或 MVC 专家，形成并审查 Technical Design Contract。后续脚手架消费同一个批准决定。
 4. 汇总四角色分区，按已确认架构编译 scaffold contract schema v3，并生成一个版本化 Slice Implementation Contract。
 5. 先调度 `test-agent` 建立测试 seam，再并行调度前后端 Worker。
 6. 收集每个任务包的 `workflow-execution-result-v1`，重新执行 Fresh Verification。

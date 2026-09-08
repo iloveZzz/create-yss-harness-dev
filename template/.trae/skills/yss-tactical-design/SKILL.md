@@ -1,17 +1,17 @@
 ---
 name: yss-tactical-design
-description: 在 DDD 战术设计阶段将批准的战略领域输入细化为可实现、可验证的聚合、行为、一致性和 Gateway 设计；不生成生产代码。
+description: 在 YSS 技术分析阶段将批准的战略领域输入细化为可审查的聚合、行为、一致性和 Gateway 设计；不生成生产代码。
 ---
 
 # yss-tactical-design
 
-本 skill 负责 DDD 战术设计，不新增生命周期主阶段。领域代码实现使用 `yss-domain`。旧 Discovery / 战略设计入口 `yss-stage-decision` 已退役，迁移路径见 `docs/agents/skill-migrations.md`。
+本 skill 负责 DDD 战术设计，不新增生命周期主阶段，也不替代 `yss-stage-decision` 或 `yss-domain`。
 
 ## 适用边界
 
-- 由 `harness-orchestrator` 在 `work-unit.tactical-design` 中按领域影响条件调度。
-- 输入必须是版本当前的 Spec、功能架构、战略 DDD、状态矩阵、OpenAPI Draft / Freeze、ADR 和工程约束。若输入来自 Strategic Design Handoff，必须先验证 schema v3 的上下文增量已对账、Visual Baseline Bundle 可读取且 digest 当前；未完成时不得开始战术建模。
-- 所有包含领域行为、聚合、不变量、状态、一致性、Domain Event、Gateway 或持久化映射影响的切片都必须形成当前版本 Tactical Design Contract；纯技术切片记录 `not-applicable` 及原因。
+- 由 `yss-technical-design` 在已确认 `domain-driven` 的技术设计分支中调用；传统 MVC 使用 `yss-mvc-design`，不得按状态或一致性影响单独推断为 DDD。
+- 输入必须是版本当前的 Spec、功能架构、战略 DDD、状态矩阵、OpenAPI Draft / Freeze、ADR 和工程约束。若输入来自 Strategic Design Handoff，必须先用 `scripts/verify-strategic-context-import` 验证 schema v3 `source_context_snapshot` / `context_delta` 已对账到目标仓根 `CONTEXT.md`，Visual Baseline Bundle 可读取且 digest 当前，并且目标侧 `context_reconciliation` 有效；未完成时不得开始战术建模。
+- 默认将结果写入系统概要设计 / 数据架构中的 Tactical DDD Check；聚合、状态机、一致性或持久化映射复杂到无法清楚表达时，才升级为独立战术设计文档。
 - 没有聚合、状态、不变量、一致性或领域边界影响时返回 `not-applicable` 及原因，不生成空设计。
 
 ## 设计内容
@@ -22,11 +22,11 @@ description: 在 DDD 战术设计阶段将批准的战略领域输入细化为�
 
 ## 输出与状态
 
-输出结构化 tactical-design contract、验证结果、评审引用和影响标记。状态使用 `draft`、`ready-for-human`、`approved`、`blocked`、`stale`、`drift`、`new_impacts`、`not-applicable`。
+新产物输出 Technical Design Contract schema v2 的 DDD `design` 分支（沿用 v1 DDD 内容结构）；旧独立 tactical-design contract schema v1 仅显式兼容读取，不自动迁移或批准。输出验证结果、评审引用和影响标记；来自 Strategic Design Handoff 时保留 `strategic_context_import_ref` 与 `context_reconciliation_ref`。状态使用 `draft`、`ready-for-human`、`approved`、`blocked`、`stale`、`drift`、`new_impacts`。
 
-当用户或当前 Tactical Design / 架构评审合同明确要求聚合关系、状态转换、调用链、数据流或 Before/After 图示时，追加使用 `archify`。图必须从当前 Spec、ADR、OpenAPI、Tactical Design Contract 和代码证据派生，保存成 `*.archify.json`、`*.html` 与 `*.receipt.json` 配对资产；它是审查证据，不是新的事实源或批准门禁。没有明确图示要求时，不把 `archify` 加入 `required_skills`。
+当用户或当前技术分析 / 架构评审合同明确要求聚合关系、状态转换、调用链、数据流或 Before/After 图示时，追加使用 `archify`。图必须从当前 Spec、ADR、OpenAPI、Tactical Design Contract 和代码证据派生，保存成 `*.archify.json`、`*.html` 与 `*.receipt.json` 配对资产；它是审查证据，不是新的事实源或批准门禁。没有明确图示要求时，不把 `archify` 加入 `required_skills`。
 
-本 skill 不能自行批准资产、设置 `ready-for-agent`、创建 Ticket 或修改生命周期状态。批准由 `harness-orchestrator` 维护；独立测试评审使用 `evidence.tactical-design-review`。
+本 skill 不能自行批准资产、设置 `ready-for-agent`、创建 Ticket 或修改生命周期状态。批准由 `harness-orchestrator` 维护；独立架构评审使用 `evidence.tactical-design-review`。
 
 ## 与实现交接
 
@@ -36,4 +36,6 @@ description: 在 DDD 战术设计阶段将批准的战略领域输入细化为�
 
 ## 战略交接快照包
 
-使用 `scripts/strategic-handoff export / verify / import`；源资产冻结、规则身份与批准绑定、目标术语对账和逐条承接合同以 `docs/process/strategic-handoff-package.md` 为准。来自导入包时，战术合同绑定 `strategic_handoff`；批准/流转前执行 `scripts/verify-strategic-handoff-consumption --root <target> <tactical>`，切片消费追加 `--slice <slice-id>`。存在延期时仅允许无依赖且核验通过的切片继续；未知依赖扩大阻断。
+跨仓交接使用 `scripts/strategic-handoff export / verify / import`。正式导出前补齐源战略的稳定规则 ID、关键场景和当前批准绑定；源资产原字节冻结、包内路径通过清单解析。目标导入只产生快照和对账/承接草案，正式 reconciliation 通过后才能进入战术设计。流程与字段见 `docs/process/strategic-handoff-package.md`。
+
+战术合同必须绑定 `strategic_handoff` 导入收据、包摘要、正式目标对账及逐条承接 rows。来自导入包时禁止仅填 `upstream_current: true`。批准前执行 `scripts/verify-strategic-handoff-consumption --root <target> <tactical>`；存在受控延期时按切片执行 `--slice <slice-id>`，实际核验通过且合同批准后才可继续相关切片。最新源规则、关键场景或资产变化使依赖项 stale；未知依赖扩大阻断，业务冲突回交战略方。结果绑定当前包与战术摘要，不能复用旧输出宣布 ready-for-agent。

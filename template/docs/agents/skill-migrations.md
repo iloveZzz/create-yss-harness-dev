@@ -46,3 +46,7 @@
 - 领域战术设计：`architecture-agent` 使用 `yss-tactical-design`
 
 当前流程从已批准的上游 Spec / 战略设计进入 Harness Entry。遇到旧 Discovery / 战略设计调用或旧阶段资产时返回 `blocked`，引用 `harness-agent-contract-v1` 并交回 Orchestrator。不得创建同名兼容目录，也不得恢复旧阶段决策包为现行路由。
+
+## 技术设计分支升级
+
+新流程使用 `work-unit.technical-design` / `stage.technical-design` / `gate.technical-design-approved`；原 DDD 工作单元、阶段和批准门禁 ID 退役且不复用。历史记录保留原字节，继续推进时由编排器核对当前输入后重新路由，不自动改状态。`artifact.tactical-design` 与 `evidence.tactical-design-review` 仍仅表示 DDD；新合同使用通用技术设计 ID。`tactical_design_current_or_not_applicable_recorded` 是既有就绪协议字段，读取时代表适用且当前的设计或有理由的不适用；不凭布尔值替代实际合同校验。

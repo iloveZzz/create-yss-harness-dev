@@ -2,23 +2,23 @@ schema_version: 1
 registry_id: yss.lifecycle
 status: active
 description: >-
-  harness-agent 的生命周期事实源。流程从已确认的上游输入进入 DDD 战术设计，经过统一 Slice
+  harness-agent 的生命周期事实源。流程从已确认的上游输入进入按已确认架构组织的技术设计，经过统一 Slice
   Implementation Contract，完成前后端垂直切片和独立测试验证。
 id_policy:
   pattern: '^(stage|gate|artifact|work-unit|evidence)\.[a-z0-9][a-z0-9-]*$'
   published_ids_immutable: true
   baseline: docs/process/lifecycle-registry-baseline.json
-  deprecated_ids: []
+  deprecated_ids: [stage.tactical-design, work-unit.tactical-design, gate.tactical-design-approved]
 
 stages:
   - id: stage.harness-entry
     name: Harness 入口
     goal: 校验仓库身份、上游输入、影响面和实现仓库上下文。
     exit_criteria: 上游输入版本当前，影响面、项目根、分支、写入范围和验证命令可解释。
-  - id: stage.tactical-design
-    name: DDD 战术设计
-    goal: 将已确认的战略领域输入细化为可实现、可验证的战术模型。
-    exit_criteria: Tactical Design Contract 已批准；无领域影响时已记录 not-applicable 及原因。
+  - id: stage.technical-design
+    name: 技术设计
+    goal: 按已确认的 DDD 或 MVC 架构把批准需求细化为可实现、可验证的设计。
+    exit_criteria: Technical Design Contract 已批准；无技术设计影响时已记录 not-applicable 及原因。
   - id: stage.slice-contract
     name: Slice Contract
     goal: 将战术设计和冻结契约编译为一个跨前后端测试的实现合同。
@@ -33,6 +33,9 @@ stages:
     exit_criteria: 所有命中门禁通过，阻塞信号清空，证据可读且 checkpoint 可追溯。
 
 evidence:
+  - id: evidence.technical-design-review
+    name: 技术设计评审证据
+    description: 按确认架构核验业务规则、关键场景、分层、事务与测试边界。
   - id: evidence.repository-identity-check
     name: 仓库身份校验结果
     description: yss-project.yaml 合法性与 repository_mode 裁决。
@@ -78,14 +81,14 @@ gates:
     stage: stage.harness-entry
     trigger: 每次进入 Harness。
     evidence: [evidence.repository-identity-check]
-  - id: gate.tactical-design-approved
-    name: Tactical Design 批准
-    stage: stage.tactical-design
-    trigger: 存在领域行为、聚合、状态、不变量、一致性、事件、Gateway 或持久化影响。
-    evidence: [evidence.tactical-design-review, evidence.approval-record]
+  - id: gate.technical-design-approved
+    name: Technical Design 批准
+    stage: stage.technical-design
+    trigger: 存在后端用例、规则、分层、状态、一致性或持久化设计影响。
+    evidence: [evidence.technical-design-review, evidence.approval-record]
   - id: gate.high-risk-architecture-confirmed
     name: 高风险架构确认
-    stage: stage.tactical-design
+    stage: stage.technical-design
     trigger: 存在不可逆或跨边界高风险架构取舍。
     evidence: [evidence.architecture-decision, evidence.approval-record]
   - id: gate.slice-contract-approved
@@ -115,6 +118,10 @@ gates:
     evidence: [evidence.approval-record, evidence.checkpoint-and-rollback]
 
 artifacts:
+  - id: artifact.technical-design
+    name: 技术设计合同
+    stage: stage.technical-design
+    trigger: 后端技术设计影响；按确认的 DDD 或 MVC 架构产出。
   - id: artifact.impact-assessment
     name: 影响面分析
     stage: stage.harness-entry
@@ -125,7 +132,7 @@ artifacts:
     trigger: 进入战术设计前。
   - id: artifact.tactical-design
     name: DDD 战术设计
-    stage: stage.tactical-design
+    stage: stage.technical-design
     trigger: 存在领域行为或战术 DDD 影响。
   - id: artifact.api-boundary
     name: API 边界
@@ -171,12 +178,12 @@ work_units:
     input: yss-project.yaml、CONTEXT.md 和已确认的上游输入。
     output: 影响面、仓库上下文和上游输入证据。
     completion: 身份、输入版本和写入边界可解释。
-  - id: work-unit.tactical-design
-    name: DDD 战术设计
+  - id: work-unit.technical-design
+    name: 技术设计
     scope: project-instance
     input: Spec、战略设计、状态矩阵、API / 数据约束和工程约束。
-    output: Tactical Design Contract、架构决策和测试 seam。
-    completion: 战术模型已批准，或无领域影响已记录 not-applicable。
+    output: Technical Design Contract、架构决策和测试 seam。
+    completion: 架构已确认且技术设计已批准，或无技术设计影响已记录 not-applicable。
   - id: work-unit.slice-contract
     name: Slice Contract 编译与批准
     scope: project-instance

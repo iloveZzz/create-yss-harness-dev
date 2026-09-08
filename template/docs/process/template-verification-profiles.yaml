@@ -164,6 +164,8 @@ syntax_files:
   - scripts/run-template-verification
   - scripts/verify-template-verification-scenarios
 routing:
+  - patterns: [".agents/skills/yss-technical-design/**", ".agents/skills/yss-mvc-design/**", "scripts/lib/technical-design-boundary.mjs"]
+    groups: [technical-design, implementation]
   - patterns: ["scripts/*backend-delivery*", "scripts/*frontend-delivery*", "scripts/lib/*backend-delivery*", "scripts/lib/*frontend-delivery*", "scripts/fixtures/backend-delivery/**", "docs/process/frontend-backend-delivery.md", "docs/process/schemas/backend-delivery*", "docs/process/schemas/frontend-delivery*"]
     groups: [frontend-delivery]
   - patterns: ["scripts/*strategic-handoff*", "scripts/lib/strategic-handoff*", "scripts/fixtures/strategic-handoff/**", "docs/process/strategic-handoff-package.md", "docs/process/schemas/strategic-handoff-*"]
@@ -193,6 +195,10 @@ routing:
   - patterns: ["scripts/**"]
     groups: [hygiene]
 groups:
+  technical-design:
+    commands:
+      - { run: "node .agents/skills/yss-technical-design/scripts/generate-schema.mjs --check" }
+      - { run: "node .agents/skills/yss-technical-design/tests/run-scenarios.mjs" }
   frontend-delivery:
     commands:
       - { run: "scripts/verify-frontend-delivery-scenarios" }

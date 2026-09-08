@@ -18,6 +18,7 @@
 | 数字人角色 | `docs/agents/digital-human-roles.yaml` 中定义的四类专业 Agent 身份：架构、前端、后端和测试。 | — | 不要恢复需求、产品、商务或按平台拆分的旧角色。 |
 | 当前工作区入口 | 只消费当前仓库根的 `yss-project.yaml` 与 `AGENTS.md`。 | — | 不要把父目录、兄弟 submodule 或其他模板仓的入口文件当作本仓路由。 |
 | Harness Orchestrator | 负责 Harness Agent 入口、影响面、合同、任务包、状态转移、证据汇合和重路由的系统编排组件。 | — | 不计入四类研发角色；不写业务代码，不替专业 Agent 做领域决策。不要称为「主控数字人」。 |
+| Technical Design Contract | 按已确认架构承接批准需求、业务规则与关键场景的技术设计合同。 | — | 分支细节由专属设计负责，不能替代实现合同或批准。 |
 | DDD Tactical Design Contract | 由 `role.architecture-agent` 将批准的上游 Spec / 战略设计细化出的聚合、行为、不变量、状态、一致性、Gateway、API 和数据边界合同。 | — | 不等同于实现代码或 OpenAPI Freeze；必须经测试 Agent 评审。 |
 | Harness Agent Contract | `harness-agent-contract-v1`，定义四角色协作、生命周期状态、执行态、Slice Contract 分区、就绪公式和重路由规则。 | — | 当前分支直接替换旧编排合同，不设 v2 或并行旧入口。 |
 | 脚手架架构选择 | 新建后端工程在受控生成合同编译前，由 Harness Orchestrator 给出 `domain-driven` / `layered-mvc` 推荐并由用户逐项目确认的工程基线决策。 | — | 不是新增生命周期门禁；生成器不代替用户选择，本体默认不等于子项目静默继承。 |

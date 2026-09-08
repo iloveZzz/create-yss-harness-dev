@@ -11,6 +11,7 @@
     "artifact.openapi-draft",
     "artifact.slice-implementation-contract",
     "artifact.tactical-design",
+    "artifact.technical-design",
     "artifact.test-seams",
     "artifact.test-strategy",
     "artifact.upstream-inputs",
@@ -23,6 +24,7 @@
     "evidence.frontend-verification",
     "evidence.repository-identity-check",
     "evidence.tactical-design-review",
+    "evidence.technical-design-review",
     "evidence.test-verification",
     "evidence.upstream-input-check",
     "gate.fresh-verification-passed",
@@ -34,10 +36,12 @@
     "gate.slice-contract-approved",
     "gate.slice-ready-for-agent",
     "gate.tactical-design-approved",
+    "gate.technical-design-approved",
     "stage.harness-entry",
     "stage.slice-contract",
     "stage.slice-implementation",
     "stage.tactical-design",
+    "stage.technical-design",
     "stage.verification",
     "work-unit.harness-entry",
     "work-unit.intensity-aware-review",
@@ -48,7 +52,8 @@
     "work-unit.slice-implementation",
     "work-unit.ssot-update",
     "work-unit.tactical-design",
+    "work-unit.technical-design",
     "work-unit.verification"
   ],
-  "semantic_sha256": "aeaa575a45e8e830a080bd98d8fc9e9ad37912709cc63ecfad2b1c85495c0386"
+  "semantic_sha256": "6580162a8ae6fa3ed28395673f4be32dd3256d3a7b1c929ff415a7686ed289df"
 }

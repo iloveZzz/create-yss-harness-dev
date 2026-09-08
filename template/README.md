@@ -1,6 +1,6 @@
 # YSS Harness Agent 模板源
 
-> 四角色、五阶段 Harness：`harness-entry` → `tactical-design` → `slice-contract` → `slice-implementation` → `verification`。
+> 四角色、五阶段 Harness：`harness-entry` → `technical-design` → `slice-contract` → `slice-implementation` → `verification`。
 
 ## 定位
 
@@ -44,7 +44,7 @@ README 只解释上述入口，不另定义阶段、门禁或技能分层。
 1. 先读取当前仓库根 `yss-project.yaml`，按 `repository_mode` 选择模板维护或产品研发生命周期。
 2. 必读入口为 `AGENTS.md` 与 `CONTEXT.md`；流程事实以 `docs/process/lifecycle-registry.yaml` 和 `docs/process/harness-process-tailoring.md` 为准。
 3. `template-source` 修改后默认执行 `scripts/verify-template-fast`；共享 skill 变化时再执行必要的投影与 lock 更新。PR 使用 candidate 核验，发布使用完整门禁。
-4. `project-instance` 先做影响面分诊，再走 `harness-orchestrator`：`harness-entry` → `tactical-design` → `slice-contract` → `slice-implementation` → `verification`。领域影响由 `architecture-agent` 使用 `yss-tactical-design`。`grill-with-docs`、`to-spec`、`to-tickets` 只作为用户显式兼容入口。
+4. `project-instance` 先做影响面分诊，再走 `harness-orchestrator`：`harness-entry` → `tactical-design` → `slice-contract` → `slice-implementation` → `verification`。后端技术设计影响由 `architecture-agent` 使用 `yss-technical-design` 按已确认架构分支。`grill-with-docs`、`to-spec`、`to-tickets` 只作为用户显式兼容入口。
 5. 实现仓库接入、YSS 路由、独立审查、fresh verification 和 Git checkpoint 以 `AGENTS.md` 的硬门禁为准。
 
 YSS skills 的公开发布投影维护在 [iloveZzz/yss-spec-dev-skills](https://github.com/iloveZzz/yss-spec-dev-skills)，发布清单和导出命令见 [skills 维护说明](./docs/agents/skills-maintenance.md)。

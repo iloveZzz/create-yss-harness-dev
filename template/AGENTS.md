@@ -30,7 +30,7 @@ README、用户指南和 `CLAUDE.md` 只解释或指向上述事实，不定义�
 - 创建或修改稳定资产前必须读取并持续消费根 `CONTEXT.md`；无法读取时返回 `blocked`。
 - 稳定术语先在根 `CONTEXT.md` 登记 PascalCase 英文标识，再进入契约、Ticket、代码或证据。每仓仅允许一个根 `CONTEXT.md`；术语引用使用 `<ContextId>/<EnglishIdentifier>`，真正共享的术语使用 `Global/<EnglishIdentifier>`。
 - `project-instance` 每个工作单元流转或申请批准前完成 `context_reconciliation`：先回写稳定术语，再核对 `document_digest` 与 `referenced_terms_digest`；缺失、冲突或漂移即 `blocked`。模板源只校验该合同并记录有理由的 `not-applicable`。
-- 当前流程使用 `harness-entry`、`tactical-design`、`slice-contract`、`slice-implementation`、`verification`；退役入口以 `docs/agents/skill-migrations.md` 为准，不参与当前路由。
+- 当前流程使用 `harness-entry`、`technical-design`、`slice-contract`、`slice-implementation`、`verification`；退役入口以 `docs/agents/skill-migrations.md` 为准，不参与当前路由。
 
 ## 4. `template-source` 维护
 
@@ -42,10 +42,10 @@ README、用户指南和 `CLAUDE.md` 只解释或指向上述事实，不定义�
 
 先读 `docs/process/harness-profile.yaml`，再按影响面裁剪。本仓只执行以下主链，终点为 `work-unit.verification`：
 
-`work-unit.harness-entry` → `work-unit.tactical-design` → `work-unit.slice-contract` → `work-unit.slice-implementation` → `work-unit.verification`
+`work-unit.harness-entry` → `work-unit.technical-design` → `work-unit.slice-contract` → `work-unit.slice-implementation` → `work-unit.verification`
 
 - 默认输入是已批准 Spec 或 Strategic Design Handoff；Discovery 不是默认阶段。`grill-with-docs`、`to-spec`、`to-tickets` 只能作为用户显式兼容入口，并回交 `harness-orchestrator` 验收。
-- 存在领域行为、聚合、不变量、状态、一致性、Domain Event、Gateway 或持久化映射影响时，由 `role.architecture-agent` 使用 `yss-tactical-design` 形成当前 Tactical Design Contract；无领域影响记录有理由的 `not-applicable`。
+- 存在后端用例、规则、分层、状态、一致性或持久化设计影响时，由 `role.architecture-agent` 使用 `yss-technical-design` 形成当前 Technical Design Contract；无技术设计影响记录有理由的 `not-applicable`。
 - API 影响先形成 OpenAPI 3.1 Draft，经必要审查后 Freeze；无 API 影响必须有当前记录。随后正式化为可独立验证的窄垂直切片，不得按技术层横向拆分。
 - 架构、前端、后端和测试只在同一个当前 Slice Implementation Contract 下工作。命中的条件门禁必须完成；未命中才可记录 `not-applicable`，不生成空文档。
 - `seam-deferred` 必须记录风险、责任人、后续 Ticket、验证计划和目标版本或日期。
@@ -59,7 +59,7 @@ README、用户指南和 `CLAUDE.md` 只解释或指向上述事实，不定义�
 ## 7. 实现硬门禁
 
 - 实现前读取 `docs/process/implementation-repo-integration.md`，登记目标仓、项目根、分支、CI、验证命令和回滚点；再由 `yss-implementation-contract-compiler` 编译最小技能集与合同草案。编译器不批准合同、不设置状态、不宣布完成。
-- 无可复用后端工程时，`harness-orchestrator` 根据当前 Tactical Design 给出 `domain-driven` / `layered-mvc` 推荐并由用户逐项目确认；确认后分别使用 `yss-ddd-scaffold-generator` / `yss-layered-mvc-scaffold-generator`。前端使用 `yss-frontend-scaffold-generator`。
+- 无可复用后端工程时，`harness-orchestrator` 在技术设计前根据批准需求与工程约束给出 `domain-driven` / `layered-mvc` 推荐并由用户逐项目确认；确认后分别使用 `yss-ddd-scaffold-generator` / `yss-layered-mvc-scaffold-generator`。前端使用 `yss-frontend-scaffold-generator`。
 - 脚手架仅在 `scaffold_status=required`、`scaffold-architecture-decisions.yaml` 已确认且批准、schema v3 生成合同已持久化后运行；生成器无交互、无回退，只产机械骨架。既有工程不覆盖，DDD / MVC 转换另立迁移工作单元；业务行为回到合同编译器并使用 `behavior-tdd`。
 - UI 影响切片在 `ready-for-agent` 前必须有通过校验的 `frontend_implementation_plan`，实现后补齐 `frontend_implementation_verification`，包含截图 / 视觉、状态与交互、console warning 和真实命令退出码证据。
 - 前端测试、type-check、构建优先 `pnpm`；后端优先项目根 `./mvnw`。缺失时记录受控例外和实际命令。

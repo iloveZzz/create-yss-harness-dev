@@ -75,7 +75,7 @@ missingSigners.gate_policy.digital_human_review[0].countersigners = [];
 mustFail(missingSigners, /countersigners/, "单审门禁缺 countersigners");
 
 const stringReview = clone();
-stringReview.gate_policy.digital_human_review = ["gate.tactical-design-approved"];
+stringReview.gate_policy.digital_human_review = ["gate.technical-design-approved"];
 mustFail(stringReview, /必须是含 gate/, "单审门禁仍用字符串名单");
 
 const missingGeneric = clone();
@@ -88,7 +88,7 @@ const rolesDoc = loadDigitalHumanRoles();
 try {
   validateApprovalRecord({
     schema_version: 1,
-    gate_id: "gate.tactical-design-approved",
+    gate_id: "gate.technical-design-approved",
     decision: "approved",
     actor_kind: "digital-human",
     role_id: "role.frontend-agent",

@@ -10,7 +10,7 @@
 | 稳定 ID | 阶段 | 目标 | 退出标准 |
 |---|---|---|---|
 | `stage.harness-entry` | Harness 入口 | 校验仓库身份、上游输入、影响面和实现仓库上下文。 | 上游输入版本当前，影响面、项目根、分支、写入范围和验证命令可解释。 |
-| `stage.tactical-design` | DDD 战术设计 | 将已确认的战略领域输入细化为可实现、可验证的战术模型。 | Tactical Design Contract 已批准；无领域影响时已记录 not-applicable 及原因。 |
+| `stage.technical-design` | 技术设计 | 按已确认的 DDD 或 MVC 架构把批准需求细化为可实现、可验证的设计。 | Technical Design Contract 已批准；无技术设计影响时已记录 not-applicable 及原因。 |
 | `stage.slice-contract` | Slice Contract | 将战术设计和冻结契约编译为一个跨前后端测试的实现合同。 | 合同版本当前、四个角色分区完整、写路径和验证命令明确，且就绪公式满足。 |
 | `stage.slice-implementation` | 垂直切片实现 | 由前端、后端和测试 Agent 按同一合同并行实现和验证。 | 行为实现、测试证据、契约一致性和写入边界均满足合同。 |
 | `stage.verification` | 独立验证 | 由测试 Agent 以独立执行态完成 Fresh Verification 和合并前复核。 | 所有命中门禁通过，阻塞信号清空，证据可读且 checkpoint 可追溯。 |
@@ -25,8 +25,8 @@
 |---|---|---|---|---|---|
 | `gate.frontend-delivery-inputs-verified` | 前端联合输入核验 | `stage.slice-contract` | 专职前端 profile 或显式 frontend_delivery 绑定的任务启动、恢复、合同编译、实现和验证；实际执行 scripts/verify-frontend-delivery，输入就绪不等于实现获批。 | 无 | `evidence.fresh-verification` |
 | `gate.repository-identity-valid` | 仓库身份有效 | `stage.harness-entry` | 每次进入 Harness。 | 无 | `evidence.repository-identity-check` |
-| `gate.tactical-design-approved` | Tactical Design 批准 | `stage.tactical-design` | 存在领域行为、聚合、状态、不变量、一致性、事件、Gateway 或持久化影响。 | 无 | `evidence.tactical-design-review`、`evidence.approval-record` |
-| `gate.high-risk-architecture-confirmed` | 高风险架构确认 | `stage.tactical-design` | 存在不可逆或跨边界高风险架构取舍。 | 无 | `evidence.architecture-decision`、`evidence.approval-record` |
+| `gate.technical-design-approved` | Technical Design 批准 | `stage.technical-design` | 存在后端用例、规则、分层、状态、一致性或持久化设计影响。 | 无 | `evidence.technical-design-review`、`evidence.approval-record` |
+| `gate.high-risk-architecture-confirmed` | 高风险架构确认 | `stage.technical-design` | 存在不可逆或跨边界高风险架构取舍。 | 无 | `evidence.architecture-decision`、`evidence.approval-record` |
 | `gate.slice-contract-approved` | Slice Contract 批准 | `stage.slice-contract` | 任一 Agent 进入切片实现前。 | 无 | `evidence.contract-approval` |
 | `gate.slice-ready-for-agent` | 切片实现就绪 | `stage.slice-contract` | Slice Contract 满足完整就绪公式。 | 无 | `evidence.contract-approval` |
 | `gate.openapi-freeze-confirmed` | OpenAPI Freeze 确认 | `stage.slice-contract` | 切片有 API 影响且契约进入实现。 | 无 | `evidence.approval-record` |
@@ -37,9 +37,10 @@
 
 | 稳定 ID | 产物 | 所属阶段 | 触发条件 |
 |---|---|---|---|
+| `artifact.technical-design` | 技术设计合同 | `stage.technical-design` | 后端技术设计影响；按确认的 DDD 或 MVC 架构产出。 |
 | `artifact.impact-assessment` | 影响面分析 | `stage.harness-entry` | 每次进入 Harness。 |
 | `artifact.upstream-inputs` | 上游输入包 | `stage.harness-entry` | 进入战术设计前。 |
-| `artifact.tactical-design` | DDD 战术设计 | `stage.tactical-design` | 存在领域行为或战术 DDD 影响。 |
+| `artifact.tactical-design` | DDD 战术设计 | `stage.technical-design` | 存在领域行为或战术 DDD 影响。 |
 | `artifact.api-boundary` | API 边界 | `stage.slice-contract` | 存在 API 影响。 |
 | `artifact.openapi-draft` | OpenAPI Draft | `stage.slice-contract` | 存在 API 影响且需要进入 Freeze 审查。 |
 | `artifact.data-architecture` | 数据架构 | `stage.slice-contract` | 存在数据模型、存储或一致性影响。 |
@@ -54,6 +55,7 @@
 
 | 稳定 ID | 证据 | 说明 |
 |---|---|---|
+| `evidence.technical-design-review` | 技术设计评审证据 | 按确认架构核验业务规则、关键场景、分层、事务与测试边界。 |
 | `evidence.repository-identity-check` | 仓库身份校验结果 | yss-project.yaml 合法性与 repository_mode 裁决。 |
 | `evidence.upstream-input-check` | 上游输入校验结果 | Spec、战略设计、原型、OpenAPI、数据架构和工程约束的版本与批准状态。 |
 | `evidence.tactical-design-review` | DDD 战术设计评审证据 | 聚合、Entity、Value Object、行为、不变量、状态、一致性、Gateway、持久化和测试 seam 的评审结果。 |

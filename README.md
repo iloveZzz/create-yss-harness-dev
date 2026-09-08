@@ -1,10 +1,10 @@
 # create-yss-harness-dev
 
-源码候选版本：`0.4.2`。模板固定到 `baae3f6e2f474b30cf8c97292be4580bafae1f37`；最终快照身份与摘要见 `template.snapshot.json`。本次更新用户手册、五家族导航和设备借用教学案例，命令行为沿用既有身份保护。
+源码候选版本：`0.5.0`。模板固定到 `e5ddeb084adece86333166389ad9c7132bc99437`；最终快照身份与摘要见 `template.snapshot.json`。本次同步通用技术设计、DDD/MVC 分支、编译器绑定与新旧交接协议兼容。
 
 ## 已发布安装与候选版本
 
-截至本轮核验，npm latest 为 `0.4.0`；源码候选尚未发布 npm。后续请自行查询实际发布状态：
+本轮更新 GitHub 源码，未发布 npm；实际发布版本请查询 registry：
 
 ```bash
 npm view create-yss-harness-dev version
@@ -61,7 +61,7 @@ npm pack --ignore-scripts
 `--ignore-scripts` 仅在上一步已成功产生并核对固定快照后使用，以免 prepack 改写输入。检查 tgz 中 template.snapshot.json 的模板 SHA 和 package.json 版本，然后使用实际包路径初始化：
 
 ```bash
-npx --yes --package /absolute/path/create-yss-harness-dev-0.4.2.tgz create-yss-harness-dev --project-name "设备借用" --business-domain "内部设备管理" --target-dir ./equipment-candidate
+npx --yes --package /absolute/path/create-yss-harness-dev-0.5.0.tgz create-yss-harness-dev --project-name "设备借用" --business-domain "内部设备管理" --target-dir ./equipment-candidate
 ```
 
 这是安装本地已构建包的示例，不是 npm 发布操作。候选验证需覆盖新建实例的本地文档链接、身份、Skill 检查与适用交接链路；不要把历史验证日志当当前发布证据。
@@ -71,3 +71,5 @@ npx --yes --package /absolute/path/create-yss-harness-dev-0.4.2.tgz create-yss-h
 [模板使用指南](https://github.com/iloveZzz/yss-harness-dev-agent/blob/main/docs/user-guide/用户手册索引.md)介绍职责、提示词、确认和案例。问题涉及参数/同步/包分发时在本 CLI 跟踪；涉及模板内容或生命周期时在模板源跟踪。
 
 开发验证优先 `pnpm exec node --test tests/*.test.js`；需要重建快照时显式运行上面的固定输入 sync-template。模板先验证并提交，再绑定其 SHA、测试实际 tgz，最后交付 CLI 和父仓 gitlink。npm 发布须另外获得授权。
+
+本版同步通用技术设计、DDD/MVC 分支与当前合同校验；新项目初始化和已有实例 sync 均消费固定模板。既有业务文件、架构登记和批准记录保留，旧 DDD 合同仅显式只读兼容。

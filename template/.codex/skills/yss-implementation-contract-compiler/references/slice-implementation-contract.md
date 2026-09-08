@@ -109,3 +109,7 @@ API schema、数据库 schema、状态机、Visual Baseline 版本或 digest、�
 一个切片可以组合多个窄 Recipe，但只计算一次闭包。Recipe 只能引用 capability；合同必须同时冻结 `required_capabilities`、`required_skills`、原因链与两个 digest。
 
 实现任务包使用 execution_state: Worker；测试 Agent 的独立 Review / Verifier 必须使用不同 actor_id。结果必须符合 workflow-execution-result-v1，并记录实际命令、退出码、执行时间和证据引用。
+
+## 技术设计绑定
+
+后端设计影响使用 `resolution.technical_design: {ref, version, digest}`，同时绑定 `slice_id` 和架构来源。当前批准的 v2 合同根据架构消费 `design`，DDD 专属字段仅适用于 `domain-driven`。旧 v1 DDD 可显式加 `legacy_ddd: true` 只读消费。编译与 freshness 都重验文件、版本、摘要、批准及切片依赖；不得自动迁移或批准。

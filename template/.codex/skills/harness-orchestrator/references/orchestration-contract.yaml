@@ -2,7 +2,7 @@ schema_version: 1
 contract_id: harness-agent-contract-v1
 status: active
 owner: role.harness-orchestrator
-target_scope: ddd-tactical-design-to-product-delivery
+target_scope: architecture-aware-design-to-product-delivery
 orchestrator: role.harness-orchestrator
 roles:
   - role.architecture-agent
@@ -14,8 +14,8 @@ execution_states: [Explorer, Drafter, Worker, Reviewer, Verifier]
 entry:
   required: [yss-project.yaml, CONTEXT.md, approved-upstream-inputs]
   rejected: [missing-context, invalid-repository-mode, stale-upstream-input]
-tactical_design:
-  required_for_impacts: [domain_behavior, aggregate, invariant, state_machine, consistency, domain_event, gateway_boundary, persistence_mapping]
+technical_design:
+  required_for_impacts: [backend_use_case, business_rule, layering, domain_behavior, aggregate, invariant, state_machine, consistency, domain_event, gateway_boundary, persistence_mapping]
   no_impact: not-applicable-with-reason
   owner: role.architecture-agent
   review_by: role.test-agent
@@ -32,17 +32,20 @@ work_unit_routes:
     skills: [harness-orchestrator, implementation-repo-onboarding, research]
     applies_when: harness_entry
     not_applicable_reason: harness_context_already_verified
-  work-unit.tactical-design:
+  work-unit.technical-design:
     primary_skill: architecture-agent
-    supporting_skills: [yss-tactical-design, domain-modeling, codebase-design, research, tdd]
-    skills: [architecture-agent, yss-tactical-design, domain-modeling, codebase-design, research, tdd]
-    applies_when: domain_behavior_or_tactical_design_impact
-    not_applicable_reason: no_domain_behavior_or_tactical_design_impact
+    supporting_skills: [yss-technical-design, codebase-design, research, tdd]
+    skills: [architecture-agent, yss-technical-design, codebase-design, research, tdd]
+    architecture_route:
+      domain-driven: [yss-tactical-design, domain-modeling]
+      layered-mvc: [yss-mvc-design]
+    applies_when: backend_technical_design_impact
+    not_applicable_reason: no_backend_technical_design_impact
   work-unit.slice-contract:
     primary_skill: harness-orchestrator
     supporting_skills: [architecture-agent, yss-implementation-contract-compiler, implementation-repo-onboarding]
     skills: [harness-orchestrator, architecture-agent, yss-implementation-contract-compiler, implementation-repo-onboarding]
-    applies_when: approved_tactical_design_and_frozen_contracts
+    applies_when: approved_technical_design_and_frozen_contracts
     not_applicable_reason: required_upstream_contract_not_current
   work-unit.slice-implementation:
     primary_skill: backend-agent
@@ -103,7 +106,7 @@ parallelism:
   frontend_backend_parallel_after_contract: true
   verifier_must_differ_from_worker: true
 gates:
-  architecture: [gate.tactical-design-approved, gate.slice-contract-approved]
+  architecture: [gate.technical-design-approved, gate.slice-contract-approved]
   implementation: [gate.slice-ready-for-agent]
   verification: [gate.fresh-verification-passed]
   human: [gate.high-risk-architecture-confirmed, gate.openapi-freeze-confirmed, gate.merge-approved]

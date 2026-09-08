@@ -59,7 +59,7 @@ orchestrator:
   name: Harness Orchestrator
   kind: orchestrator
   title: Harness Agent 生命周期编排器
-  stages: [stage.harness-entry, stage.tactical-design, stage.slice-contract, stage.slice-implementation, stage.verification]
+  stages: [stage.harness-entry, stage.technical-design, stage.slice-contract, stage.slice-implementation, stage.verification]
   default_dual_hat: []
   draft_artifact_ids: [artifact.impact-assessment, artifact.slice-implementation-contract]
   owned_evidence_ids: [evidence.fresh-verification, evidence.checkpoint-and-rollback]
@@ -73,11 +73,11 @@ roles:
   - id: role.architecture-agent
     name: 架构 Agent
     kind: digital-human
-    title: DDD 战术架构 Agent
-    stages: [stage.harness-entry, stage.tactical-design, stage.slice-contract, stage.verification]
-    draft_artifact_ids: [artifact.tactical-design, artifact.api-boundary, artifact.data-architecture, artifact.slice-implementation-contract]
-    owned_evidence_ids: [evidence.tactical-design-review, evidence.architecture-decision]
-    core_skills: [architecture-agent, yss-tactical-design, domain-modeling, codebase-design, research, tdd]
+    title: 技术架构 Agent
+    stages: [stage.harness-entry, stage.technical-design, stage.slice-contract, stage.verification]
+    draft_artifact_ids: [artifact.technical-design, artifact.tactical-design, artifact.api-boundary, artifact.data-architecture, artifact.slice-implementation-contract]
+    owned_evidence_ids: [evidence.technical-design-review, evidence.tactical-design-review, evidence.architecture-decision]
+    core_skills: [architecture-agent, yss-technical-design, codebase-design, research, tdd]
     forbidden_skills: [harness-orchestrator, frontend-agent, backend-agent, test-agent, yss-ui, yss-domain, yss-repository, yss-web-controller]
     description: >-
       负责把已确认的 Spec / 战略设计细化为 Tactical Design Contract，并定义聚合、行为、不变量、状态、
@@ -113,7 +113,7 @@ roles:
     name: 测试 Agent
     kind: digital-human
     title: 独立测试与验证 Agent
-    stages: [stage.tactical-design, stage.slice-contract, stage.slice-implementation, stage.verification]
+    stages: [stage.technical-design, stage.slice-contract, stage.slice-implementation, stage.verification]
     draft_artifact_ids: [artifact.test-strategy, artifact.test-seams]
     owned_evidence_ids: [evidence.fresh-verification, evidence.frontend-verification, evidence.backend-verification]
     core_skills: [test-agent, tdd, diagnosing-bugs, code-review, research]
@@ -128,8 +128,8 @@ stage_groups:
     stage: stage.harness-entry
     members: [role.harness-orchestrator, role.architecture-agent, role.test-agent]
   - id: group.tactical-design
-    name: DDD 战术设计
-    stage: stage.tactical-design
+    name: 技术设计
+    stage: stage.technical-design
     members: [role.harness-orchestrator, role.architecture-agent, role.test-agent]
   - id: group.slice-contract
     name: Slice Contract
@@ -153,14 +153,14 @@ gate_policy:
   evidence_only: [gate.frontend-delivery-inputs-verified, gate.repository-identity-valid]
   biological_human: [gate.high-risk-architecture-confirmed, gate.openapi-freeze-confirmed, gate.merge-approved]
   digital_human_review:
-    - gate: gate.tactical-design-approved
+    - gate: gate.technical-design-approved
       drafter: role.architecture-agent
       countersigners: [role.test-agent]
     - gate: gate.fresh-verification-passed
       drafter: role.test-agent
       countersigners: [role.architecture-agent]
   digital_human_review_work_units:
-    - work_unit: work-unit.tactical-design
+    - work_unit: work-unit.technical-design
       countersigners: [role.test-agent]
       implementer_must_differ: true
     - work_unit: work-unit.slice-implementation
@@ -170,3 +170,16 @@ gate_policy:
     - gate: gate.slice-contract-approved
       drafter: role.architecture-agent
       countersigners: [role.frontend-agent, role.backend-agent, role.test-agent]
+
+user_decision_policy:
+  schema_version: 1
+  default_responder: requester
+  delegate_requires_requester_evidence: true
+  source_kinds: [platform-message, session-export, user-confirmation-file]
+  gates: []
+  work_units: {}
+  conditional_decisions: [scaffold-choice]
+  waiting_allows: independent-work-only
+  expiry: basis-change-or-revocation-only
+  record_schema: docs/process/schemas/user-decision.schema.json
+  verifier: scripts/verify-user-decision
