@@ -57,6 +57,7 @@ capability_contract:
     preserve_all_reasons: true
   deterministic_order: [recipe-declaration, dependency-topology, skill-id]
 capabilities:
+  - { id: writing.lifecycle-document, primary_skill: i-have-adhd, task_modes: [guidance] }
   - { id: architecture.technical-design, primary_skill: yss-technical-design, task_modes: [guidance, integration, review-input] }
   - { id: architecture.mvc-design, primary_skill: yss-mvc-design, architecture_family: layered-mvc, task_modes: [guidance, integration, review-input] }
   - { id: layer.mvc-service, primary_skill: yss-application, architecture_family: layered-mvc, task_modes: [guidance, integration, slice-implementation, troubleshooting, review-input] }
@@ -112,6 +113,28 @@ recipes:
   - { id: backend.mvc-scaffold, capabilities: [scaffold.layered-mvc, quality.java-code-style] }
   - { id: backend.springboot3-migration, capabilities: [migration.springboot3, quality.java-code-style] }
 skill_dependencies:
+  test-agent:
+    - { skill: i-have-adhd, type: context-conditional, when: lifecycle-document-output }
+  backend-agent:
+    - { skill: i-have-adhd, type: context-conditional, when: lifecycle-document-output }
+  frontend-agent:
+    - { skill: i-have-adhd, type: context-conditional, when: lifecycle-document-output }
+  architecture-agent:
+    - { skill: i-have-adhd, type: context-conditional, when: lifecycle-document-output }
+  prototype-review:
+    - { skill: i-have-adhd, type: context-conditional, when: lifecycle-document-output }
+  code-review:
+    - { skill: i-have-adhd, type: context-conditional, when: lifecycle-document-output }
+  yss-implementation-contract-compiler:
+    - { skill: i-have-adhd, type: context-conditional, when: lifecycle-document-output }
+  yss-openapi-governance:
+    - { skill: i-have-adhd, type: context-conditional, when: lifecycle-document-output }
+  yss-prototype-stage:
+    - { skill: i-have-adhd, type: context-conditional, when: lifecycle-document-output }
+  yss-research:
+    - { skill: i-have-adhd, type: context-conditional, when: lifecycle-document-output }
+  harness-orchestrator:
+    - { skill: i-have-adhd, type: context-conditional, when: lifecycle-document-output }
   yss-ddd-scaffold-generator:
     - { skill: yss-backend-scaffold-parent, type: context-required }
     - { skill: alibaba-java-code-style, type: context-required }
@@ -123,6 +146,7 @@ skill_dependencies:
     - { skill: yss-tactical-design, type: context-conditional, when: tactical-domain }
     - { skill: lombok, type: context-conditional, when: pojo }
   yss-technical-design:
+    - { skill: i-have-adhd, type: context-conditional, when: lifecycle-document-output }
     - { skill: yss-tactical-design, type: coordination-only, when: domain-driven }
     - { skill: yss-mvc-design, type: coordination-only, when: layered-mvc }
   yss-mvc-design:
@@ -159,7 +183,7 @@ skill_dependencies:
     - { skill: yss-exception, type: component-dependency }
   yss-exception:
     - { skill: yss-dto, type: context-required }
-  yss-page-module-development:
+  yss-ui-business-page-generation:
     - { skill: yss-components, type: context-conditional, when: components }
     - { skill: yss-hook, type: context-conditional, when: hooks }
     - { skill: yss-formily, type: context-conditional, when: form }
@@ -191,7 +215,12 @@ invocation_contract:
     maintainer-only:
       invocation_mode: user
       primary_output: maintenance-operation
-  overrides: {}
+  overrides:
+    i-have-adhd:
+      invocation_mode: model
+      trigger_conditions: [lifecycle-document-output]
+      exclusion_conditions: [code-only-work, command-only-work, unrelated-conversation, user-disabled]
+      primary_output: document-writing-assistance
 agent_runtime_roots:
   claude: .claude/skills
   codex: .codex/skills
@@ -200,6 +229,7 @@ agent_runtime_roots:
   qoder: .qoder/skills
   trae: .trae/skills
 skills:
+  - { id: i-have-adhd, layer: core, maturity: supported, instance_default_discoverable: true, aliases: [], impacts: [writing] }
   - id: alibaba-java-code-style
     layer: specialist
     maturity: supported
@@ -380,11 +410,11 @@ skills:
     instance_default_discoverable: true
     aliases: []
     impacts: [prototype]
-  - id: research
+  - id: yss-research
     layer: core
     maturity: supported
     instance_default_discoverable: true
-    aliases: []
+    aliases: [research]
     impacts: [discovery]
   - id: resolving-merge-conflicts
     layer: core
@@ -616,12 +646,6 @@ skills:
     instance_default_discoverable: false
     aliases: []
     impacts: [frontend]
-  - id: yss-microapp-commit
-    layer: maintainer-only
-    maturity: supported
-    instance_default_discoverable: false
-    aliases: [microapp-commit]
-    impacts: [frontend]
   - id: yss-mybatis
     layer: specialist
     maturity: supported
@@ -640,11 +664,11 @@ skills:
     instance_default_discoverable: true
     aliases: []
     impacts: [api]
-  - id: yss-page-module-development
+  - id: yss-ui-business-page-generation
     layer: specialist
     maturity: supported
     instance_default_discoverable: false
-    aliases: [page-module-development, yss-ui-business-page-generation]
+    aliases: []
     impacts: [frontend]
   - id: yss-prototype-stage
     layer: core

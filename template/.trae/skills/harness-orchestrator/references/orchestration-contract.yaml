@@ -1,4 +1,13 @@
 schema_version: 1
+document_writing:
+  supporting_skill: i-have-adhd
+  condition: lifecycle-document-output
+  scope: current-document-work-only
+  dispatch: pass-condition-and-reference-to-document-owner
+  reference: docs/process/document-writing.md
+  examples: docs/templates/examples/lifecycle-writing-examples.md
+  artifact_ownership: unchanged
+  gate_and_status_semantics: unchanged
 contract_id: harness-agent-contract-v1
 status: active
 owner: role.harness-orchestrator
@@ -28,14 +37,14 @@ slice_contract:
 work_unit_routes:
   work-unit.harness-entry:
     primary_skill: harness-orchestrator
-    supporting_skills: [implementation-repo-onboarding, research]
-    skills: [harness-orchestrator, implementation-repo-onboarding, research]
+    supporting_skills: [implementation-repo-onboarding, yss-research]
+    skills: [harness-orchestrator, implementation-repo-onboarding, yss-research]
     applies_when: harness_entry
     not_applicable_reason: harness_context_already_verified
   work-unit.technical-design:
     primary_skill: architecture-agent
-    supporting_skills: [yss-technical-design, codebase-design, research, tdd]
-    skills: [architecture-agent, yss-technical-design, codebase-design, research, tdd]
+    supporting_skills: [yss-technical-design, codebase-design, yss-research, tdd]
+    skills: [architecture-agent, yss-technical-design, codebase-design, yss-research, tdd]
     architecture_route:
       domain-driven: [yss-tactical-design, domain-modeling]
       layered-mvc: [yss-mvc-design]

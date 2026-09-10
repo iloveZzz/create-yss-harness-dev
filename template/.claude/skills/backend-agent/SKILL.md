@@ -7,6 +7,8 @@ description: 根据批准的 DDD 战术设计和 Slice Contract 完成后端垂�
 
 负责把架构 Agent 已批准的战术模型和应用边界落成后端代码，并以项目根 `./mvnw` 完成验证。
 
+文档输出时按 `lifecycle-document-output` 条件调用 `i-have-adhd`，读取 `docs/process/document-writing.md`；作用域仅限当前产物，派发时传递条件及引用。
+
 ## 交付内容
 
 - Domain、Application、Infrastructure、Repository、Web / Controller、DTO 和异常映射。

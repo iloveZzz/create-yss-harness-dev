@@ -21,11 +21,10 @@
     "yss-frontend-scaffold-generator",
     "yss-hook",
     "yss-layered-mvc-scaffold-generator",
-    "yss-microapp-commit",
     "yss-mybatis",
     "yss-openapi-draft-review",
     "yss-openapi-governance",
-    "yss-page-module-development",
+    "yss-ui-business-page-generation",
     "yss-prototype-stage",
     "yss-repository",
     "yss-resilience4j",
@@ -45,7 +44,6 @@
       "title": "生命周期",
       "description": "用于 YSS 产品生命周期、路由和跨仓库协作的技能。",
       "skills": [
-        "yss-microapp-commit",
         "yss-implementation-contract-compiler",
         "yss-skill-source-index-refresh"
       ]
@@ -75,7 +73,7 @@
         "yss-formily-schema-generator",
         "yss-frontend-scaffold-generator",
         "yss-hook",
-        "yss-page-module-development",
+        "yss-ui-business-page-generation",
         "yss-prototype-stage",
         "yss-ui",
         "yss-use-table-height",

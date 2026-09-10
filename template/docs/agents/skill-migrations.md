@@ -2,6 +2,14 @@
 
 本文记录已退役技能入口的迁移路径。退役技能不保留物理目录、投影或 lock 条目；本文件是历史名称的唯一持久兼容说明。
 
+## 研究、页面与提交入口收敛（2026-09-11）
+
+- `research` 物理 Skill 迁移到 `yss-research`；仅保留 `research` 作为其兼容 alias。
+- `yss-page-module-development` 及 `page-module-development` 迁移到 `yss-ui-business-page-generation`，不保留旧 alias 或目录。
+- `yss-microapp-commit` 及 `microapp-commit` 迁移到 `frontend-commit`，不保留旧 alias 或目录。
+
+Registry、角色配置、公开清单、投影和 lock 必须使用新的 canonical ID；历史冻结证据不改写。
+
 ## 实现合同与源码索引技能硬替换（2026-09-04）
 
 `yss-router` 已由 `yss-implementation-contract-compiler` 硬替换；`yss-source-index` 已由 `yss-skill-source-index-refresh` 硬替换。两个旧 ID 不保留 alias、兼容目录、投影或 lock 条目，也不能作为 Recipe、合同、模板或脚本的正向输入。

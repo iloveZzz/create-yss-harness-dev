@@ -18,6 +18,7 @@
 
 | Capability | Primary skill | Task modes |
 | --- | --- | --- |
+| `writing.lifecycle-document` | `i-have-adhd` | `guidance` |
 | `architecture.technical-design` | `yss-technical-design` | `guidance`, `integration`, `review-input` |
 | `architecture.mvc-design` | `yss-mvc-design` | `guidance`, `integration`, `review-input` |
 | `layer.mvc-service` | `yss-application` | `guidance`, `integration`, `slice-implementation`, `troubleshooting`, `review-input` |
@@ -109,6 +110,17 @@
 
 | Skill | Dependency | Type | Condition |
 | --- | --- | --- | --- |
+| `test-agent` | `i-have-adhd` | `context-conditional` | `lifecycle-document-output` |
+| `backend-agent` | `i-have-adhd` | `context-conditional` | `lifecycle-document-output` |
+| `frontend-agent` | `i-have-adhd` | `context-conditional` | `lifecycle-document-output` |
+| `architecture-agent` | `i-have-adhd` | `context-conditional` | `lifecycle-document-output` |
+| `prototype-review` | `i-have-adhd` | `context-conditional` | `lifecycle-document-output` |
+| `code-review` | `i-have-adhd` | `context-conditional` | `lifecycle-document-output` |
+| `yss-implementation-contract-compiler` | `i-have-adhd` | `context-conditional` | `lifecycle-document-output` |
+| `yss-openapi-governance` | `i-have-adhd` | `context-conditional` | `lifecycle-document-output` |
+| `yss-prototype-stage` | `i-have-adhd` | `context-conditional` | `lifecycle-document-output` |
+| `yss-research` | `i-have-adhd` | `context-conditional` | `lifecycle-document-output` |
+| `harness-orchestrator` | `i-have-adhd` | `context-conditional` | `lifecycle-document-output` |
 | `yss-ddd-scaffold-generator` | `yss-backend-scaffold-parent` | `context-required` | — |
 | `yss-ddd-scaffold-generator` | `alibaba-java-code-style` | `context-required` | — |
 | `yss-layered-mvc-scaffold-generator` | `alibaba-java-code-style` | `context-required` | — |
@@ -116,6 +128,7 @@
 | `yss-domain` | `domain-modeling` | `coordination-only` | — |
 | `yss-domain` | `yss-tactical-design` | `context-conditional` | `tactical-domain` |
 | `yss-domain` | `lombok` | `context-conditional` | `pojo` |
+| `yss-technical-design` | `i-have-adhd` | `context-conditional` | `lifecycle-document-output` |
 | `yss-technical-design` | `yss-tactical-design` | `coordination-only` | `domain-driven` |
 | `yss-technical-design` | `yss-mvc-design` | `coordination-only` | `layered-mvc` |
 | `yss-mvc-design` | `yss-openapi-draft-review` | `review-only` | `api-impact` |
@@ -142,8 +155,8 @@
 | `yss-validation` | `yss-exception` | `component-dependency` | — |
 | `yss-security-algorithm` | `yss-exception` | `component-dependency` | — |
 | `yss-exception` | `yss-dto` | `context-required` | — |
-| `yss-page-module-development` | `yss-components` | `context-conditional` | `components` |
-| `yss-page-module-development` | `yss-hook` | `context-conditional` | `hooks` |
-| `yss-page-module-development` | `yss-formily` | `context-conditional` | `form` |
-| `yss-page-module-development` | `yss-api-integration` | `context-conditional` | `api` |
+| `yss-ui-business-page-generation` | `yss-components` | `context-conditional` | `components` |
+| `yss-ui-business-page-generation` | `yss-hook` | `context-conditional` | `hooks` |
+| `yss-ui-business-page-generation` | `yss-formily` | `context-conditional` | `form` |
+| `yss-ui-business-page-generation` | `yss-api-integration` | `context-conditional` | `api` |
 | `yss-api-integration` | `yss-openapi-governance` | `context-conditional` | `regeneration` |

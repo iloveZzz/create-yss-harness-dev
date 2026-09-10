@@ -1,0 +1,55 @@
+2026-09-10T15:09:27.294072+00:00
+
+> create-yss-harness-dev@0.5.1 test:unit /Users/zhudaoming/Projects/yss-spec-project-template/submodules/create-yss-harness-dev
+> node --test tests/family-identity.test.js tests/self-update.test.js
+
+✔ frontend identity prevents another CLI from planning takeover, even with force (986.655667ms)
+✔ profile alone cannot bypass family protection by omitting metadata (272.484541ms)
+✔ all supported operations reject create-yss-spec before dry-run or force writes (1776.725042ms)
+✔ all supported operations reject create-yss-harness-design before dry-run or force writes (1496.0295ms)
+✔ all supported operations reject backend before dry-run or force writes (1329.615ms)
+✔ all supported operations reject frontend before dry-run or force writes (1324.490417ms)
+✔ mixed family markers are not repaired or selected (248.6875ms)
+✔ own metadata rejects malformed JSON (246.025042ms)
+✔ own metadata rejects array (257.769375ms)
+✔ own metadata rejects null (249.99025ms)
+✔ own metadata rejects wrong package (251.904833ms)
+✔ own metadata rejects unknown schema (264.123459ms)
+✔ own metadata rejects null schema (261.503792ms)
+✔ own metadata rejects wrong source (251.213459ms)
+✔ own metadata rejects wrong profile (251.051792ms)
+✔ own metadata rejects snake case wrong profile (249.599916ms)
+✔ own metadata rejects duplicate keys (247.36775ms)
+✔ profile rejects unknown profile (258.790208ms)
+✔ profile rejects missing profile (258.323333ms)
+✔ profile rejects invalid YAML (292.882459ms)
+✔ profile rejects duplicate profile (260.260541ms)
+✔ own metadata symlink is rejected without following or overwriting it (259.039166ms)
+✔ profile parent symlink is rejected before reading target content (245.420375ms)
+✔ help and version work inside foreign projects without mutation (55.615458ms)
+✔ unmanaged projects can still preview initialization (957.069333ms)
+✔ matching profile supports quoted YAML and identity fields (1000.553375ms)
+✔ compareSemver compares major.minor.patch and ignores prerelease suffix (0.926375ms)
+✔ parseUpdateArgs accepts dry-run and force and rejects unknown flags (0.42075ms)
+✔ detectInstallKind identifies npx, source, global, and local installs (2.080709ms)
+✔ already latest version does not install (0.354834ms)
+✔ newer version on a global install runs npm install -g (0.56075ms)
+✔ newer version on a local install runs npm install in the project root (0.25825ms)
+✔ dry-run previews the install command without installing (0.351334ms)
+✔ force reinstalls when the version is already latest (0.756791ms)
+✔ does not downgrade when current version is newer than latest (0.473875ms)
+✔ source checkout and npx report advice without installing (0.940625ms)
+✔ npm view failure is fail closed and does not install (0.179667ms)
+✔ npm install failure is fail closed (0.20425ms)
+✔ update and upgrade aliases check npm and do not overwrite the source tree (231.349125ms)
+✔ update unknown flags still fail closed (26.475125ms)
+ℹ tests 40
+ℹ suites 0
+ℹ pass 40
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13641.003917
+
+exit_code: 0

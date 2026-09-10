@@ -77,7 +77,7 @@ roles:
     stages: [stage.harness-entry, stage.technical-design, stage.slice-contract, stage.verification]
     draft_artifact_ids: [artifact.technical-design, artifact.tactical-design, artifact.api-boundary, artifact.data-architecture, artifact.slice-implementation-contract]
     owned_evidence_ids: [evidence.technical-design-review, evidence.tactical-design-review, evidence.architecture-decision]
-    core_skills: [architecture-agent, yss-technical-design, codebase-design, research, tdd]
+    core_skills: [architecture-agent, yss-technical-design, codebase-design, yss-research, tdd]
     forbidden_skills: [harness-orchestrator, frontend-agent, backend-agent, test-agent, yss-ui, yss-domain, yss-repository, yss-web-controller]
     description: >-
       负责把已确认的 Spec / 战略设计细化为 Tactical Design Contract，并定义聚合、行为、不变量、状态、
@@ -116,7 +116,7 @@ roles:
     stages: [stage.technical-design, stage.slice-contract, stage.slice-implementation, stage.verification]
     draft_artifact_ids: [artifact.test-strategy, artifact.test-seams]
     owned_evidence_ids: [evidence.fresh-verification, evidence.frontend-verification, evidence.backend-verification]
-    core_skills: [test-agent, tdd, diagnosing-bugs, code-review, research]
+    core_skills: [test-agent, tdd, diagnosing-bugs, code-review, yss-research]
     forbidden_skills: [harness-orchestrator, architecture-agent, frontend-agent, backend-agent, yss-ddd-scaffold-generator, yss-layered-mvc-scaffold-generator, implement]
     description: >-
       从战术设计和 Slice Contract 建立测试 seam、fixture 和失败基线，独立执行契约、集成、E2E 和 Fresh

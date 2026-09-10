@@ -9,6 +9,8 @@ description: 编排 DDD / MVC 技术设计到垂直切片交付的四角色 Harn
 
 这是四角色 Harness Agent 的唯一编排入口。它负责读取 `yss-project.yaml` 与 `CONTEXT.md`、判断影响面、选择下一个未阻塞工作单元、编译任务包、维护合同版本、汇合执行结果和触发重路由。
 
+文档输出时按 `lifecycle-document-output` 条件调用 `i-have-adhd`，读取 `docs/process/document-writing.md`；作用域仅限当前产物，派发时传递条件及引用。
+
 ## 边界
 
 - 不起草领域行为、前端页面、后端业务代码或测试代码。

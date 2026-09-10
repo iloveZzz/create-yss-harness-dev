@@ -67,7 +67,7 @@ README、用户指南和 `CLAUDE.md` 只解释或指向上述事实，不定义�
 
 ## 8. 专项入口
 
-- 技术事实、标准或第三方行为影响决策时使用 `research`；竞品、市场或用户口碑事实使用 `competitive-intelligence`。
+- 技术事实、标准或第三方行为影响决策时使用 `yss-research`；竞品、市场或用户口碑事实使用 `competitive-intelligence`。
 - 原型和设计使用 `yss-design-system` → `yss-prototype-stage`；当前兼容路线用 `yss-antd-design` 记录版本事实。生产前端改用 `yss-ui`，原型阶段不得调用 `yss-ui`。
 - Bug、测试失败或性能回退先用 `diagnosing-bugs` 建立复现，再使用 `tdd`；业务行为默认按 `behavior-tdd` 逐切片实现，不适用时记录理由和可执行验证。
 - 四个专业 Agent 不另起生命周期、不批准自己起草的合同，也不替实现者完成独立验证；协同边界见 `docs/agents/digital-human-roles.yaml`。

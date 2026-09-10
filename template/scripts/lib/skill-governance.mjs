@@ -12,7 +12,7 @@ function fail(message) {
 export function validateSkillGovernance({ read = (relative) => readFileSync(path.join(ROOT, relative), "utf8"), exists = (relative) => existsSync(path.join(ROOT, relative)) } = {}) {
   const globalRules = read(".agents/rules/yss-ai-skills.md");
   const tableSkill = read(".agents/skills/ytable-usage/SKILL.md");
-  const pageSkill = read(".agents/skills/yss-page-module-development/SKILL.md");
+  const pageSkill = read(".agents/skills/yss-ui-business-page-generation/SKILL.md");
 
   for (const marker of ["trigger: always_on", "docs/agents/yss-skill-registry.yaml", ".agents/skills/yss-ui/SKILL.md", "原型阶段"]) {
     if (!globalRules.includes(marker)) fail(`YSS UI 薄入口缺少路由标记: ${marker}`);
@@ -30,7 +30,7 @@ export function validateSkillGovernance({ read = (relative) => readFileSync(path
   for (const marker of ["无需配置 `:toolbar-config=\"{ custom: true }\"`", "仅在业务明确需要列设置时才传入"]) {
     if (!tableSkill.includes(marker)) fail(`YTable 专项技能缺少条件化工具栏规则: ${marker}`);
   }
-  if (!pageSkill.includes("只有确实需要列设置时才启用 `toolbar-config.custom`")) {
+  if (!pageSkill.includes("仅在业务明确需要列设置时才传入")) {
     fail("页面模块 canonical 技能缺少条件化 toolbar-config 规则");
   }
 
@@ -45,13 +45,16 @@ export function validateSkillGovernance({ read = (relative) => readFileSync(path
   const registry = loadSkillRegistry();
   const canonicalIds = new Set(registry.skills.map((skill) => skill.id));
   const aliases = new Map(registry.skills.flatMap((skill) => skill.aliases.map((alias) => [alias, skill.id])));
-  const legacy = new Set(["api-integration", "page-module-development", "use-table-height", "use-tree-height", "yss-ui-business-page-generation"]);
+  const legacy = new Set(["api-integration", "use-table-height", "use-tree-height"]);
   for (const alias of legacy) {
     if (exists(`.agents/skills/${alias}`)) fail(`legacy alias 不得存在独立 canonical 目录: ${alias}`);
     if (!aliases.has(alias)) fail(`legacy alias 未登记: ${alias}`);
   }
   if (exists(".agents/skills/high-fidelity-html-prototype") || aliases.has("high-fidelity-html-prototype")) {
     fail("high-fidelity-html-prototype 已退役，不得保留物理目录或运行时 alias");
+  }
+  for (const retired of ["research", "yss-microapp-commit", "yss-page-module-development"] ) {
+    if (exists(`.agents/skills/${retired}`) || canonicalIds.has(retired) || (retired !== "research" && aliases.has(retired))) fail(`已退役 skill 仍然存在: ${retired}`);
   }
   for (const retired of ["yss-product-lifecycle", "yss-stage-decision"]) {
     if (exists(`.agents/skills/${retired}`) || aliases.has(retired) || canonicalIds.has(retired)) {
