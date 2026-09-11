@@ -6,13 +6,13 @@
 
 战略方维护业务规则、Spec、页面流程和视觉基线；后端维护 API 及后端交付；前端维护工程设计、页面和验收证据；统一管理方维护基线引用、跨仓切片与业务验收汇总。
 
-前端消费需求可在上游设计时提前反馈。前端项目在战略和后端交付尚未齐备时，只能验包、诊断和回交缺口。两类输入通过接收核验后，可以准备前端工程设计、实现计划和 Slice Contract；合同获准前不得写代码。
+前端消费需求可在上游设计时提前反馈。Handoff v4 导入后的 Frontend Strategic Preflight 可在后端交付前完成战略输入、Context、视觉基线和源规则追踪核验，并允许起草前端工程设计与实现计划；它固定返回 `ready_for_agent: false`。仅当 Backend/API/Data 影响命中时，最终接收才等待后端交付；UI-only 路径使用有依据的 `backend-not-applicable`。Slice Contract 获准前均不得写代码。
 
 ## 后端导出与前端导入
 
 后端每个交付包绑定一个窄业务切片。交付描述采用 `schemas/backend-delivery.schema.json`，包含战略包路径与摘要、切片规则/场景、OpenAPI operationId、冻结接口和后端 Slice Contract 的批准绑定、构建与部署身份、测试数据准备说明及验证证据。
 
-接口和 Slice Contract 的 `digest` 均为原文件字节 SHA-256，分别由既有 `gate.openapi-frozen` 和 `gate.slice-contract-approved` 的批准记录绑定。同包携带源角色政策及所需用户决定/批准证据；接收端按源政策验证，不能只填 `status: approved`。
+接口和 Slice Contract 的 `digest` 均为原文件字节 SHA-256，分别由当前 `gate.engineering-contract-approved` 和 `gate.slice-contract-approved` 的批准记录绑定。同包携带源角色政策及所需用户决定/批准证据；接收端按源政策验证，不能只填 `status: approved`。
 
 验证记录采用 `schemas/backend-delivery-verification.schema.json`，`subject_digest` 使用 `backendDeliveryBasis()`。实际命令、执行时间、零退出码与日志摘要必须齐备；契约验证逐条覆盖交付接口及场景的成功/失败结果。`supporting_files` 显式列出批准或用户决定的其余本地依赖；导出时通过临时源视图验证闭包，漏文件会失败。
 
@@ -28,11 +28,14 @@ scripts/backend-delivery import --bundle <directory-or-zip> --target-root <front
 
 ## 接收与启动
 
-导入只产生 `frontend-acceptance-draft.json`，不会批准资产。接收方完成正式词汇对账并按 `schemas/frontend-delivery-acceptance.schema.json` 准备接收记录：
+Handoff v4 先生成 `frontend-strategic-preflight-draft.json`；补齐正式 Context Reconciliation 后执行 `scripts/verify-frontend-strategic-preflight`。通过仅允许进入前端工程设计草案。
 
-- `backend_delivery` 绑定后端导入收据和包摘要。
+后端交付导入只新增匹配的 backend binding 并产生 `frontend-acceptance-draft.json`，不会覆盖已填写的前端预检/设计草案，也不会批准资产。最终接收方按当前 `schemas/frontend-delivery-acceptance.schema.json`（v2）准备记录；v1 仅服务历史 Handoff v3，继续要求真实后端交付：
+
+- `strategic_preflight` 绑定当前预检文件及字节摘要。
+- `backend_dependency.mode: required` 时，`backend_delivery` 绑定真实后端导入收据和包摘要；`not-applicable` 时必须与 Handoff v4 backend 路由的影响引用、原因和证据一致，且不得绑定后端收据。
 - `strategic_handoff` 绑定战略导入收据、包摘要、正式 `context_reconciliation_ref` 和全部源规则/关键场景的承接 rows。
-- `frontend_cases` 绑定业务规则/场景、成功或失败结果、已交付接口、Visual Baseline `case_id` 和可读取的用例说明。
+- `frontend_cases` 绑定业务规则/场景、成功或失败结果、Visual Baseline `case_id` 和可读取的用例说明；有后端依赖时绑定已交付接口，`backend-not-applicable` 时 `operation_ids` 必须为空。
 - 已规划的承接使用 `mapped`，表示已映射用例，不声称代码已实现。当前交付范围必须 mapped 到当前切片；其他范围的 pending、conflict、deferred 或 not-applicable 沿用战略逐条承接的理由、证据和依赖阻断规则。
 
 完成接收核对后记录 `status: accepted` 并执行：
@@ -67,6 +70,6 @@ scripts/verify-frontend-delivery --root <frontend> --slice <slice-id> <relative-
 
 前端 `frontend_cases` 的 `evidence_ref` 必须同时绑定 `evidence_digest`（原始文件字节 SHA-256）。用例内容变化后须更新接收记录并重编译依赖合同。
 
-OpenAPI Freeze 的来源门禁兼容综合模板 `gate.openapi-frozen` 与研发模板 `gate.openapi-freeze-confirmed`；仍严格校验来源角色策略及批准字节绑定，不允许其他门禁代替。每个交付范围至少包含一个带成功/失败验证的战略场景。
+OpenAPI Freeze 的来源门禁兼容当前综合模板 `gate.engineering-contract-approved`、历史冻结包 `gate.openapi-frozen` 与研发模板 `gate.openapi-freeze-confirmed`；仍严格校验来源角色策略及批准字节绑定，不允许其他门禁代替。每个交付范围至少包含一个带成功/失败验证的战略场景。
 
-生命周期中的稳定入口为 `gate.frontend-delivery-inputs-verified`，定义见各自 `lifecycle-registry.yaml`；角色表将它登记为 evidence_only，实际核验仍由脚本执行，不增设人工批准，也不替代 Slice Contract 的批准门禁。
+生命周期中的稳定入口为 `check.frontend-delivery-inputs-verified`，定义见各自 `lifecycle-registry.yaml`；角色表将它登记为 automatic_checks，实际核验仍由脚本执行，不增设人工批准，也不替代 Slice Contract 的批准门禁。

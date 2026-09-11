@@ -21,6 +21,8 @@ export const ALLOWED_WORK_UNITS = [
   "work-unit.slice-implementation",
   "work-unit.verification",
 ];
+export const ALLOWED_STAGES = ["stage.harness-entry", "stage.technical-design", "stage.slice-contract", "stage.slice-implementation", "stage.verification"];
+export const CONSUMER_CAPABILITIES = ["backend-technical-design", "frontend-engineering-design", "delivery-coordination"];
 export const FORBIDDEN_WORK_UNITS = [
   "work-unit.ssot-update",
   "work-unit.skill-projection-sync",
@@ -75,7 +77,7 @@ export function validateHarnessProfile(profile = loadHarnessProfile(), {
   lifecycle = loadRegistry(),
   roles = loadDigitalHumanRoles(),
 } = {}) {
-  if (profile.schema_version !== 1) fail("Harness profile schema_version 必须为 1");
+  if (profile.schema_version !== 2) fail("Harness profile schema_version 必须为 2");
   if (profile.profile_id !== DEV_AGENT_PROFILE_ID) fail(`只支持 ${DEV_AGENT_PROFILE_ID}`);
   if (profile.status !== "active") fail("Harness profile status 必须为 active");
   requireString(profile.name, "profile.name");
@@ -99,6 +101,7 @@ export function validateHarnessProfile(profile = loadHarnessProfile(), {
   if (!equalArray(profile.lifecycle?.allowed_work_units, ALLOWED_WORK_UNITS)) {
     fail("lifecycle.allowed_work_units 必须是五阶段开发落地工作单元");
   }
+  if (!equalArray(profile.lifecycle?.allowed_stages, ALLOWED_STAGES)) fail("lifecycle.allowed_stages 必须严格匹配综合交付阶段");
   if (!equalArray(profile.lifecycle?.forbidden_work_units, FORBIDDEN_WORK_UNITS)) {
     fail("lifecycle.forbidden_work_units 必须是 template-source 维护工作单元");
   }
@@ -128,6 +131,11 @@ export function validateHarnessProfile(profile = loadHarnessProfile(), {
   if (profile.lifecycle.allowed_work_units.some((id) => profile.lifecycle.forbidden_work_units.includes(id))) {
     fail("allowed_work_units 与 forbidden_work_units 不得重叠");
   }
+  const activeProjectUnits=(lifecycle.work_units || []).filter((item)=>item.scope==="project-instance").map((item)=>item.id).sort();
+  if (!equalArray(activeProjectUnits, [...ALLOWED_WORK_UNITS].sort())) fail("lifecycle 存在 profile 外活动工作单元");
+  for (const item of [...(lifecycle.gates || []), ...(lifecycle.artifacts || [])]) if (item.stage && !ALLOWED_STAGES.includes(item.stage)) fail(`lifecycle 存在 profile 外活动阶段引用: ${item.id} -> ${item.stage}`);
+  const published=new Set([...(lifecycle.stages || []).map((item)=>item.id), ...(lifecycle.gates || []).map((item)=>item.id), ...(lifecycle.artifacts || []).map((item)=>item.id), ...(lifecycle.work_units || []).map((item)=>item.id)]);
+  for (const id of lifecycle.id_policy?.deprecated_ids || []) if (published.has(id)) fail(`deprecated ID 仍在活动注册表: ${id}`);
 
   if (profile.upstream?.kind !== "approved-spec-or-strategic-design") {
     fail("upstream.kind 必须为 approved-spec-or-strategic-design");
@@ -140,11 +148,13 @@ export function validateHarnessProfile(profile = loadHarnessProfile(), {
   }
   const handoff = profile.upstream?.strategic_design_handoff;
   if (handoff?.schema_ref !== "docs/process/schemas/strategic-design-handoff.schema.json"
-    || handoff?.required_schema_version !== 3
+    || !equalArray(handoff?.accepted_schema_versions, [3, 4])
+    || handoff?.current_schema_version !== 4
     || handoff?.ui_impact_requires_visual_baseline_schema_version !== 1
     || handoff?.stale_baseline_policy !== "block-and-reroute") {
-    fail("upstream.strategic_design_handoff 必须固定 Handoff v3、Visual Baseline v1 与 stale 阻断策略");
+    fail("upstream.strategic_design_handoff 必须兼容 v3、以 Handoff v4 为当前版本并固定 Visual Baseline v1 与 stale 阻断策略");
   }
+  if (!equalArray(profile.handoff?.consumer_capabilities, CONSUMER_CAPABILITIES)) fail("handoff.consumer_capabilities 必须覆盖后端、前端与协调路由");
 
   const instantiation = profile.instantiation || {};
   for (const [field, expected] of Object.entries(INSTANTIATION)) {
@@ -174,9 +184,12 @@ export const harnessProfileContract = Object.freeze({
   target_user_roles: TARGET_ROLES,
   control_plane_roles: CONTROL_ROLES,
   allowed_work_units: ALLOWED_WORK_UNITS,
+  allowed_stages: ALLOWED_STAGES,
+  consumer_capabilities: CONSUMER_CAPABILITIES,
   forbidden_work_units: FORBIDDEN_WORK_UNITS,
   strategic_design_handoff: Object.freeze({
-    schema_version: 3,
+    accepted_schema_versions: [3, 4],
+    current_schema_version: 4,
     visual_baseline_schema_version: 1,
     stale_baseline_policy: "block-and-reroute",
   }),

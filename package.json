@@ -1,6 +1,6 @@
 {
   "name": "create-yss-harness-dev",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Initialize a YSS development-landing Harness project-instance repository",
   "repository": {
     "type": "git",
@@ -23,10 +23,10 @@
   "scripts": {
     "sync-template": "node scripts/sync-template.js",
     "pretest": "npm run sync-template",
-    "test": "node --test tests/*.test.js",
+    "test": "node --test --test-concurrency=1 tests/*.test.js",
     "prepack": "npm run sync-template",
     "test:unit": "node --test tests/family-identity.test.js tests/self-update.test.js",
-    "test:prepared": "node --test tests/*.test.js",
-    "test:integration": "npm run sync-template && node --test tests/*.test.js"
+    "test:prepared": "node --test --test-concurrency=1 tests/*.test.js",
+    "test:integration": "npm run sync-template && node --test --test-concurrency=1 tests/*.test.js"
   }
 }

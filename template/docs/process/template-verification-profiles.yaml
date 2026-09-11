@@ -166,9 +166,9 @@ syntax_files:
 routing:
   - patterns: [".agents/skills/yss-technical-design/**", ".agents/skills/yss-mvc-design/**", "scripts/lib/technical-design-boundary.mjs"]
     groups: [technical-design, implementation]
-  - patterns: ["scripts/*backend-delivery*", "scripts/*frontend-delivery*", "scripts/lib/*backend-delivery*", "scripts/lib/*frontend-delivery*", "scripts/fixtures/backend-delivery/**", "docs/process/frontend-backend-delivery.md", "docs/process/schemas/backend-delivery*", "docs/process/schemas/frontend-delivery*"]
+  - patterns: ["scripts/*backend-delivery*", "scripts/*frontend-delivery*", "scripts/*frontend-strategic-preflight*", "scripts/lib/*backend-delivery*", "scripts/lib/*frontend-delivery*", "scripts/fixtures/backend-delivery/**", "docs/process/frontend-backend-delivery.md", "docs/process/schemas/backend-delivery*", "docs/process/schemas/frontend-delivery*", "docs/process/schemas/frontend-strategic-preflight*"]
     groups: [frontend-delivery]
-  - patterns: ["scripts/*strategic-handoff*", "scripts/lib/strategic-handoff*", "scripts/fixtures/strategic-handoff/**", "docs/process/strategic-handoff-package.md", "docs/process/schemas/strategic-handoff-*"]
+  - patterns: ["scripts/*strategic-handoff*", "scripts/*strategic-feedback*", "scripts/lib/strategic-handoff*", "scripts/lib/strategic-feedback*", "scripts/fixtures/strategic-handoff/**", ".template-source/distribution/strategic-handoff-tools.lock.json", "docs/process/strategic-handoff-package.md", "docs/process/schemas/strategic-handoff-*", "docs/process/schemas/strategic-design-handoff-*", "docs/process/schemas/strategic-*feedback*"]
     groups: [strategic-handoff-package]
   - patterns: [AGENTS.md, CONTEXT.md, yss-project.yaml, package.json, .gitignore, README.md, "docs/**"]
     groups: [hygiene]
@@ -204,6 +204,7 @@ groups:
       - { run: "scripts/verify-frontend-delivery-scenarios" }
   strategic-handoff-package:
     commands:
+      - { run: "scripts/verify-strategic-handoff-tools-lock", when: template-source }
       - { run: "node --check scripts/lib/strategic-handoff.mjs" }
       - { run: "scripts/verify-strategic-handoff-package-scenarios" }
   hygiene:
@@ -282,4 +283,5 @@ groups:
       - { run: "scripts/verify-governance-release" }
   candidate-integrity:
     commands:
+      - { run: "scripts/verify-strategic-handoff-tools-lock --require-committed", when: template-source }
       - { run: "node scripts/verify-template-verification-scenarios" }

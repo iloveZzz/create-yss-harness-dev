@@ -55,7 +55,8 @@
     ".cursor/environment.json",
     "docs/.scratch",
     "docs/reviews",
-    "docs/adr"
+    "docs/adr",
+    "scripts/verify-strategic-handoff-tools-lock"
   ],
   "renderPaths": [
     "README.md",

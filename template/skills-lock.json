@@ -42,7 +42,7 @@
         "source": "tt-a1i/archify",
         "sourceType": "github",
         "skillPath": "archify/SKILL.md",
-        "effectiveHash": "74e012798187a4ee263dfc74a0a9f2e3a9423b61eb90f9642fb3e4ab19f88246",
+        "effectiveHash": "d9253cd22c97cee7a4e71b05823412f0417badbd133c32304c42d6407936721b",
         "sourceRevision": "199360cc6687a7857b54dd188d4922b09e466a4b",
         "upstreamHash": "202082693c0b6cfe5c9c428f46f323f4159bc96c9c98220fed57167dab4c222b",
         "adaptationRef": "docs/agents/archify-integration.md",

@@ -101,7 +101,7 @@ test("interactive init generates a template instance in an empty directory", () 
     ),
   );
   for (const frontendSkill of [
-    "yss-page-module-development",
+    "yss-ui-business-page-generation",
     "ytable-usage",
     "yedit-table-usage",
     "formily-foundation",
@@ -125,7 +125,7 @@ test("interactive init generates a template instance in an empty directory", () 
     "api-integration",
     "use-table-height",
     "use-tree-height",
-    "yss-ui-business-page-generation",
+    "yss-page-module-development",
   ]) {
     assert.equal(
       fs.existsSync(path.join(targetDir, ".agents/skills", retiredSkill)),
@@ -936,6 +936,11 @@ test("attach applies management assets while preserving runtime files and .git",
   assert.equal(metadata.metadataSchemaVersion, 1);
   assert.equal(metadata.cliVersion, packageVersion);
   assert.match(metadata.templateCommit, /^[0-9a-f]{40}$/);
+  const snapshot = JSON.parse(
+    fs.readFileSync(path.join(repoRoot, "template.snapshot.json"), "utf8"),
+  );
+  assert.equal(metadata.templateSourceState, snapshot.sourceState);
+  assert.match(metadata.snapshotHash, /^[0-9a-f]{64}$/);
 });
 
 test("attach requires --force for root conflicts and keeps an external backup", () => {

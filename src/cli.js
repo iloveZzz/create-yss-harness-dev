@@ -97,6 +97,13 @@ function readTemplateSnapshot() {
   if (!/^[0-9a-f]{40}$/.test(snapshot.templateCommit || "")) {
     throw new Error("模板快照必须绑定 40 位不可变 templateCommit");
   }
+  if (!["committed", "working-tree"].includes(snapshot.sourceState)) {
+    throw new Error("模板快照 sourceState 必须为 committed 或 working-tree");
+  }
+  const expectedRef = snapshot.sourceState === "working-tree" ? "working-tree" : snapshot.templateCommit;
+  if (snapshot.requestedRef !== expectedRef) {
+    throw new Error(`模板快照 requestedRef 与 sourceState 不一致，预期 ${expectedRef}`);
+  }
 
   if (!/^[0-9a-f]{64}$/.test(snapshot.snapshotHash || "")) {
     throw new Error("模板快照必须包含 64 位 snapshotHash");
@@ -1294,6 +1301,7 @@ function collectManagedFiles(desiredOperations, targetDir) {
 }
 
 function buildMetadata(variables, desiredOperations, targetDir, timestamp = nowIsoString()) {
+  const snapshot = readTemplateSnapshot();
   return {
     metadataSchemaVersion: METADATA_SCHEMA_VERSION,
     templateName: PACKAGE_MANIFEST.name,
@@ -1301,7 +1309,9 @@ function buildMetadata(variables, desiredOperations, targetDir, timestamp = nowI
     cliVersion: PACKAGE_MANIFEST.version,
     templateVersion: PACKAGE_MANIFEST.version,
     templateSource: getTemplateSource(),
-    templateCommit: readTemplateSnapshot().templateCommit,
+    templateCommit: snapshot.templateCommit,
+    templateSourceState: snapshot.sourceState,
+    snapshotHash: snapshot.snapshotHash,
     initializedAt: timestamp,
     lastSyncedAt: timestamp,
     managedFilesManifestVersion: TEMPLATE_MANIFEST_VERSION,
@@ -1800,6 +1810,7 @@ function printSyncDryRun(targetDir, metadata, syncPlan, migrationPlan) {
 }
 
 function buildNextSyncMetadata(metadata, syncPlan, targetDir) {
+  const snapshot = readTemplateSnapshot();
   const nextManagedFiles = { ...(metadata.managedFiles || {}) };
   for (const relativePath of syncPlan.removed) {
     delete nextManagedFiles[relativePath];
@@ -1825,7 +1836,9 @@ function buildNextSyncMetadata(metadata, syncPlan, targetDir) {
     cliVersion: PACKAGE_MANIFEST.version,
     templateVersion: PACKAGE_MANIFEST.version,
     templateSource: getTemplateSource(),
-    templateCommit: readTemplateSnapshot().templateCommit,
+    templateCommit: snapshot.templateCommit,
+    templateSourceState: snapshot.sourceState,
+    snapshotHash: snapshot.snapshotHash,
     lastSyncedAt: nowIsoString(),
     managedFilesManifestVersion: TEMPLATE_MANIFEST_VERSION,
     managedFiles: nextManagedFiles,

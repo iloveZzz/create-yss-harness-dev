@@ -1,4 +1,4 @@
-schema_version: 1
+schema_version: 2
 profile_id: harness.dev-agent-slice
 status: active
 name: 四角色开发落地 Harness（含后端交付专线）
@@ -27,6 +27,12 @@ audience:
 
 lifecycle:
   repository_modes: [project-instance]
+  allowed_stages:
+    - stage.harness-entry
+    - stage.technical-design
+    - stage.slice-contract
+    - stage.slice-implementation
+    - stage.verification
   entry_work_unit: work-unit.harness-entry
   allowed_work_units:
     - work-unit.harness-entry
@@ -49,13 +55,19 @@ upstream:
   discovery_is_default: false
   strategic_design_handoff:
     schema_ref: docs/process/schemas/strategic-design-handoff.schema.json
-    required_schema_version: 3
+    accepted_schema_versions: [3, 4]
+    current_schema_version: 4
     ui_impact_requires_visual_baseline_schema_version: 1
     stale_baseline_policy: block-and-reroute
   compatibility_skills:
     - grill-with-docs
     - to-spec
     - to-tickets
+handoff:
+  consumer_capabilities:
+    - backend-technical-design
+    - frontend-engineering-design
+    - delivery-coordination
 
 instantiation:
   cli_package: create-yss-harness-dev

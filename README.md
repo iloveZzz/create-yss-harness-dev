@@ -1,6 +1,6 @@
 # create-yss-harness-dev
 
-源码候选版本：`0.5.0`。模板固定到 `e5ddeb084adece86333166389ad9c7132bc99437`；最终快照身份与摘要见 `template.snapshot.json`。本次同步通用技术设计、DDD/MVC 分支、编译器绑定与新旧交接协议兼容。
+源码候选版本：`0.5.2`。模板固定到 `af50fbcd81d366fa3fe2324b0c493faac02503cf`；最终快照身份与摘要见 `template.snapshot.json`。本次同步 Handoff v4、消费者反馈闭环、前后端交付边界与 committed-source 身份。
 
 ## 已发布安装与候选版本
 
@@ -61,7 +61,7 @@ npm pack --ignore-scripts
 `--ignore-scripts` 仅在上一步已成功产生并核对固定快照后使用，以免 prepack 改写输入。检查 tgz 中 template.snapshot.json 的模板 SHA 和 package.json 版本，然后使用实际包路径初始化：
 
 ```bash
-npx --yes --package /absolute/path/create-yss-harness-dev-0.5.0.tgz create-yss-harness-dev --project-name "设备借用" --business-domain "内部设备管理" --target-dir ./equipment-candidate
+npx --yes --package /absolute/path/create-yss-harness-dev-0.5.2.tgz create-yss-harness-dev --project-name "设备借用" --business-domain "内部设备管理" --target-dir ./equipment-candidate
 ```
 
 这是安装本地已构建包的示例，不是 npm 发布操作。候选验证需覆盖新建实例的本地文档链接、身份、Skill 检查与适用交接链路；不要把历史验证日志当当前发布证据。

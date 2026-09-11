@@ -12,7 +12,7 @@ const targetSnapshotPath = path.join(packageRoot, "template.snapshot.json");
 const templateRepo =
   process.env.YSS_HARNESS_TEMPLATE_REPO ||
   "https://github.com/iloveZzz/yss-harness-dev-agent.git";
-const DEFAULT_TEMPLATE_REF = "7b1bc292f594005d62209252c93de5da11a8dc50";
+const DEFAULT_TEMPLATE_REF = "af50fbcd81d366fa3fe2324b0c493faac02503cf";
 const templateRef = process.env.YSS_HARNESS_TEMPLATE_REF || DEFAULT_TEMPLATE_REF;
 const NPM_IGNORED_BASENAMES = new Set([".gitignore", ".npmignore", ".npmrc"]);
 
@@ -472,8 +472,9 @@ try {
     profileId: "harness.dev-agent-slice",
     templateSource: "github:iloveZzz/yss-harness-dev-agent",
     templateRepository: resolvedTemplateRepo,
-    requestedRef: useLocalWorkingTree ? "working-tree" : templateRef,
+    requestedRef: useLocalWorkingTree ? "working-tree" : templateCommit,
     templateCommit,
+    sourceState: useLocalWorkingTree ? "working-tree" : "committed",
     manifestHash: sha256(fs.readFileSync(targetManifestPath)),
     encodedPaths,
     snapshotHash: treeHash(stagingRoot),
